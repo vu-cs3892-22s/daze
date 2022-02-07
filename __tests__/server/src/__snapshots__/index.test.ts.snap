@@ -1,0 +1,9 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`index.func 0 1`] = `undefined`;
+
+exports[`index.func 1 1`] = `undefined`;
+
+exports[`index.func 2 1`] = `undefined`;
+
+exports[`index.func 3 1`] = `undefined`;
