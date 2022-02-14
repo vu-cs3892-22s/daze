@@ -17,7 +17,7 @@
   "scripts": {
     "start": "ts-node src/index.ts",
     "build": "tsc",
-    "test": "ts-node -O '{\"module\":\"commonjs\"}' node_modules/jest/bin/jest.js"
+    "test": "ts-node -O '{\"module\":\"commonjs\"}' node_modules/jest/bin/jest.js --pass-with-no-tests"
   },
   "dependencies": {
     "redis": "^4.0.3"

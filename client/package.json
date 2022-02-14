@@ -8,7 +8,8 @@
     "ios": "expo start --ios",
     "web": "expo start --web",
     "eject": "expo eject",
-    "build": "echo '*** TODO ***: no client build script yet'"
+    "build": "echo '*** TODO ***: no client build script yet'",
+    "test": "echo '*** TODO ***: no client test script yet'"
   },
   "dependencies": {
     "expo": "~44.0.0",
