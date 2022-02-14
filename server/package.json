@@ -18,5 +18,8 @@
     "start": "ts-node src/index.ts",
     "build": "tsc",
     "test": "ts-node -O '{\"module\":\"commonjs\"}' node_modules/jest/bin/jest.js"
+  },
+  "dependencies": {
+    "redis": "^4.0.3"
   }
 }
