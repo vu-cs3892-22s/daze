@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "daze",
-    "slug": "daze",
+    "name": "daze-client",
+    "slug": "daze-client",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
