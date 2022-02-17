@@ -20,6 +20,7 @@
     "test": "ts-node -O '{\"module\":\"commonjs\"}' node_modules/jest/bin/jest.js --pass-with-no-tests"
   },
   "dependencies": {
+    "body-parser": "^1.19.2",
     "redis": "^4.0.3"
   }
 }
