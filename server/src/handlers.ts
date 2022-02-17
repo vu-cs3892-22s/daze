@@ -1,10 +1,39 @@
 import express from 'express';
 
+//import { pool } from './db';
+
+import { addUser } from './db'
+
+
 export const createUser = (req: express.Request, res: express.Response) => {
+
+  let test  = {
+    "VanderbiltEmail": "sophia.s.chen@vanderbilt.edu", 
+    "FirstName": "Sophia",
+    "LastName": "Chen",
+    "PhoneNumber": "12345"
+  }
+  addUser(test);
+
+  /*
   // Insert DB function
-  res.send({
-    message: 'Creating new user'
-  });
+  const text = `
+    INSERT INTO users (VanderbiltEmail, FirstName, LastName, PhoneNumber)
+    VALUES ($1, $2, $3, $4)
+    RETURNING VanderbiltEmail
+  `;
+
+  const values = [req.body.VanderbiltEmail, req.body.FirstName, req.body.LastName, req.body.PhoneNumber]
+
+  pool.query(text, values, (error: any, results: any) => {
+    if (error) {
+      throw error
+    }
+    res.status(201).send(`User created with email: ${results.VanderbiltEmail}`)
+  })
+
+  */
+  
 };
 
 export const updateUser = (req: express.Request, res: express.Response) => {

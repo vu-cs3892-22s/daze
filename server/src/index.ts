@@ -10,8 +10,10 @@ import {
 } from './handlers';
 
 dotenv.config({
-  path: `${__dirname}/../../.env`
+  path: `.env`
 });
+
+console.log(process.env)
 
 const port = process.env.SERVER_PORT;
 
