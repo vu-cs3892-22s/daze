@@ -14,8 +14,6 @@ dotenv.config({
   path: `.env`
 });
 
-console.log(process.env)
-
 const port = process.env.SERVER_PORT;
 
 const app = express();

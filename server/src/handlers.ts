@@ -2,18 +2,24 @@ import express from 'express';
 
 //import { pool } from './db';
 
-import { addUser } from './db'
+import { addUser, obtainUser } from './db'
 
+let test  = {
+  "VanderbiltEmail": "sophia.s.chen@vanderbilt.edu", 
+  "FirstName": "Sophia",
+  "LastName": "Chen",
+  "PhoneNumber": "12345"
+}
 
 export const createUser = (req: express.Request, res: express.Response) => {
 
-  let test  = {
-    "VanderbiltEmail": "sophia.s.chen@vanderbilt.edu", 
-    "FirstName": "Sophia",
-    "LastName": "Chen",
-    "PhoneNumber": "12345"
-  }
+
   addUser(test);
+
+  console.log(req.body)
+  res.send({
+    message: 'Creating user'
+  });
 
   /*
   // Insert DB function
@@ -45,6 +51,8 @@ export const updateUser = (req: express.Request, res: express.Response) => {
 
 export const getUser = (req: express.Request, res: express.Response) => {
   const vunetId = req.params.vunet_id;
+
+  obtainUser(vunetId);
   // Insert DB function
   res.send({
     message: `Getting user ${vunetId}`
