@@ -8,6 +8,7 @@ import {
   submitComments,
   getDiningHallInfo
 } from './handlers';
+import bodyParser from 'body-parser';
 
 dotenv.config({
   path: `.env`
@@ -18,6 +19,9 @@ console.log(process.env)
 const port = process.env.SERVER_PORT;
 
 const app = express();
+
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
 
 const prefixRoute = (route: string) => `/api/v1/${route}`;
 
