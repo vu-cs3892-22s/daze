@@ -5,41 +5,33 @@ import express from 'express';
 import { addUser, obtainUser } from './db'
 
 let test  = {
-  "VanderbiltEmail": "sophia.s.chen@vanderbilt.edu", 
+  "VanderbiltEmail": "sophia@gmail.com", 
   "FirstName": "Sophia",
   "LastName": "Chen",
   "PhoneNumber": "12345"
 }
 
 export const createUser = (req: express.Request, res: express.Response) => {
+  console.log("This is the req.body: " + JSON.stringify(req.body))
+  let error_code = addUser(test)
+  console.log("add user returns this: " + error_code)
 
+  /*
+  if (error_code === 0){
+      res.status(200).send({
+        message: 'Creating user succesfully'
+      });
+  } else if (error_code === 23505){
+    res.status(400).send({
+      message: 'Duplicate email'
+    });
+  } else {
+    res.status(400).send('Bad request')
+  };*/
 
-  addUser(test);
-
-  console.log(req.body)
   res.send({
     message: 'Creating user'
   });
-
-  /*
-  // Insert DB function
-  const text = `
-    INSERT INTO users (VanderbiltEmail, FirstName, LastName, PhoneNumber)
-    VALUES ($1, $2, $3, $4)
-    RETURNING VanderbiltEmail
-  `;
-
-  const values = [req.body.VanderbiltEmail, req.body.FirstName, req.body.LastName, req.body.PhoneNumber]
-
-  pool.query(text, values, (error: any, results: any) => {
-    if (error) {
-      throw error
-    }
-    res.status(201).send(`User created with email: ${results.VanderbiltEmail}`)
-  })
-
-  */
-  
 };
 
 export const updateUser = (req: express.Request, res: express.Response) => {
