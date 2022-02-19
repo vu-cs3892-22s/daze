@@ -2,53 +2,61 @@ import express from 'express';
 
 //import { pool } from './db';
 
-import { addUser, obtainUser } from './db'
+import { queryCreateUser, 
+        queryUpdateUser, 
+        queryGetUser} from './db'
 
 let test  = {
   "VanderbiltEmail": "sophia@gmail.com", 
-  "FirstName": "Sophia",
+  "FirstName": "Sop",
   "LastName": "Chen",
   "PhoneNumber": "12345"
 }
 
-export const createUser = (req: express.Request, res: express.Response) => {
-  console.log("This is the req.body: " + JSON.stringify(req.body))
-  let error_code = addUser(test)
-  console.log("add user returns this: " + error_code)
+export const createUser = async (req: express.Request, res: express.Response) => {
+  console.log("This is the req.body: " + JSON.stringify(req.body));
+  let success = await queryCreateUser(test);
+  //console.log("add user returns this: " + success)
 
-  /*
-  if (error_code === 0){
-      res.status(200).send({
-        message: 'Creating user succesfully'
-      });
-  } else if (error_code === 23505){
-    res.status(400).send({
-      message: 'Duplicate email'
+  if (success === true){
+    res.status(201).send({
+      message: 'Creating user: Success'
     });
   } else {
-    res.status(400).send('Bad request')
-  };*/
-
-  res.send({
-    message: 'Creating user'
-  });
+    res.status(400).send({
+      message: 'Creating user: Failure'
+    });
+  }
 };
 
-export const updateUser = (req: express.Request, res: express.Response) => {
-  // Insert DB function
-  res.send({
-    message: 'Updating user'
-  });
+export const updateUser = async (req: express.Request, res: express.Response) => {
+  let success = await queryUpdateUser(test);
+
+  if (success === true){
+    res.status(201).send({
+      message: 'Updating user: Success'
+    });
+  } else {
+    res.status(400).send({
+      message: 'Updating user: Failure'
+    });
+  }
 };
 
-export const getUser = (req: express.Request, res: express.Response) => {
+export const getUser = async (req: express.Request, res: express.Response) => {
   const vunetId = req.params.vunet_id;
 
-  obtainUser(vunetId);
-  // Insert DB function
-  res.send({
-    message: `Getting user ${vunetId}`
-  });
+  let success = await queryGetUser(test.VanderbiltEmail);
+
+  if (success === true){
+    res.status(200).send({
+      message: 'Getting user: Success'
+    });
+  } else {
+    res.status(400).send({
+      message: 'Getting user: Failure'
+    });
+  }
 };
 
 export const submitData = (req: express.Request, res: express.Response) => {

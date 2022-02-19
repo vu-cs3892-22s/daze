@@ -19,67 +19,67 @@ pool.on('error', (err, client) => {
 })
 
 
-export async function addUser(body: any){
+export async function queryCreateUser(body: any){
   const text = `
     INSERT INTO users ("VanderbiltEmail", "FirstName", "LastName", "PhoneNumber")
     VALUES ('${body.VanderbiltEmail}', '${body.FirstName}', '${body.LastName}', '${body.PhoneNumber}')
     RETURNING "VanderbiltEmail"
   `;
-  /*
   
-  async function callQuery() {
+  const client = await pool.connect();
 
-    const client = await pool.connect()
-    try {
-      const res = await client.query(text)
-      console.log(res.rows[0])
-      resolve("0")
-    } catch (err: any) {
-      console.log(err.stack)
-      console.log("this is the err.error_code " + err.code)
-      error_code = err.error_code
-      resolve(err.code)
-    }
-    finally {
-      client.release()
-    }
-
+  try {
+    const res = await client.query(text);
+    //console.log(res.rows[0]);
+    client.release();
+    return true;
+  } catch (err: any) {
+    client.release();
+    //console.log(err.stack);
+    return false;
   }
-  let value = await callQuery();
-  return value; */
-
-  pool.connect()
-  .then(client => {
-    return client
-      .query(text)
-      .then(res => {
-        client.release();
-        console.log(res.rows[0]);
-      })
-      .catch(err => {
-        client.release();
-        console.log(err.stack);
-      })
-  })  
 } 
 
-export function obtainUser(email: any){
-  const text = `SELECT * FROM users WHERE VanderbiltEmail = $1`;
-  const values = [email];
+export async function queryUpdateUser(body: any){
+  const text = `
+    UPDATE users 
+    SET "FirstName" = '${body.FirstName}', "LastName" = '${body.LastName}', "PhoneNumber" = '${body.PhoneNumber}'
+    WHERE "VanderbiltEmail" = '${body.VanderbiltEmail}'
+  `;
   
-  pool.connect()
-  .then(client => {
-    return client
-      .query(text, values)
-      .then(res => {
-        client.release()
-        console.log(res.rows[0])
-      })
-      .catch(err => {
-        client.release()
-        console.log(err.stack)
-      })
-  })
+  const client = await pool.connect();
+
+  try {
+    const res = await client.query(text);
+    //console.log(res.rows[0])
+    client.release();
+    return true;
+  } catch (err: any) {
+    client.release();
+    //console.log(err.stack)
+    return false;
+  }
+}
+
+export async function queryGetUser(email: any){
+  const text = `
+    SELECT * 
+    FROM users
+    WHERE "VanderbiltEmail" = '${email}'
+  `;
+  
+  const client = await pool.connect();
+
+  try {
+    const res = await client.query(text);
+    //console.log(res.rows[0])
+    client.release();
+    return true;
+  } catch (err: any) {
+    client.release();
+    //console.log(err.stack)
+    return false;
+  }
 }
 
 
