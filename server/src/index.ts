@@ -15,7 +15,6 @@ dotenv.config({
 });
 
 const port = process.env.SERVER_PORT;
-
 const app = express();
 
 app.use(bodyParser.urlencoded({ extended: true }));
