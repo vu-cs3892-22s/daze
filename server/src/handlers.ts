@@ -4,18 +4,11 @@ import express from 'express';
 
 import { queryCreateUser, queryUpdateUser, queryGetUser } from './db';
 
-let test = {
-  VanderbiltEmail: 'sophia@gmail.com',
-  FirstName: 'Sop',
-  LastName: 'Chen',
-  PhoneNumber: '12345'
-};
-
 export const createUser = async (
   req: express.Request,
   res: express.Response
 ) => {
-  let success = await queryCreateUser(req.body);
+  const success = await queryCreateUser(req.body);
 
   if (success === true) {
     res.status(201).send({
@@ -32,7 +25,7 @@ export const updateUser = async (
   req: express.Request,
   res: express.Response
 ) => {
-  let success = await queryUpdateUser(req.body);
+  const success = await queryUpdateUser(req.body);
 
   if (success === true) {
     res.status(201).send({
@@ -48,7 +41,7 @@ export const updateUser = async (
 export const getUser = async (req: express.Request, res: express.Response) => {
   const vunetId = req.params.vunet_id;
 
-  let success = await queryGetUser(vunetId);
+  const success = await queryGetUser(vunetId);
   if (success === true) {
     res.status(200).send({
       message: 'Getting user: Success'
