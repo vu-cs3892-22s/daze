@@ -49,7 +49,6 @@ export const getUser = async (req: express.Request, res: express.Response) => {
   const vunetId = req.params.vunet_id;
 
   let success = await queryGetUser(vunetId);
-
   if (success === true) {
     res.status(200).send({
       message: 'Getting user: Success'
