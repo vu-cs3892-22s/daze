@@ -12,25 +12,48 @@ const pool = new Pool({
   ssl: { rejectUnauthorized: false }
 });
 
-pool.on('error', (err, client) => {
+pool.on('error', (err) => {
   console.error('Unexpected error on idle client', err);
 });
 
-export async function queryCreateUser(body: any) {
+interface CreateUserBody {
+  VanderbiltEmail: String;
+  FirstName: String;
+  LastName: String;
+  PhoneNumber: String;
+}
+
+export async function queryCreateUser(body: CreateUserBody) {
+  const { VanderbiltEmail, FirstName, LastName, PhoneNumber } = body;
+  const values = [VanderbiltEmail, FirstName, LastName, PhoneNumber];
+
+  const values2 = ['lu.cao@vanderbilt.edu', 'Lu', 'Cao', '9194481535'];
+  const text2 = `
+  INSERT INTO users("VanderbiltEmail", "FirstName", "LastName", "PhoneNumber")
+  VALUES ($1, $2, $3, $4)
+  RETURNING "VanderbiltEmail"
+`;
+
+  const query = { text: text2, values: values2 };
+
   const text = `
     INSERT INTO users ("VanderbiltEmail", "FirstName", "LastName", "PhoneNumber")
     VALUES ('${body.VanderbiltEmail}', '${body.FirstName}', '${body.LastName}', '${body.PhoneNumber}')
     RETURNING "VanderbiltEmail"
   `;
 
+  console.log(values);
+
   const client = await pool.connect();
 
   try {
-    const res = await client.query(text);
+    //await client.query(text);
+    await client.query(query);
 
     client.release();
     return true;
   } catch (err: any) {
+    console.log(err);
     client.release();
 
     return false;
@@ -47,7 +70,7 @@ export async function queryUpdateUser(body: any) {
   const client = await pool.connect();
 
   try {
-    const res = await client.query(text);
+    await client.query(text);
     client.release();
     return true;
   } catch (err: any) {
@@ -56,7 +79,7 @@ export async function queryUpdateUser(body: any) {
   }
 }
 
-export async function queryGetUser(email: any) {
+export async function queryGetUser(email: String) {
   const text = `
     SELECT * 
     FROM users
@@ -66,7 +89,7 @@ export async function queryGetUser(email: any) {
   const client = await pool.connect();
 
   try {
-    const res = await client.query(text);
+    await client.query(text);
     client.release();
     return true;
   } catch (err: any) {
