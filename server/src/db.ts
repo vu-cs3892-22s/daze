@@ -17,10 +17,10 @@ pool.on('error', (err) => {
 });
 
 interface UserBody {
-  vanderbiltEmail: String;
-  firstName: String;
-  lastName: String;
-  phoneNumber: String;
+  vanderbiltEmail: string;
+  firstName: string;
+  lastName: string;
+  phoneNumber: string;
 }
 
 export async function queryCreateUser(body: UserBody) {
@@ -69,7 +69,7 @@ export async function queryUpdateUser(body: UserBody) {
   }
 }
 
-export async function queryGetUser(email: String) {
+export async function queryGetUser(email: string) {
   const text = `
     SELECT * 
     FROM users
