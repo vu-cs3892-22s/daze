@@ -14,7 +14,7 @@ dotenv.config({
   path: `.env`
 });
 
-const port = process.env.SERVER_PORT;
+const port = process.env.DEV_PORT || process.env.PORT; // DEV_PORT is used for local development, PORT is used for production
 const app = express();
 
 app.use(bodyParser.urlencoded({ extended: true }));
