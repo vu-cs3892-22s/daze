@@ -16,39 +16,27 @@ pool.on('error', (err) => {
   console.error('Unexpected error on idle client', err);
 });
 
-interface CreateUserBody {
-  VanderbiltEmail: String;
-  FirstName: String;
-  LastName: String;
-  PhoneNumber: String;
+interface UserBody {
+  vanderbiltEmail: String;
+  firstName: String;
+  lastName: String;
+  phoneNumber: String;
 }
 
-export async function queryCreateUser(body: CreateUserBody) {
-  const { VanderbiltEmail, FirstName, LastName, PhoneNumber } = body;
-  const values = [VanderbiltEmail, FirstName, LastName, PhoneNumber];
-
-  const values2 = ['lu.cao@vanderbilt.edu', 'Lu', 'Cao', '9194481535'];
-  const text2 = `
-  INSERT INTO users("VanderbiltEmail", "FirstName", "LastName", "PhoneNumber")
-  VALUES ($1, $2, $3, $4)
-  RETURNING "VanderbiltEmail"
-`;
-
-  const query = { text: text2, values: values2 };
+export async function queryCreateUser(body: UserBody) {
+  const { vanderbiltEmail, firstName, lastName, phoneNumber } = body;
 
   const text = `
     INSERT INTO users ("VanderbiltEmail", "FirstName", "LastName", "PhoneNumber")
-    VALUES ('${body.VanderbiltEmail}', '${body.FirstName}', '${body.LastName}', '${body.PhoneNumber}')
+    VALUES ('${vanderbiltEmail}', '${firstName}', '${lastName}', '${phoneNumber}')
     RETURNING "VanderbiltEmail"
   `;
-
-  console.log(values);
 
   const client = await pool.connect();
 
   try {
     //await client.query(text);
-    await client.query(query);
+    await client.query(text);
 
     client.release();
     return true;
@@ -60,11 +48,13 @@ export async function queryCreateUser(body: CreateUserBody) {
   }
 }
 
-export async function queryUpdateUser(body: any) {
+export async function queryUpdateUser(body: UserBody) {
+  const { vanderbiltEmail, firstName, lastName, phoneNumber } = body;
+
   const text = `
     UPDATE users 
-    SET "FirstName" = '${body.FirstName}', "LastName" = '${body.LastName}', "PhoneNumber" = '${body.PhoneNumber}'
-    WHERE "VanderbiltEmail" = '${body.VanderbiltEmail}'
+    SET "FirstName" = '${firstName}', "LastName" = '${lastName}', "PhoneNumber" = '${phoneNumber}'
+    WHERE "VanderbiltEmail" = '${vanderbiltEmail}'
   `;
 
   const client = await pool.connect();
