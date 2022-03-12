@@ -15,7 +15,7 @@ const theme = extendTheme({
 
 const Drawer = createDrawerNavigator();
 
-const NotificationsScreen = ({ navigation }) => {
+const DefaultScreen = ({ navigation }) => {
   return (
     <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
       <Button onPress={() => navigation.goBack()} title="Go back home" />
@@ -37,28 +37,19 @@ const navigatorOptions: DrawerNavigationOptions = {
       name="bell"
       size={24}
       color="white"
-      onPress={() => alert("Show notifciations")}
+      onPress={() => alert("Show notifications")}
     />
   ),
 };
-
-const screens = {
-  "My Profile": HomeScreen,
-  "Dashboard": NotificationsScreen,
-  "Log In": NotificationsScreen,
-}
 
 export default function App() {
   return (
     <NativeBaseProvider theme={theme}>
       <NavigationContainer>
         <Drawer.Navigator initialRouteName="My Profile" screenOptions={navigatorOptions}>
-          {/* {
-            Object.entries(screens).forEach(([k, v]) => <Drawer.Screen name={k} component={v} />)
-          } */}
           <Drawer.Screen name="My Profile" component={HomeScreen} />
-          {/* <Drawer.Screen name="Dashboard" component={NotificationsScreen} />
-          <Drawer.Screen name="Log In" component={NotificationsScreen} /> */}
+          <Drawer.Screen name="Dashboard" component={DefaultScreen} />
+          <Drawer.Screen name="Log In" component={DefaultScreen} />
         </Drawer.Navigator>
       </NavigationContainer>
     </NativeBaseProvider>
