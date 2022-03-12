@@ -21,6 +21,7 @@
   },
   "dependencies": {
     "body-parser": "^1.19.2",
+    "pg": "^8.7.3",
     "redis": "^4.0.3"
   }
 }
