@@ -1,7 +1,5 @@
 import express from 'express';
 
-//import { pool } from './db';
-
 import { queryCreateUser, queryUpdateUser, queryGetUser } from './db';
 
 export const createUser = async (
