@@ -35,7 +35,6 @@ export async function queryCreateUser(body: UserBody) {
   const client = await pool.connect();
 
   try {
-    //await client.query(text);
     await client.query(text);
 
     client.release();
