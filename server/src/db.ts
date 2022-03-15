@@ -1,7 +1,9 @@
 import { Pool } from 'node-postgres';
 import dotenv from 'dotenv';
 
-dotenv.config();
+dotenv.config({
+  path: `${__dirname}/../../.env`
+});
 
 const pool = new Pool({
   user: process.env.DB_USER,
