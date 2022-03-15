@@ -1,6 +1,13 @@
 import { client } from './init_redis';
 
-export const insertData = async (data: any, db: number) => {
+interface DataBody {
+  vanderbiltEmail: string;
+  diningHallName: string;
+  lineLength: string;
+  timeStamp: string;
+}
+
+export const insertData = async (data: DataBody, db: number) => {
   await client.select(db);
   const diningHallName = data.diningHallName;
   await client.rPush(diningHallName, JSON.stringify(data));
