@@ -11,10 +11,10 @@ import {
 import bodyParser from 'body-parser';
 
 dotenv.config({
-  path: `.env`
+  path: `${__dirname}/../../.env`
 });
 
-const port = process.env.DEV_PORT || process.env.PORT; // DEV_PORT is used for local development, PORT is used for production
+const port = process.env.PORT; // Naming convention as per Heroku's requirements
 const app = express();
 
 app.use(bodyParser.urlencoded({ extended: true }));
