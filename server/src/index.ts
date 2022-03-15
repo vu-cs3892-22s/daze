@@ -11,7 +11,7 @@ import {
 import bodyParser from 'body-parser';
 
 dotenv.config({
-  path: `${__dirname}/../../.env`
+  path: `.env`
 });
 
 const port = process.env.SERVER_PORT;
