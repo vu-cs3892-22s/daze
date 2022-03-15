@@ -107,11 +107,10 @@ const days = [
 
 export default function Card(props: CardProps) {
   const navigation = useNavigation();
-  let cardRef = useRef<CardFlip | null>(null);
-  let scrollRef = useRef<any>(null);
-  let [time, setTime] = useState("");
-  let [currentDay, setCurrentDay] = useState(1);
-  let [currentHour, setCurrentHour] = useState(7);
+  const cardRef = useRef<CardFlip | null>(null);
+  const scrollRef = useRef<ScrollView | null>(null);
+  const [currentDay, setCurrentDay] = useState(1);
+  const [currentHour, setCurrentHour] = useState(7);
 
   useEffect(() => {
     const date = new Date();
