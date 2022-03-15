@@ -32,12 +32,12 @@ const styles = StyleSheet.create({
     padding: 20,
     paddingTop: 50,
     paddingBottom: 70,
-  }
+  },
 });
 
 interface HomeScreenProps {
-  navigation?: Object
-};
+  navigation?: Object;
+}
 
 export default function HomeScreen({ navigation }: HomeScreenProps) {
   return (
@@ -46,9 +46,25 @@ export default function HomeScreen({ navigation }: HomeScreenProps) {
         <Box style={styles.drawerContainer}>
           <Box style={styles.drawerBox}>
             {/* resident dining halls */}
-            <Card name={"2301 Allergen Free"} line="s" data={[20, 35, 75, 10, 45]} img={"https://i.ibb.co/p4kMnkZ/2301.png"} />
-            <Card name={"Grins"} line="m" img={"https://i.ibb.co/6bS28bP/grins.jpg"} />
-            <Card name={"EBI"} line="l" data={[90, 80, 70, 90, 50]} img={"https://www.simplyrecipes.com/thmb/NOwXpq1nenarGiJnOTV7o5Oe_Aw=/1777x1333/smart/filters:no_upscale()/__opt__aboutcom__coeus__resources__content_migration__simply_recipes__uploads__2019__04__Beef-Pho-LEAD-2-afc6b6a9144947fb9d72070d7ea8c95c.jpg"} />
+            <Card
+              name={"2301 Allergen Free"}
+              line="s"
+              data={[20, 35, 75, 10, 45]}
+              img={"https://i.ibb.co/p4kMnkZ/2301.png"}
+            />
+            <Card
+              name={"Grins"}
+              line="m"
+              img={"https://i.ibb.co/6bS28bP/grins.jpg"}
+            />
+            <Card
+              name={"EBI"}
+              line="l"
+              data={[90, 80, 70, 90, 50]}
+              img={
+                "https://www.simplyrecipes.com/thmb/NOwXpq1nenarGiJnOTV7o5Oe_Aw=/1777x1333/smart/filters:no_upscale()/__opt__aboutcom__coeus__resources__content_migration__simply_recipes__uploads__2019__04__Beef-Pho-LEAD-2-afc6b6a9144947fb9d72070d7ea8c95c.jpg"
+              }
+            />
             <Card name={"Kissam Kitchen"} line="s" />
             <Card name={"McTyeire"} line="s" />
             <Card name={"Commons"} line="m" />

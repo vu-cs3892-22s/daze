@@ -1,6 +1,9 @@
 import React from "react";
 import { NativeBaseProvider } from "native-base";
-import { createDrawerNavigator, DrawerNavigationOptions } from "@react-navigation/drawer";
+import {
+  createDrawerNavigator,
+  DrawerNavigationOptions,
+} from "@react-navigation/drawer";
 import { NavigationContainer } from "@react-navigation/native";
 import { FontAwesome } from "@expo/vector-icons";
 
@@ -37,7 +40,11 @@ export default function App() {
       <NavigationContainer>
         <Drawer.Navigator screenOptions={navigatorOptions}>
           <Drawer.Screen name="My Profile" component={HomeScreen} />
-          <Drawer.Screen name="Update" component={Update} initialParams={{ locationIndex: -1 }} />
+          <Drawer.Screen
+            name="Update"
+            component={Update}
+            initialParams={{ locationIndex: -1 }}
+          />
           <Drawer.Screen name="Dashboard" component={DefaultScreen} />
           <Drawer.Screen name="Log In" component={DefaultScreen} />
         </Drawer.Navigator>

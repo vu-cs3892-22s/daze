@@ -1,12 +1,22 @@
 import React, { useRef, useState } from "react";
-import { Button, Image, Text, View, TouchableOpacity, TouchableWithoutFeedback, StyleSheet, ScrollView, Dimensions } from "react-native";
+import {
+  Button,
+  Image,
+  Text,
+  View,
+  TouchableOpacity,
+  TouchableWithoutFeedback,
+  StyleSheet,
+  ScrollView,
+  Dimensions,
+} from "react-native";
 import { AspectRatio, Box } from "native-base";
 import CardFlip from "react-native-card-flip";
 import { BarChart } from "react-native-chart-kit";
 import { useEffect } from "react";
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation } from "@react-navigation/native";
 
-const { width } = Dimensions.get('window');
+const { width } = Dimensions.get("window");
 
 const breakfastData = {
   labels: ["7am", "8am", "9am", "10am", "11am"],
@@ -15,7 +25,7 @@ const breakfastData = {
       data: [20, 35, 75, 40, 99],
     },
   ],
-  legend: ["Breakfast"]
+  legend: ["Breakfast"],
 };
 
 const lunchData = {
@@ -25,18 +35,20 @@ const lunchData = {
       data: [50, 50, 80, 40, 99],
     },
   ],
-  legend: ["Lunch"]
+  legend: ["Lunch"],
 };
 
-const customLunchData = (data: number[]) => {return {
-  labels: ["11am", "12pm", "1pm", "2pm", "3pm"],
-  datasets: [
-    {
-      data: data,
-    },
-  ],
-  legend: ["Lunch"]
-}};
+const customLunchData = (data: number[]) => {
+  return {
+    labels: ["11am", "12pm", "1pm", "2pm", "3pm"],
+    datasets: [
+      {
+        data: data,
+      },
+    ],
+    legend: ["Lunch"],
+  };
+};
 
 const dinnerData = {
   labels: ["4pm", "5pm", "6pm", "7pm", "8pm"],
@@ -45,7 +57,7 @@ const dinnerData = {
       data: [90, 80, 70, 60, 50],
     },
   ],
-  legend: ["Dinner"]
+  legend: ["Dinner"],
 };
 
 const chartConfig = {
@@ -83,14 +95,21 @@ interface CardProps {
   navigation?: any;
 }
 
-const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday" ];
+const days = [
+  "Sunday",
+  "Monday",
+  "Tuesday",
+  "Wednesday",
+  "Thursday",
+  "Friday",
+  "Saturday",
+];
 
 export default function Card(props: CardProps) {
-
   const navigation = useNavigation();
   let cardRef = useRef<CardFlip | null>(null);
   let scrollRef = useRef<any>(null);
-  let [time, setTime] = useState('');
+  let [time, setTime] = useState("");
   let [currentDay, setCurrentDay] = useState(1);
   let [currentHour, setCurrentHour] = useState(7);
 
@@ -101,7 +120,11 @@ export default function Card(props: CardProps) {
   }, []);
 
   useEffect(() => {
-    scrollRef?.current?.scrollTo({x: (currentHour > 11) ? ((currentHour > 15) ? 640 : 320) : 0, y: 0, animated: true})
+    scrollRef?.current?.scrollTo({
+      x: currentHour > 11 ? (currentHour > 15 ? 640 : 320) : 0,
+      y: 0,
+      animated: true,
+    });
   }, [scrollRef, currentHour]);
 
   return (
@@ -115,38 +138,45 @@ export default function Card(props: CardProps) {
         style={styles.card}
         onPress={() => cardRef?.current?.flip()}
       >
-      <Box 
-        borderRadius={20}
-        minWidth={"100%"}
-        maxWidth={"100%"}
-        bg={getBackgroundColor(props.line)}
-        margin={0}
-        marginBottom={0}
-        flexDirection={"column"}
-        overflow="hidden"
-      >
-      <Box>
-        <AspectRatio w="100%" ratio={16 / 9}>
-          <Image
-            style={styles.logo}
-            source={{
-              uri: props.img || 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADMAAAAzCAYAAAA6oTAqAAAAEXRFWHRTb2Z0d2FyZQBwbmdjcnVzaEB1SfMAAABQSURBVGje7dSxCQBACARB+2/ab8BEeQNhFi6WSYzYLYudDQYGBgYGBgYGBgYGBgYGBgZmcvDqYGBgmhivGQYGBgYGBgYGBgYGBgYGBgbmQw+P/eMrC5UTVAAAAABJRU5ErkJggg=='
-            }}
-          />
-        </AspectRatio>
-      </Box>
-      <View style={{ padding: 10, margin: 5 }}>
-        <Text style={styles.cardNameText}>{props.name}</Text>
-      </View>
-      </Box>
+        <Box
+          borderRadius={20}
+          minWidth={"100%"}
+          maxWidth={"100%"}
+          bg={getBackgroundColor(props.line)}
+          margin={0}
+          marginBottom={0}
+          flexDirection={"column"}
+          overflow="hidden"
+        >
+          <Box>
+            <AspectRatio w="100%" ratio={16 / 9}>
+              <Image
+                style={styles.logo}
+                source={{
+                  uri:
+                    props.img ||
+                    "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADMAAAAzCAYAAAA6oTAqAAAAEXRFWHRTb2Z0d2FyZQBwbmdjcnVzaEB1SfMAAABQSURBVGje7dSxCQBACARB+2/ab8BEeQNhFi6WSYzYLYudDQYGBgYGBgYGBgYGBgYGBgZmcvDqYGBgmhivGQYGBgYGBgYGBgYGBgYGBgbmQw+P/eMrC5UTVAAAAABJRU5ErkJggg==",
+                }}
+              />
+            </AspectRatio>
+          </Box>
+          <View style={{ padding: 10, margin: 5 }}>
+            <Text style={styles.cardNameText}>{props.name}</Text>
+          </View>
+        </Box>
       </TouchableOpacity>
-      <TouchableWithoutFeedback
-        onPress={() => cardRef?.current?.flip()}
-      >
+      <TouchableWithoutFeedback onPress={() => cardRef?.current?.flip()}>
         <View style={styles.back}>
-          <Text>Current Wait: {(props.line === 'l') ? 'Approx 40 minutes' : (props.line === 'm') ? 'Approx 20 minutes' : 'Under 5 minutes'} </Text>
+          <Text>
+            Current Wait:{" "}
+            {props.line === "l"
+              ? "Approx 40 minutes"
+              : props.line === "m"
+              ? "Approx 20 minutes"
+              : "Under 5 minutes"}{" "}
+          </Text>
           <Text>Average Wait Times: {days[currentDay]}</Text>
-          <ScrollView 
+          <ScrollView
             ref={scrollRef}
             horizontal={true}
             showsVerticalScrollIndicator={false}
@@ -157,7 +187,7 @@ export default function Card(props: CardProps) {
             contentInset={{
               left: 0,
               right: 0,
-            }}  
+            }}
             initialNumToRender={2}
           >
             <View style={styles.center} onStartShouldSetResponder={() => true}>
@@ -217,11 +247,12 @@ export default function Card(props: CardProps) {
               />
             </View>
           </ScrollView>
-          <Button 
-            onPress={() => navigation.navigate('Update', {locationIndex: 4})}
+          <Button
+            onPress={() => navigation.navigate("Update", { locationIndex: 4 })}
             title={"Update"}
             color={"#E76666"}
-            accessibilityLabel="Learn more about this purple button" />
+            accessibilityLabel="Learn more about this purple button"
+          />
         </View>
       </TouchableWithoutFeedback>
     </CardFlip>
@@ -256,8 +287,8 @@ const styles = StyleSheet.create({
     color: "#fff",
     display: "flex",
     alignItems: "center",
-    shadowColor: '#171717',
-    shadowOffset: {width: 4, height: 4},
+    shadowColor: "#171717",
+    shadowOffset: { width: 4, height: 4 },
     shadowOpacity: 0.25,
     shadowRadius: 15,
   },
