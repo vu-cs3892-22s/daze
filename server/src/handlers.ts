@@ -94,14 +94,22 @@ export const getDiningHallInfo = async (
 
     // get the 10 most recent linelengths for this dining hall
     const last10 = data.slice(-10);
-    const last10Lengths = [];
+    const last10Lengths: string[] = [];
     for (let i = 0; i < last10.length; ++i) {
       last10Lengths.push(JSON.parse(last10[i])['LineLength']);
     }
 
-    // calculate the mode
-    // refine later
-    const lineMode = mode(last10Lengths);
+    // create object with counts
+    // i.e. {"short": 2, "medium": 1, "long": 3}
+    const lengthMap = last10Lengths.reduce((map: any, val: any) => {
+      map[val] = (map[val] || 0) + 1;
+      return map;
+    }, {});
+
+    // find the mode
+    const lineMode = Object.keys(lengthMap).reduce((a, b) =>
+      lengthMap[a] > lengthMap[b] ? a : b
+    );
 
     res.send({
       data: {
@@ -114,13 +122,3 @@ export const getDiningHallInfo = async (
     console.log(err);
   }
 };
-
-function mode(arr: Array<string>) {
-  return arr
-    .sort(
-      (a: string, b: string) =>
-        arr.filter((v: string) => v === a).length -
-        arr.filter((v: string) => v === b).length
-    )
-    .pop();
-}
