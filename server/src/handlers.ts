@@ -92,12 +92,32 @@ export const getDiningHallInfo = async (
     const data = await getDataForDiningHall(diningHallName, 0);
     const comments = await getDataForDiningHall(diningHallName, 1);
 
-    // TODO: Figure out calculation for line length
+    // get the 10 most recent linelengths for this dining hall
+    const last10 = data.slice(-10);
+    const last10Lengths = [];
+    for (let i = 0; i < last10.length; ++i) {
+      last10Lengths.push(JSON.parse(last10[i])["LineLength"]);
+    }
+
+    // calculate the mode
+    // refine later
+    const lineMode = mode(last10Lengths);
+
     res.send({
-      data: data,
-      comments: comments
+      data: {
+        diningHallName: diningHallName,
+        lineLength: lineMode,
+        timeStamp: Date.now()
+      }
     });
   } catch (err) {
     console.log(err);
   }
+};
+
+function mode(arr: Array<string>) {
+  return arr.sort((a: string, b: string) =>
+    arr.filter((v: string) => v === a).length
+    - arr.filter((v: string) => v === b).length
+  ).pop();
 };
