@@ -1,6 +1,10 @@
 import React, { useEffect, useRef, useState } from "react";
-import { Button, StyleSheet, Text, View } from "react-native";
+import { Button, StyleSheet, View } from "react-native";
 import ModalDropdown from "react-native-modal-dropdown";
+
+import type { DefaultScreenNavigationProp } from "../types";
+
+type NavigationProps = { navigation: DefaultScreenNavigationProp, route: any };
 
 const locations = [
   "2301 Allergen Free",
@@ -13,12 +17,12 @@ const locations = [
   "Zeppos",
 ];
 
-export default function Update({ route, navigation }) {
+export default function Update({ route, navigation }: NavigationProps) {
   const { locationIndex } = route.params;
-  const stationDropdownRef = useRef(null);
+  const stationDropdownRef = useRef<ModalDropdown | null>(null);
 
-  const [station, setStation] = useState(-1);
-  const [size, setSize] = useState(-1);
+  const [station, setStation] = useState<number>(-1);
+  const [size, setSize] = useState<number>(-1);
 
   useEffect(() => {
     stationDropdownRef?.current?.select(locationIndex || -1);
@@ -29,19 +33,19 @@ export default function Update({ route, navigation }) {
     <View style={styles.container}>
       <ModalDropdown
         ref={stationDropdownRef}
-        onSelect={(index) => setStation(index)}
+        onSelect={(idx) => setStation(Number(idx))}
         defaultValue={"Select Station"}
         options={locations}
       />
       <ModalDropdown
-        onSelect={(index) => setSize(index)}
+        onSelect={(idx) => setSize(Number(idx))}
         defaultValue={"Select Size"}
         options={["s", "m", "l"]}
       />
       <Button title={"Later"} onPress={() => alert("later")} />
       <Button
         title={"Update"}
-        onPress={() => alert(`update: ${station} ${size}`)}
+        onPress={() => alert(`update: ${locations[station]} ${size}`)}
       />
     </View>
   );
