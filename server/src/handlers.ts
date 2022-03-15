@@ -96,7 +96,7 @@ export const getDiningHallInfo = async (
     const last10 = data.slice(-10);
     const last10Lengths = [];
     for (let i = 0; i < last10.length; ++i) {
-      last10Lengths.push(JSON.parse(last10[i])["LineLength"]);
+      last10Lengths.push(JSON.parse(last10[i])['LineLength']);
     }
 
     // calculate the mode
@@ -116,8 +116,11 @@ export const getDiningHallInfo = async (
 };
 
 function mode(arr: Array<string>) {
-  return arr.sort((a: string, b: string) =>
-    arr.filter((v: string) => v === a).length
-    - arr.filter((v: string) => v === b).length
-  ).pop();
-};
+  return arr
+    .sort(
+      (a: string, b: string) =>
+        arr.filter((v: string) => v === a).length -
+        arr.filter((v: string) => v === b).length
+    )
+    .pop();
+}
