@@ -15,6 +15,7 @@ import CardFlip from "react-native-card-flip";
 import { BarChart } from "react-native-chart-kit";
 import { useEffect } from "react";
 import { useNavigation } from "@react-navigation/native";
+import { NavigationProp, ParamListBase } from "@react-navigation/native";
 
 const { width } = Dimensions.get("window");
 
@@ -89,10 +90,10 @@ const getBackgroundColor = (line: String) => {
 
 interface CardProps {
   name: String;
+  idx: Number;
   line: String;
   img?: string;
   data?: number[];
-  navigation?: any;
 }
 
 const days = [
@@ -106,7 +107,7 @@ const days = [
 ];
 
 export default function Card(props: CardProps) {
-  const navigation = useNavigation();
+  const navigation = useNavigation<NavigationProp<ParamListBase>>();
   const cardRef = useRef<CardFlip | null>(null);
   const scrollRef = useRef<ScrollView | null>(null);
   const [currentDay, setCurrentDay] = useState(1);
@@ -149,14 +150,16 @@ export default function Card(props: CardProps) {
         >
           <Box>
             <AspectRatio w="100%" ratio={16 / 9}>
-              <Image
-                style={styles.logo}
-                source={{
-                  uri:
-                    props.img ||
-                    "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADMAAAAzCAYAAAA6oTAqAAAAEXRFWHRTb2Z0d2FyZQBwbmdjcnVzaEB1SfMAAABQSURBVGje7dSxCQBACARB+2/ab8BEeQNhFi6WSYzYLYudDQYGBgYGBgYGBgYGBgYGBgZmcvDqYGBgmhivGQYGBgYGBgYGBgYGBgYGBgbmQw+P/eMrC5UTVAAAAABJRU5ErkJggg==",
-                }}
-              />
+              {props.img ? (
+                <Image
+                  style={styles.stretch}
+                  source={{
+                    uri: props.img,
+                  }}
+                />
+              ) : (
+                <View />
+              )}
             </AspectRatio>
           </Box>
           <View style={{ padding: 10, margin: 5 }}>
@@ -187,7 +190,6 @@ export default function Card(props: CardProps) {
               left: 0,
               right: 0,
             }}
-            initialNumToRender={2}
           >
             <View style={styles.center} onStartShouldSetResponder={() => true}>
               <Text>Breakfast</Text>
@@ -202,6 +204,7 @@ export default function Card(props: CardProps) {
                 width={width - 100}
                 height={180}
                 yAxisLabel=""
+                yAxisSuffix=""
                 chartConfig={chartConfig}
                 verticalLabelRotation={0}
                 withHorizontalLabels={true}
@@ -220,6 +223,7 @@ export default function Card(props: CardProps) {
                 width={width - 100}
                 height={180}
                 yAxisLabel=""
+                yAxisSuffix=""
                 chartConfig={chartConfig}
                 verticalLabelRotation={0}
                 withHorizontalLabels={true}
@@ -238,6 +242,7 @@ export default function Card(props: CardProps) {
                 width={width - 100}
                 height={180}
                 yAxisLabel=""
+                yAxisSuffix=""
                 chartConfig={chartConfig}
                 verticalLabelRotation={0}
                 withHorizontalLabels={true}
@@ -247,10 +252,11 @@ export default function Card(props: CardProps) {
             </View>
           </ScrollView>
           <Button
-            onPress={() => navigation.navigate("Update", { locationIndex: 4 })}
+            onPress={() =>
+              navigation.navigate("Update", { locationIndex: props.idx })
+            }
             title={"Update"}
             color={"#E76666"}
-            accessibilityLabel="Learn more about this purple button"
           />
         </View>
       </TouchableWithoutFeedback>
@@ -303,7 +309,7 @@ const styles = StyleSheet.create({
     minWidth: "100%",
     minHeight: 300,
   },
-  logo: {
+  stretch: {
     resizeMode: "stretch",
   },
 });
