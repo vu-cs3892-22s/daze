@@ -1,5 +1,5 @@
 import express from 'express';
-
+import { insertData, getDataForDiningHall } from './cache';
 import { queryCreateUser, queryUpdateUser, queryGetUser } from './db';
 
 export const createUser = async (
@@ -51,27 +51,53 @@ export const getUser = async (req: express.Request, res: express.Response) => {
   }
 };
 
-export const submitData = (req: express.Request, res: express.Response) => {
-  // Insert DB function
+export const submitData = async (
+  req: express.Request,
+  res: express.Response
+) => {
+  try {
+    const data = req.body;
+    // index 0 is the database for the data
+    await insertData(data, 0);
+  } catch (err) {
+    console.log(err);
+  }
   res.send({
     message: 'Posting new line data'
   });
 };
 
-export const submitComments = (req: express.Request, res: express.Response) => {
-  // Insert DB function
+export const submitComments = async (
+  req: express.Request,
+  res: express.Response
+) => {
+  try {
+    const data = req.body;
+    // index 1 is the database for the comments
+    await insertData(data, 1);
+  } catch (err) {
+    console.log(err);
+  }
   res.send({
     message: 'Posting new comment'
   });
 };
 
-export const getDiningHallInfo = (
+export const getDiningHallInfo = async (
   req: express.Request,
   res: express.Response
 ) => {
   const diningHallName = req.params.dininghall_name;
-  // Insert DB function
-  res.send({
-    message: `Getting info for ${diningHallName}`
-  });
+  try {
+    const data = await getDataForDiningHall(diningHallName, 0);
+    const comments = await getDataForDiningHall(diningHallName, 1);
+
+    // TODO: Figure out calculation for line length
+    res.send({
+      data: data,
+      comments: comments
+    });
+  } catch (err) {
+    console.log(err);
+  }
 };
