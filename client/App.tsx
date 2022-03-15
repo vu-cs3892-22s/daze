@@ -1,28 +1,16 @@
 import React from "react";
-import { Button, View } from "react-native";
-import { NativeBaseProvider, extendTheme } from "native-base";
+import { NativeBaseProvider } from "native-base";
 import { createDrawerNavigator, DrawerNavigationOptions } from "@react-navigation/drawer";
 import { NavigationContainer } from "@react-navigation/native";
 import { FontAwesome } from "@expo/vector-icons";
 
 import HomeScreen from "./components/Home";
 import Update from "./components/Update";
+import DefaultScreen from "./components/DefaultScreen";
 
-const theme = extendTheme({
-  config: {
-    initialColorMode: "dark",
-  },
-});
+import type { RootDrawerParamList } from "./types";
 
-const Drawer = createDrawerNavigator();
-
-const DefaultScreen = ({ navigation }) => {
-  return (
-    <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
-      <Button onPress={() => navigation.goBack()} title="Go back home" />
-    </View>
-  );
-}
+const Drawer = createDrawerNavigator<RootDrawerParamList>();
 
 const navigatorOptions: DrawerNavigationOptions = {
   headerStyle: {
@@ -45,13 +33,13 @@ const navigatorOptions: DrawerNavigationOptions = {
 
 export default function App() {
   return (
-    <NativeBaseProvider theme={theme}>
+    <NativeBaseProvider>
       <NavigationContainer>
-        <Drawer.Navigator initialRouteName="My Profile" screenOptions={navigatorOptions}>
+        <Drawer.Navigator screenOptions={navigatorOptions}>
           <Drawer.Screen name="My Profile" component={HomeScreen} />
+          <Drawer.Screen name="Update" component={Update} initialParams={{ locationIndex: -1 }} />
           <Drawer.Screen name="Dashboard" component={DefaultScreen} />
           <Drawer.Screen name="Log In" component={DefaultScreen} />
-          <Drawer.Screen name="Update" component={Update} initialParams={{ locationIndex: -1 }} />
         </Drawer.Navigator>
       </NavigationContainer>
     </NativeBaseProvider>
