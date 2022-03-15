@@ -4,6 +4,7 @@ import { AspectRatio, Box } from "native-base";
 import CardFlip from "react-native-card-flip";
 import { BarChart } from "react-native-chart-kit";
 import { useEffect } from "react";
+import { useNavigation } from '@react-navigation/native';
 
 const { width } = Dimensions.get('window');
 
@@ -79,11 +80,14 @@ interface CardProps {
   line: String;
   img?: string;
   data?: number[];
+  navigation?: any;
 }
 
 const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday" ];
 
 export default function Card(props: CardProps) {
+
+  const navigation = useNavigation();
   let cardRef = useRef<CardFlip | null>(null);
   let scrollRef = useRef<any>(null);
   let [time, setTime] = useState('');
@@ -214,7 +218,7 @@ export default function Card(props: CardProps) {
             </View>
           </ScrollView>
           <Button 
-            onPress={() => alert("button clicked")}
+            onPress={() => navigation.navigate('Update', {locationIndex: 4})}
             title={"Update"}
             color={"#E76666"}
             accessibilityLabel="Learn more about this purple button" />

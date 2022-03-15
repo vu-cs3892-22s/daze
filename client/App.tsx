@@ -6,6 +6,7 @@ import { NavigationContainer } from "@react-navigation/native";
 import { FontAwesome } from "@expo/vector-icons";
 
 import HomeScreen from "./components/Home";
+import Update from "./components/Update";
 
 const theme = extendTheme({
   config: {
@@ -50,6 +51,7 @@ export default function App() {
           <Drawer.Screen name="My Profile" component={HomeScreen} />
           <Drawer.Screen name="Dashboard" component={DefaultScreen} />
           <Drawer.Screen name="Log In" component={DefaultScreen} />
+          <Drawer.Screen name="Update" component={Update} initialParams={{ locationIndex: -1 }} />
         </Drawer.Navigator>
       </NavigationContainer>
     </NativeBaseProvider>
