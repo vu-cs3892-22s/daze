@@ -13,7 +13,7 @@ const parseDBUrl = (url: string) => {
 };
 
 const dbConnectionDetails =
-  process.env.ENV === 'production'
+  process.env.ENV === 'production' || process.env.ENV === 'staging'
     ? parseDBUrl(process.env.DATABASE_URL || '')
     : {
         user: process.env.DB_USER,
