@@ -4,13 +4,27 @@ import dotenv from 'dotenv';
 dotenv.config({
   path: `${__dirname}/../../.env`
 });
+const parseDBUrl = (url: string) => {
+  // Heroku provides a URL with a postgres:// prefix, but node-postgres needs separate fields
+  const [, , user, password, host, port, database] = url.match(
+    /^(postgres:\/\/)?([^:]+):([^@]+)@([^:]+):([^/]+)\/(.+)$/
+  ) as Array<string>;
+  return { user, host, password, port: Number(port), database };
+};
+
+const dbConnectionDetails =
+  process.env.ENV === 'production' || process.env.ENV === 'staging'
+    ? parseDBUrl(process.env.DATABASE_URL || '')
+    : {
+        user: process.env.DB_USER,
+        host: process.env.DB_HOST,
+        password: process.env.DB_PASSWORD,
+        port: Number(process.env.DB_PORT),
+        database: process.env.DB_NAME
+      };
 
 const pool = new Pool({
-  user: process.env.DB_USER,
-  host: process.env.DB_HOST,
-  database: process.env.DB_NAME,
-  password: process.env.DB_PASSWORD,
-  port: Number(process.env.DB_PORT),
+  ...dbConnectionDetails,
   ssl: { rejectUnauthorized: false }
 });
 
@@ -41,7 +55,7 @@ export async function queryCreateUser(body: UserBody) {
 
     client.release();
     return true;
-  } catch (err: any) {
+  } catch (err: unknown) {
     console.log(err);
     client.release();
 
@@ -64,7 +78,7 @@ export async function queryUpdateUser(body: UserBody) {
     await client.query(text);
     client.release();
     return true;
-  } catch (err: any) {
+  } catch (err: unknown) {
     client.release();
     return false;
   }
@@ -83,7 +97,7 @@ export async function queryGetUser(email: string) {
     await client.query(text);
     client.release();
     return true;
-  } catch (err: any) {
+  } catch (err: unknown) {
     client.release();
     return false;
   }
