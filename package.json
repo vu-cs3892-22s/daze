@@ -14,8 +14,8 @@
   "license": "MIT",
   "private": false,
   "scripts": {
-    "deep-install": "yarn && cd client && yarn && cd ../server && yarn && cd ..",
-    "start": "echo 'TODO: concurrently start client and server. For now, just start server.'",
+    "postinstall": "cd client && yarn && cd ../server && yarn && cd ..",
+    "start": "echo 'Starting server...' && cd server && yarn start",
     "build": "cd client && yarn build && cd ../server && yarn build && cd ..",
     "test": "cd client && yarn test && cd ../server && yarn test && cd ..",
     "lint": "eslint . --ext .ts",
