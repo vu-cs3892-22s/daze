@@ -31,8 +31,8 @@ app.get(prefixRoute('user/:vunet_id'), getUser);
 // Data
 app.post(prefixRoute('data/lines'), submitData);
 app.post(prefixRoute('data/comments'), submitComments);
-app.get(prefixRoute('location/:dininghall_name'), getDiningHallInfoSpecific);
-app.get(prefixRoute('location'), getDiningHallInfo);
+app.get(prefixRoute('dining_halls/:dininghall_name'), getDiningHallInfoSpecific);
+app.get(prefixRoute('dining_halls'), getDiningHallInfo);
 
 app.listen(port, () => {
   // eslint-disable-next-line no-console
