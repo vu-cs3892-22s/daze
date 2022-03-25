@@ -1,5 +1,9 @@
 import express from 'express';
-import { insertData, getDataForDiningHall } from './cache';
+import {
+  insertData,
+  getDataForDiningHall,
+  getDataForDiningHallSpecific
+} from './cache';
 import { queryCreateUser, queryUpdateUser, queryGetUser } from './db';
 
 export const createUser = async (
@@ -83,33 +87,16 @@ export const submitComments = async (
   });
 };
 
-export const getDiningHallInfo = async (
+export const getDiningHallInfoSpecific = async (
   req: express.Request,
   res: express.Response
 ) => {
   const diningHallName = req.params.dininghall_name;
   try {
-    const data = await getDataForDiningHall(diningHallName, 0);
-    const comments = await getDataForDiningHall(diningHallName, 1);
+    const data = await getDataForDiningHallSpecific(diningHallName, 0);
+    const comments = await getDataForDiningHallSpecific(diningHallName, 1);
 
-    // get the 10 most recent linelengths for this dining hall
-    const last10 = data.slice(-10);
-    const last10Lengths: string[] = [];
-    for (let i = 0; i < last10.length; ++i) {
-      last10Lengths.push(JSON.parse(last10[i])['LineLength']);
-    }
-
-    // create object with counts
-    // i.e. {"short": 2, "medium": 1, "long": 3}
-    const lengthMap = last10Lengths.reduce((map: any, val: any) => {
-      map[val] = (map[val] || 0) + 1;
-      return map;
-    }, {});
-
-    // find the mode
-    const lineMode = Object.keys(lengthMap).reduce((a, b) =>
-      lengthMap[a] > lengthMap[b] ? a : b
-    );
+    let lineMode = calculateMode(data);
 
     res.send({
       data: {
@@ -122,3 +109,53 @@ export const getDiningHallInfo = async (
     console.log(err);
   }
 };
+
+export const getDiningHallInfo = async (
+  req: express.Request,
+  res: express.Response
+) => {
+  const diningHallName = req.params.dininghall_name;
+  try {
+    const data = await getDataForDiningHall(0);
+    const result: any = {};
+    for (const key in data) {
+      let lineMode = calculateMode(data[key]);
+      result[key] = lineMode;
+    }
+
+    res.send({
+      data: result,
+      timeStamp: Date.now()
+    });
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+function calculateMode(data: any) {
+  const last10 = data.slice(-10);
+
+  // if we have no data, we'll just say length is unknown
+  if (last10.length === 0) {
+    return 'unknown';
+  }
+
+  const last10Lengths: string[] = [];
+  for (let i = 0; i < last10.length; ++i) {
+    last10Lengths.push(JSON.parse(last10[i])['lineLength']);
+  }
+
+  // create object with counts
+  // i.e. {"short": 2, "medium": 1, "long": 3}
+  const lengthMap = last10Lengths.reduce((map: any, val: any) => {
+    map[val] = (map[val] || 0) + 1;
+    return map;
+  }, {});
+
+  // find the mode
+  const lineMode = Object.keys(lengthMap).reduce((a, b) =>
+    lengthMap[a] > lengthMap[b] ? a : b
+  );
+
+  return lineMode;
+}

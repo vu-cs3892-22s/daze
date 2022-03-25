@@ -6,6 +6,7 @@ import {
   getUser,
   submitData,
   submitComments,
+  getDiningHallInfoSpecific,
   getDiningHallInfo
 } from './handlers';
 import bodyParser from 'body-parser';
@@ -30,7 +31,8 @@ app.get(prefixRoute('user/:vunet_id'), getUser);
 // Data
 app.post(prefixRoute('data/lines'), submitData);
 app.post(prefixRoute('data/comments'), submitComments);
-app.get(prefixRoute('location/:dininghall_name'), getDiningHallInfo);
+app.get(prefixRoute('location/:dininghall_name'), getDiningHallInfoSpecific);
+app.get(prefixRoute('location'), getDiningHallInfo);
 
 app.listen(port, () => {
   // eslint-disable-next-line no-console
