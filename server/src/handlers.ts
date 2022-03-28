@@ -1,8 +1,8 @@
 import express from 'express';
 import {
   insertData,
-  getDataForDiningHall,
-  getDataForDiningHallSpecific
+  getDataForDiningHalls,
+  getDataForDiningHall
 } from './cache';
 import { queryCreateUser, queryUpdateUser, queryGetUser } from './db';
 
@@ -93,8 +93,8 @@ export const getDiningHallInfoSpecific = async (
 ) => {
   const diningHallName = req.params.dininghall_name;
   try {
-    const data = await getDataForDiningHallSpecific(diningHallName, 0);
-    const comments = await getDataForDiningHallSpecific(diningHallName, 1);
+    const data = await getDataForDiningHall(diningHallName, 0);
+    const comments = await getDataForDiningHall(diningHallName, 1);
 
     let lineMode = calculateMode(data);
 
@@ -116,7 +116,7 @@ export const getDiningHallInfo = async (
 ) => {
   const diningHallName = req.params.dininghall_name;
   try {
-    const data = await getDataForDiningHall(0);
+    const data = await getDataForDiningHalls(0);
     const result: any = {};
     for (const key in data) {
       let lineMode = calculateMode(data[key]);

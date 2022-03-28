@@ -35,7 +35,7 @@ export const insertData = async (data: DataBody, db: number) => {
   await client.rPush(diningHallName, JSON.stringify(data));
 };
 
-export const getDataForDiningHallSpecific = async (
+export const getDataForDiningHall = async (
   diningHallName: string,
   db: number
 ) => {
@@ -44,7 +44,7 @@ export const getDataForDiningHallSpecific = async (
   return result;
 };
 
-export const getDataForDiningHall = async (db: number) => {
+export const getDataForDiningHalls = async (db: number) => {
   let results: any = {};
   await client.select(db);
   for (const diningHallName of diningHallNames) {
