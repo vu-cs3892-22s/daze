@@ -45,7 +45,7 @@ export const getDataForDiningHall = async (
 };
 
 export const getDataForDiningHalls = async (db: number) => {
-  let results: any = {};
+  const results: any = {};
   await client.select(db);
   for (const diningHallName of diningHallNames) {
     const result = await client.lRange(diningHallName, 0, -1);

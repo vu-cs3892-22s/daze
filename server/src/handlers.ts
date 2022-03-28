@@ -96,7 +96,7 @@ export const getDiningHallInfoSpecific = async (
     const data = await getDataForDiningHall(diningHallName, 0);
     const comments = await getDataForDiningHall(diningHallName, 1);
 
-    let lineMode = calculateMode(data);
+    const lineMode = calculateMode(data);
 
     res.send({
       data: {
@@ -119,7 +119,7 @@ export const getDiningHallInfo = async (
     const data = await getDataForDiningHalls(0);
     const result: any = {};
     for (const key in data) {
-      let lineMode = calculateMode(data[key]);
+      const lineMode = calculateMode(data[key]);
       result[key] = lineMode;
     }
 
