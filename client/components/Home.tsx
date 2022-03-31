@@ -4,11 +4,7 @@ import { Box } from "native-base";
 
 import Card from "./Card";
 
-interface HomeScreenProps {
-  navigation?: Object;
-}
-
-export default function HomeScreen({ navigation }: HomeScreenProps) {
+export default function HomeScreen() {
   return (
     <View style={styles.baseView}>
       <ScrollView style={styles.scrollView}>

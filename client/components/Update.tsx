@@ -5,7 +5,10 @@ import Toast from "react-native-toast-message";
 
 import type { DefaultScreenNavigationProp } from "../types";
 
-type NavigationProps = { navigation: DefaultScreenNavigationProp; route: any };
+type NavigationProps = {
+  navigation: DefaultScreenNavigationProp;
+  route: { params: { locationIndex: number } };
+};
 
 const locations = [
   "2301 Allergen Free",
@@ -101,7 +104,6 @@ export default function Update({ route, navigation }: NavigationProps) {
   // useEffect(() => {
   //   getLocData();
   // }, []);
-
 
   return (
     <View style={styles.container}>

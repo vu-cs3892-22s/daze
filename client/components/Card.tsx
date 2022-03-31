@@ -75,7 +75,7 @@ const chartConfig = {
   decimalPlaces: 0,
 };
 
-const getBackgroundColor = (line: String) => {
+const getBackgroundColor = (line: string) => {
   switch (line) {
     case "s":
       return "#B0DF63";
@@ -89,9 +89,9 @@ const getBackgroundColor = (line: String) => {
 };
 
 interface CardProps {
-  name: String;
-  idx: Number;
-  line: String;
+  name: string;
+  idx: number;
+  line: string;
   img?: string;
   data?: number[];
 }
