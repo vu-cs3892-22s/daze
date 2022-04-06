@@ -10,11 +10,12 @@ export const createUser = async (
   req: express.Request,
   res: express.Response
 ) => {
-  const success = await queryCreateUser(req.body);
+  const queryRes = await queryCreateUser(req.body);
+  console.log('hey:', queryRes);
 
-  if (success === true) {
+  if (queryRes !== false) {
     res.status(201).send({
-      message: 'Creating user: Success'
+      message: queryRes
     });
   } else {
     res.status(400).send({
@@ -41,12 +42,15 @@ export const updateUser = async (
 };
 
 export const getUser = async (req: express.Request, res: express.Response) => {
+  // TODO: make this more semantically good (i.e. get the user's email from the request)
   const vunetId = req.params.vunet_id;
 
-  const success = await queryGetUser(vunetId);
-  if (success === true) {
+  const success = await queryGetUser(`${vunetId}@vanderbilt.edu`);
+  // TODO: change VanderbiltEmail to VUNETID
+
+  if (success !== false) {
     res.status(200).send({
-      message: 'Getting user: Success'
+      message: success
     });
   } else {
     res.status(400).send({
@@ -59,6 +63,17 @@ export const submitData = async (
   req: express.Request,
   res: express.Response
 ) => {
+  console.log('blooloolooo:', req.user);
+  console.log('req cookies:', req.cookies);
+  console.log('req headers:', req.headers);
+  // TODO: still hacky
+  const loggedIn = (req.headers['set-cookie'] as [string])[0] !== 'null';
+  if (!loggedIn) {
+    res.status(401).send({
+      message: 'Not logged in'
+    });
+    return;
+  }
   try {
     const data = req.body;
     // index 0 is the database for the data

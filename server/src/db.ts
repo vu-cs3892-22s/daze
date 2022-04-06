@@ -40,6 +40,7 @@ interface UserBody {
 }
 
 export async function queryCreateUser(body: UserBody) {
+  console.log('hey body:', body);
   const { vanderbiltEmail, firstName, lastName, phoneNumber } = body;
 
   const text = `
@@ -51,10 +52,12 @@ export async function queryCreateUser(body: UserBody) {
   const client = await pool.connect();
 
   try {
-    await client.query(text);
+    const res = await client.query(text);
 
     client.release();
-    return true;
+    console.log('SUCCESS!!!');
+    return res.rows[0];
+    // TODO: fix this ^^
   } catch (err: unknown) {
     console.log(err);
     client.release();
@@ -86,7 +89,7 @@ export async function queryUpdateUser(body: UserBody) {
 
 export async function queryGetUser(email: string) {
   const text = `
-    SELECT * 
+    SELECT "VanderbiltEmail" 
     FROM users
     WHERE "VanderbiltEmail" = '${email}'
   `;
@@ -94,9 +97,9 @@ export async function queryGetUser(email: string) {
   const client = await pool.connect();
 
   try {
-    await client.query(text);
+    const result = await client.query(text);
     client.release();
-    return true;
+    return result.rows[0];
   } catch (err: unknown) {
     client.release();
     return false;

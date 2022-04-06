@@ -5,13 +5,14 @@ dotenv.config({
   path: `${__dirname}/../../.env`
 });
 
-export const client = redis.createClient({
-  url: process.env.REDIS_TLS_URL,
-  socket: {
-    tls: true,
-    rejectUnauthorized: false
-  }
-});
+// export const client = redis.createClient({
+//   url: process.env.REDIS_TLS_URL,
+//   socket: {
+//     tls: true,
+//     rejectUnauthorized: false
+//   }
+// });
+export const client = redis.createClient();
 
 (async () => {
   try {

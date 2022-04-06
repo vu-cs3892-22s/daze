@@ -10,8 +10,15 @@ import { FontAwesome } from "@expo/vector-icons";
 import HomeScreen from "./components/Home";
 import Update from "./components/Update";
 import DefaultScreen from "./components/DefaultScreen";
+import Login from "./components/Login";
 
 import type { RootDrawerParamList } from "./types";
+
+import * as Linking from "expo-linking";
+import { Text, Platform } from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+
+const prefix = Linking.createURL("/");
 
 const Drawer = createDrawerNavigator<RootDrawerParamList>();
 
@@ -35,9 +42,21 @@ const navigatorOptions: DrawerNavigationOptions = {
 };
 
 export default function App() {
+  const linking = {
+    prefixes: [prefix],
+  };
+
+  // TODO: extreme hack, only works for web view
+  const authSession = window.location.search;
+  if (authSession) {
+    AsyncStorage.setItem("authSession", authSession.substring(8)).then(() => {
+      Linking.openURL("http://localhost:19006/My%20Profile");
+    });
+  }
+
   return (
     <NativeBaseProvider>
-      <NavigationContainer>
+      <NavigationContainer linking={linking} fallback={<Text>Loading...</Text>}>
         <Drawer.Navigator screenOptions={navigatorOptions}>
           <Drawer.Screen name="My Profile" component={HomeScreen} />
           <Drawer.Screen
@@ -46,7 +65,7 @@ export default function App() {
             initialParams={{ locationIndex: -1 }}
           />
           <Drawer.Screen name="Dashboard" component={DefaultScreen} />
-          <Drawer.Screen name="Log In" component={DefaultScreen} />
+          <Drawer.Screen name="Log In" component={Login} />
         </Drawer.Navigator>
       </NavigationContainer>
     </NativeBaseProvider>

@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { Button, StyleSheet, View } from "react-native";
 import ModalDropdown from "react-native-modal-dropdown";
 import Toast from "react-native-toast-message";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import type { DefaultScreenNavigationProp } from "../types";
 
@@ -48,14 +49,21 @@ export default function Update({ route, navigation }: NavigationProps) {
         timestamp: timestamp,
       };
 
+      // TODO: Big hack to circumvent React Native cookies thing. Will need to fix this for real.
+      const authSession = await AsyncStorage.getItem("authSession");
+      console.log("authSession", authSession);
+
       const response = await fetch("http://localhost:8080/api/v1/data/lines", {
         method: "POST",
         headers: {
           Accept: "application/json",
           "Content-Type": "application/json",
+          credentials: "include",
+          "Set-Cookie": authSession as string,
         },
         body: JSON.stringify(sampleBody),
       });
+      console.log("hey response:", response);
       const json = await response.json();
       const message = json.message;
       showToast(message);
@@ -175,3 +183,6 @@ const styles = StyleSheet.create({
     paddingTop: 20,
   },
 });
+function nodeFetch(nodeFetch: any) {
+  throw new Error("Function not implemented.");
+}
