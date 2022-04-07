@@ -1,13 +1,13 @@
-import { DrawerNavigationProp } from "@react-navigation/drawer";
+import { StackNavigationProp } from "@react-navigation/native-stack";
+import type { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
 
-export type RootDrawerParamList = {
-  "My Profile": { name: string };
-  Update: { name: string; locationIndex: number };
-  Dashboard: { name: string };
-  "Log In": { name: string };
+export type RootTabParamList = {
+  "Map View": { name: string };
+  "List View": { name: string };
+  "Dining Hall": { name: string };
 };
 
-export type DefaultScreenNavigationProp = DrawerNavigationProp<
-  RootDrawerParamList,
-  "My Profile"
+export type DefaultScreenNavigationProp = BottomTabNavigationProp<
+RootTabParamList,
+  "List View"
 >;
