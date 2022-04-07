@@ -10,6 +10,7 @@ import {
   getDiningHallInfo
 } from './handlers';
 import bodyParser from 'body-parser';
+import cors from 'cors';
 
 dotenv.config({
   path: `${__dirname}/../../.env`
@@ -18,6 +19,7 @@ dotenv.config({
 const port = process.env.PORT; // Naming convention as per Heroku's requirements
 const app = express();
 
+app.use(cors());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
