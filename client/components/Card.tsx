@@ -10,15 +10,27 @@ import {
   ScrollView,
   Dimensions,
 } from "react-native";
-import { AspectRatio, Box } from "native-base";
+import { AspectRatio, Box, Center } from "native-base";
 import CardFlip from "react-native-card-flip";
 import { BarChart } from "react-native-chart-kit";
 import { useEffect } from "react";
 import { useNavigation } from "@react-navigation/native";
 import { NavigationProp, ParamListBase } from "@react-navigation/native";
+import ButtonToggleGroup from "react-native-button-toggle-group";
+import Toast from "react-native-toast-message";
 
 const { width } = Dimensions.get("window");
 
+const locations = [
+  "2301 Allergen Free",
+  "Grins",
+  "EBI",
+  "Kissam Kitchen",
+  "McTyeire",
+  "Commons",
+  "Rand",
+  "Zeppos",
+];
 const breakfastData = {
   labels: ["7am", "8am", "9am", "10am", "11am"],
   datasets: [
@@ -90,10 +102,11 @@ const getBackgroundColor = (line: String) => {
 
 interface CardProps {
   name: String;
-  idx: Number;
+  idx: number;
   line: String;
   img?: string;
   data?: number[];
+  isOpen?: boolean;
 }
 
 const days = [
@@ -108,11 +121,44 @@ const days = [
 
 export default function Card(props: CardProps) {
   const navigation = useNavigation<NavigationProp<ParamListBase>>();
+
   const cardRef = useRef<CardFlip | null>(null);
   const scrollRef = useRef<ScrollView | null>(null);
+
   const [currentDay, setCurrentDay] = useState(1);
   const [currentHour, setCurrentHour] = useState(7);
 
+  const showToast = (message: string) => {
+    Toast.show({
+      type: "success",
+      text1: message,
+    });
+  };
+  const sendLineData = async (diningHallName: string, lineLength: string) => {
+    try {
+      const timestamp = new Date().getTime();
+      const sampleBody = {
+        vanderbiltEmail: "chuka@vanderbilt.edu",
+        diningHallName: diningHallName,
+        lineLength: lineLength,
+        timestamp: timestamp,
+      };
+
+      const response = await fetch("http://localhost:8080/api/v1/data/lines", {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(sampleBody),
+      });
+      const json = await response.json();
+      const message = json.message;
+      showToast(message);
+    } catch (error) {
+      console.error(error);
+    }
+  };
   useEffect(() => {
     const date = new Date();
     setCurrentDay(date.getDay());
@@ -127,21 +173,24 @@ export default function Card(props: CardProps) {
     });
   }, [scrollRef, currentHour]);
 
+  const [value, setValue] = useState("Medium");
+
   return (
     <CardFlip
-      style={styles.cardContainer}
+      style={props.isOpen ? styles.cardContainer : styles.opacityCardContainer}
       ref={cardRef}
       flipDirection="y"
       duration={300}
     >
       <TouchableOpacity
-        style={styles.card}
+        style={styles.frontCard}
         onPress={() => cardRef?.current?.flip()}
       >
         <Box
           borderRadius={20}
           minWidth={"100%"}
           maxWidth={"100%"}
+          minHeight={340}
           bg={getBackgroundColor(props.line)}
           margin={0}
           marginBottom={0}
@@ -149,7 +198,7 @@ export default function Card(props: CardProps) {
           overflow="hidden"
         >
           <Box>
-            <AspectRatio w="100%" ratio={16 / 9}>
+            <AspectRatio w="100%" ratio={14 / 9}>
               {props.img ? (
                 <Image
                   style={styles.stretch}
@@ -163,12 +212,15 @@ export default function Card(props: CardProps) {
             </AspectRatio>
           </Box>
           <View style={{ padding: 10, margin: 5 }}>
-            <Text style={styles.cardNameText}>{props.name}</Text>
+            <Text style={styles.cardNameText}>
+              {props.name} {!props.isOpen && "- Closed"}
+            </Text>
           </View>
         </Box>
       </TouchableOpacity>
+
       <TouchableWithoutFeedback onPress={() => cardRef?.current?.flip()}>
-        <View style={styles.back}>
+        <View style={styles.backCard}>
           <Text>
             Current Wait:{" "}
             {props.line === "l"
@@ -251,10 +303,26 @@ export default function Card(props: CardProps) {
               />
             </View>
           </ScrollView>
+          <View style={styles.toggleButtonContainer}>
+            <ButtonToggleGroup
+              highlightBackgroundColor={"#E76666"}
+              highlightTextColor={"white"}
+              inactiveBackgroundColor={"transparent"}
+              inactiveTextColor={"#000"}
+              values={["Short", "Medium", "Long"]}
+              value={value}
+              onSelect={(val) => setValue(val)}
+              style={{
+                height: 40,
+                width: 300,
+              }}
+            />
+            <Text style={styles.subtitle}>Line not medium right now? Be sure to...</Text>
+          </View>
           <Button
-            onPress={() =>
-              navigation.navigate("Update", { locationIndex: props.idx })
-            }
+            onPress={() => {
+              return sendLineData(locations[props.idx], value[0]);
+            }}
             title={"Update"}
             color={"#E76666"}
           />
@@ -264,29 +332,37 @@ export default function Card(props: CardProps) {
   );
 }
 const styles = StyleSheet.create({
-  card: {
-    backgroundColor: "pink",
+  cardContainer: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
     minWidth: "100%",
-    minHeight: 50,
-    height: 200,
-    borderRadius: 20,
-    padding: 0,
-    color: "#fff",
+    minHeight: 340,
   },
-  innerCard: {
-    overflow: "hidden",
+  opacityCardContainer: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    minWidth: "100%",
+    minHeight: 300,
+    opacity: 0.8,
   },
-  cardNameText: {
-    fontSize: 25,
-    color: "#616265",
-    lineHeight: 30,
-  },
-  back: {
+  frontCard: {
     backgroundColor: "#FFF",
     minWidth: "100%",
     width: width - 80,
     minHeight: 50,
-    height: 280,
+    height: 340,
+    borderRadius: 20,
+    padding: 0,
+    color: "#fff",
+  },
+  backCard: {
+    backgroundColor: "#FFF",
+    minWidth: "100%",
+    width: width - 80,
+    minHeight: 50,
+    height: 340,
     borderRadius: 20,
     padding: 5,
     color: "#fff",
@@ -297,19 +373,29 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 15,
   },
+  cardNameText: {
+    fontSize: 25,
+    color: "#616265",
+    lineHeight: 30,
+  },
   center: {
     display: "flex",
     alignItems: "center",
     width: width - 60,
   },
-  cardContainer: {
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    minWidth: "100%",
-    minHeight: 300,
-  },
   stretch: {
     resizeMode: "stretch",
+  },
+  toggleButtonContainer: {
+    width: width - 60,
+    height: 60,
+    padding: 0,
+  },
+  subtitle: {
+    color: "#616265",
+    fontSize: 10,
+    alignSelf: "center",
+    paddingTop: 3,
+    paddingBottom: 3,
   },
 });
