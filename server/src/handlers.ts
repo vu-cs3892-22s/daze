@@ -66,6 +66,9 @@ export const submitData = async (
   } catch (err) {
     console.log(err);
   }
+  res.send({
+    message: 'Posting new line data'
+  });
 };
 
 export const submitComments = async (
@@ -79,6 +82,9 @@ export const submitComments = async (
   } catch (err) {
     console.log(err);
   }
+  res.send({
+    message: 'Posting new comment'
+  });
 };
 
 export const getDiningHallInfoSpecific = async (

@@ -13,7 +13,7 @@ import bodyParser from 'body-parser';
 import cors from 'cors';
 
 dotenv.config({
-  path: `.env`
+  path: `${__dirname}/../../.env`
 });
 
 const port = process.env.PORT; // Naming convention as per Heroku's requirements
