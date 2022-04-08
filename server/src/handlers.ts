@@ -119,9 +119,9 @@ export const getDiningHallInfo = async (
     const data = await getDataForDiningHalls(0);
     const result: any = {};
     for (const key in data) {
-      const lineMode = calculateMode(data[key].length);
+      const lineMode = calculateMode(data[key].lineLength);
       result[key] = {
-        length: lineMode,
+        lineLength: lineMode,
         longitude: data[key].longitude,
         latitude: data[key].latitude
       };

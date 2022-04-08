@@ -74,7 +74,7 @@ export const getDataForDiningHalls = async (db: number) => {
     const long = diningHallLocations[diningHallName][0];
     const lat = diningHallLocations[diningHallName][1];
     results[diningHallName] = {
-      length: result,
+      lineLength: result,
       longitude: long,
       latitude: lat
     };
