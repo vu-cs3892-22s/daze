@@ -1,5 +1,4 @@
-import { StackNavigationProp } from "@react-navigation/native-stack";
-import type { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
+import type { BottomTabNavigationProp } from "@react-navigation/bottom-tabs";
 
 export type RootTabParamList = {
   "Map View": { name: string };
@@ -8,6 +7,6 @@ export type RootTabParamList = {
 };
 
 export type DefaultScreenNavigationProp = BottomTabNavigationProp<
-RootTabParamList,
+  RootTabParamList,
   "List View"
 >;
