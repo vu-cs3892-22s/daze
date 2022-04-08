@@ -55,18 +55,30 @@ export const getUser = async (req: express.Request, res: express.Response) => {
   }
 };
 
-export const submitData = (req: express.Request, res: express.Response) => {
-  // Insert DB function
-  res.send({
-    message: 'Posting new line data'
-  });
+export const submitData = async (
+  req: express.Request,
+  res: express.Response
+) => {
+  try {
+    const data = req.body;
+    // index 0 is the database for the data
+    await insertData(data, 0);
+  } catch (err) {
+    console.log(err);
+  }
 };
 
-export const submitComments = (req: express.Request, res: express.Response) => {
-  // Insert DB function
-  res.send({
-    message: 'Posting new comment'
-  });
+export const submitComments = async (
+  req: express.Request,
+  res: express.Response
+) => {
+  try {
+    const data = req.body;
+    // index 1 is the database for the comments
+    await insertData(data, 1);
+  } catch (err) {
+    console.log(err);
+  }
 };
 
 export const getDiningHallInfoSpecific = async (
