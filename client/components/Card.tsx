@@ -1,12 +1,36 @@
 import React, { useRef, useState } from "react";
-import { Button, Image, Text, View, TouchableOpacity, TouchableWithoutFeedback, StyleSheet, ScrollView, Dimensions } from "react-native";
-import { AspectRatio, Box } from "native-base";
+import {
+  Button,
+  Image,
+  Text,
+  View,
+  TouchableOpacity,
+  TouchableWithoutFeedback,
+  StyleSheet,
+  ScrollView,
+  Dimensions,
+} from "react-native";
+import { AspectRatio, Box, Center } from "native-base";
 import CardFlip from "react-native-card-flip";
 import { BarChart } from "react-native-chart-kit";
 import { useEffect } from "react";
+import { useNavigation } from "@react-navigation/native";
+import { NavigationProp, ParamListBase } from "@react-navigation/native";
+import ButtonToggleGroup from "react-native-button-toggle-group";
+import Toast from "react-native-toast-message";
 
-const { width } = Dimensions.get('window');
+const { width } = Dimensions.get("window");
 
+const locations = [
+  "2301 Allergen Free",
+  "Grins",
+  "EBI",
+  "Kissam Kitchen",
+  "McTyeire",
+  "Commons",
+  "Rand",
+  "Zeppos",
+];
 const breakfastData = {
   labels: ["7am", "8am", "9am", "10am", "11am"],
   datasets: [
@@ -14,7 +38,7 @@ const breakfastData = {
       data: [20, 35, 75, 40, 99],
     },
   ],
-  legend: ["Breakfast"]
+  legend: ["Breakfast"],
 };
 
 const lunchData = {
@@ -24,18 +48,20 @@ const lunchData = {
       data: [50, 50, 80, 40, 99],
     },
   ],
-  legend: ["Lunch"]
+  legend: ["Lunch"],
 };
 
-const customLunchData = (data: number[]) => {return {
-  labels: ["11am", "12pm", "1pm", "2pm", "3pm"],
-  datasets: [
-    {
-      data: data,
-    },
-  ],
-  legend: ["Lunch"]
-}};
+const customLunchData = (data: number[]) => {
+  return {
+    labels: ["11am", "12pm", "1pm", "2pm", "3pm"],
+    datasets: [
+      {
+        data: data,
+      },
+    ],
+    legend: ["Lunch"],
+  };
+};
 
 const dinnerData = {
   labels: ["4pm", "5pm", "6pm", "7pm", "8pm"],
@@ -44,7 +70,7 @@ const dinnerData = {
       data: [90, 80, 70, 60, 50],
     },
   ],
-  legend: ["Dinner"]
+  legend: ["Dinner"],
 };
 
 const chartConfig = {
@@ -76,20 +102,63 @@ const getBackgroundColor = (line: String) => {
 
 interface CardProps {
   name: String;
+  idx: number;
   line: String;
   img?: string;
   data?: number[];
+  isOpen?: boolean;
 }
 
-const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday" ];
+const days = [
+  "Sunday",
+  "Monday",
+  "Tuesday",
+  "Wednesday",
+  "Thursday",
+  "Friday",
+  "Saturday",
+];
 
 export default function Card(props: CardProps) {
-  let cardRef = useRef<CardFlip | null>(null);
-  let scrollRef = useRef<any>(null);
-  let [time, setTime] = useState('');
-  let [currentDay, setCurrentDay] = useState(1);
-  let [currentHour, setCurrentHour] = useState(7);
+  const navigation = useNavigation<NavigationProp<ParamListBase>>();
 
+  const cardRef = useRef<CardFlip | null>(null);
+  const scrollRef = useRef<ScrollView | null>(null);
+
+  const [currentDay, setCurrentDay] = useState(1);
+  const [currentHour, setCurrentHour] = useState(7);
+
+  const showToast = (message: string) => {
+    Toast.show({
+      type: "success",
+      text1: message,
+    });
+  };
+  const sendLineData = async (diningHallName: string, lineLength: string) => {
+    try {
+      const timestamp = new Date().getTime();
+      const sampleBody = {
+        vanderbiltEmail: "chuka@vanderbilt.edu",
+        diningHallName: diningHallName,
+        lineLength: lineLength,
+        timestamp: timestamp,
+      };
+
+      const response = await fetch("http://localhost:8080/api/v1/data/lines", {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(sampleBody),
+      });
+      const json = await response.json();
+      const message = json.message;
+      showToast(message);
+    } catch (error) {
+      console.error(error);
+    }
+  };
   useEffect(() => {
     const date = new Date();
     setCurrentDay(date.getDay());
@@ -97,52 +166,71 @@ export default function Card(props: CardProps) {
   }, []);
 
   useEffect(() => {
-    scrollRef?.current?.scrollTo({x: (currentHour > 11) ? ((currentHour > 15) ? 640 : 320) : 0, y: 0, animated: true})
+    scrollRef?.current?.scrollTo({
+      x: currentHour > 11 ? (currentHour > 15 ? 640 : 320) : 0,
+      y: 0,
+      animated: true,
+    });
   }, [scrollRef, currentHour]);
+
+  const [value, setValue] = useState("Medium");
 
   return (
     <CardFlip
-      style={styles.cardContainer}
+      style={props.isOpen ? styles.cardContainer : styles.opacityCardContainer}
       ref={cardRef}
       flipDirection="y"
       duration={300}
     >
       <TouchableOpacity
-        style={styles.card}
+        style={styles.frontCard}
         onPress={() => cardRef?.current?.flip()}
       >
-      <Box 
-        borderRadius={20}
-        minWidth={"100%"}
-        maxWidth={"100%"}
-        bg={getBackgroundColor(props.line)}
-        margin={0}
-        marginBottom={0}
-        flexDirection={"column"}
-        overflow="hidden"
-      >
-      <Box>
-        <AspectRatio w="100%" ratio={16 / 9}>
-          <Image
-            style={styles.logo}
-            source={{
-              uri: props.img || 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADMAAAAzCAYAAAA6oTAqAAAAEXRFWHRTb2Z0d2FyZQBwbmdjcnVzaEB1SfMAAABQSURBVGje7dSxCQBACARB+2/ab8BEeQNhFi6WSYzYLYudDQYGBgYGBgYGBgYGBgYGBgZmcvDqYGBgmhivGQYGBgYGBgYGBgYGBgYGBgbmQw+P/eMrC5UTVAAAAABJRU5ErkJggg=='
-            }}
-          />
-        </AspectRatio>
-      </Box>
-      <View style={{ padding: 10, margin: 5 }}>
-        <Text style={styles.cardNameText}>{props.name}</Text>
-      </View>
-      </Box>
+        <Box
+          borderRadius={20}
+          minWidth={"100%"}
+          maxWidth={"100%"}
+          minHeight={340}
+          bg={getBackgroundColor(props.line)}
+          margin={0}
+          marginBottom={0}
+          flexDirection={"column"}
+          overflow="hidden"
+        >
+          <Box>
+            <AspectRatio w="100%" ratio={14 / 9}>
+              {props.img ? (
+                <Image
+                  style={styles.stretch}
+                  source={{
+                    uri: props.img,
+                  }}
+                />
+              ) : (
+                <View />
+              )}
+            </AspectRatio>
+          </Box>
+          <View style={{ padding: 10, margin: 5 }}>
+            <Text style={styles.cardNameText}>
+              {props.name} {!props.isOpen && "- Closed"}
+            </Text>
+          </View>
+        </Box>
       </TouchableOpacity>
-      <TouchableWithoutFeedback
-        onPress={() => cardRef?.current?.flip()}
-      >
-        <View style={styles.back}>
-          <Text>Current Wait: {(props.line === 'l') ? 'Approx 40 minutes' : (props.line === 'm') ? 'Approx 20 minutes' : 'Under 5 minutes'} </Text>
+
+      <TouchableWithoutFeedback onPress={() => cardRef?.current?.flip()}>
+        <View style={styles.backCard}>
+          <Text>
+            Current Wait:{" "}
+            {props.line === "l"
+              ? "Approx 40 minutes"
+              : props.line === "m"
+              ? "Approx 20 minutes"
+              : "Under 5 minutes"}{" "}
+          </Text>
           <Text>Average Wait Times: {days[currentDay]}</Text>
-          <ScrollView 
+          <ScrollView
             ref={scrollRef}
             horizontal={true}
             showsVerticalScrollIndicator={false}
@@ -153,8 +241,7 @@ export default function Card(props: CardProps) {
             contentInset={{
               left: 0,
               right: 0,
-            }}  
-            initialNumToRender={2}
+            }}
           >
             <View style={styles.center} onStartShouldSetResponder={() => true}>
               <Text>Breakfast</Text>
@@ -169,6 +256,7 @@ export default function Card(props: CardProps) {
                 width={width - 100}
                 height={180}
                 yAxisLabel=""
+                yAxisSuffix=""
                 chartConfig={chartConfig}
                 verticalLabelRotation={0}
                 withHorizontalLabels={true}
@@ -187,6 +275,7 @@ export default function Card(props: CardProps) {
                 width={width - 100}
                 height={180}
                 yAxisLabel=""
+                yAxisSuffix=""
                 chartConfig={chartConfig}
                 verticalLabelRotation={0}
                 withHorizontalLabels={true}
@@ -205,6 +294,7 @@ export default function Card(props: CardProps) {
                 width={width - 100}
                 height={180}
                 yAxisLabel=""
+                yAxisSuffix=""
                 chartConfig={chartConfig}
                 verticalLabelRotation={0}
                 withHorizontalLabels={true}
@@ -213,63 +303,99 @@ export default function Card(props: CardProps) {
               />
             </View>
           </ScrollView>
-          <Button 
-            onPress={() => alert("button clicked")}
+          <View style={styles.toggleButtonContainer}>
+            <ButtonToggleGroup
+              highlightBackgroundColor={"#E76666"}
+              highlightTextColor={"white"}
+              inactiveBackgroundColor={"transparent"}
+              inactiveTextColor={"#000"}
+              values={["Short", "Medium", "Long"]}
+              value={value}
+              onSelect={(val) => setValue(val)}
+              style={{
+                height: 40,
+                width: 300,
+              }}
+            />
+            <Text style={styles.subtitle}>Line not medium right now? Be sure to...</Text>
+          </View>
+          <Button
+            onPress={() => {
+              return sendLineData(locations[props.idx], value[0]);
+            }}
             title={"Update"}
             color={"#E76666"}
-            accessibilityLabel="Learn more about this purple button" />
+          />
         </View>
       </TouchableWithoutFeedback>
     </CardFlip>
   );
 }
 const styles = StyleSheet.create({
-  card: {
-    backgroundColor: "pink",
+  cardContainer: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
     minWidth: "100%",
+    minHeight: 340,
+  },
+  opacityCardContainer: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    minWidth: "100%",
+    minHeight: 300,
+    opacity: 0.8,
+  },
+  frontCard: {
+    backgroundColor: "#FFF",
+    minWidth: "100%",
+    width: width - 80,
     minHeight: 50,
-    height: 200,
+    height: 340,
     borderRadius: 20,
     padding: 0,
     color: "#fff",
   },
-  innerCard: {
-    overflow: "hidden",
+  backCard: {
+    backgroundColor: "#FFF",
+    minWidth: "100%",
+    width: width - 80,
+    minHeight: 50,
+    height: 340,
+    borderRadius: 20,
+    padding: 5,
+    color: "#fff",
+    display: "flex",
+    alignItems: "center",
+    shadowColor: "#171717",
+    shadowOffset: { width: 4, height: 4 },
+    shadowOpacity: 0.25,
+    shadowRadius: 15,
   },
   cardNameText: {
     fontSize: 25,
     color: "#616265",
     lineHeight: 30,
   },
-  back: {
-    backgroundColor: "#FFF",
-    minWidth: "100%",
-    width: width - 80,
-    minHeight: 50,
-    height: 280,
-    borderRadius: 20,
-    padding: 5,
-    color: "#fff",
-    display: "flex",
-    alignItems: "center",
-    shadowColor: '#171717',
-    shadowOffset: {width: 4, height: 4},
-    shadowOpacity: 0.25,
-    shadowRadius: 15,
-  },
   center: {
     display: "flex",
     alignItems: "center",
     width: width - 60,
   },
-  cardContainer: {
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    minWidth: "100%",
-    minHeight: 300,
-  },
-  logo: {
+  stretch: {
     resizeMode: "stretch",
+  },
+  toggleButtonContainer: {
+    width: width - 60,
+    height: 60,
+    padding: 0,
+  },
+  subtitle: {
+    color: "#616265",
+    fontSize: 10,
+    alignSelf: "center",
+    paddingTop: 3,
+    paddingBottom: 3,
   },
 });

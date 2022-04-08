@@ -6,17 +6,20 @@ import {
   getUser,
   submitData,
   submitComments,
+  getDiningHallInfoSpecific,
   getDiningHallInfo
 } from './handlers';
 import bodyParser from 'body-parser';
+import cors from 'cors';
 
 dotenv.config({
   path: `.env`
 });
 
-const port = process.env.SERVER_PORT;
+const port = process.env.PORT; // Naming convention as per Heroku's requirements
 const app = express();
 
+app.use(cors());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
@@ -30,7 +33,11 @@ app.get(prefixRoute('user/:vunet_id'), getUser);
 // Data
 app.post(prefixRoute('data/lines'), submitData);
 app.post(prefixRoute('data/comments'), submitComments);
-app.get(prefixRoute('location/:dininghall_name'), getDiningHallInfo);
+app.get(
+  prefixRoute('dining_halls/:dininghall_name'),
+  getDiningHallInfoSpecific
+);
+app.get(prefixRoute('dining_halls'), getDiningHallInfo);
 
 app.listen(port, () => {
   // eslint-disable-next-line no-console

@@ -1,56 +1,71 @@
 import React from "react";
-import { Button, View } from "react-native";
-import { NativeBaseProvider, extendTheme } from "native-base";
-import { createDrawerNavigator, DrawerNavigationOptions } from "@react-navigation/drawer";
+import { NativeBaseProvider } from "native-base";
 import { NavigationContainer } from "@react-navigation/native";
-import { FontAwesome } from "@expo/vector-icons";
+import { Ionicons, AntDesign, Feather } from "@expo/vector-icons";
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import HomeScreen from "./components/Home";
+import Update from "./components/Update";
+import DefaultScreen from "./components/DefaultScreen";
+import MapView from "./components/MapView";
+import ListView from "./components/ListView";
+import DiningHall from "./components/DiningHall";
 
-const theme = extendTheme({
-  config: {
-    initialColorMode: "dark",
-  },
-});
+const Tab = createBottomTabNavigator();
 
-const Drawer = createDrawerNavigator();
-
-const DefaultScreen = ({ navigation }) => {
-  return (
-    <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
-      <Button onPress={() => navigation.goBack()} title="Go back home" />
-    </View>
-  );
-}
-
-const navigatorOptions: DrawerNavigationOptions = {
-  headerStyle: {
-    backgroundColor: "#E76666",
-  },
-  headerTintColor: "#fff",
-  headerTitleStyle: {
-    fontWeight: "bold",
-  },
-  headerTitle: "daze",
-  headerRight: () => (
-    <FontAwesome
-      name="bell"
-      size={24}
-      color="white"
-      onPress={() => alert("Show notifications")}
-    />
-  ),
-};
 
 export default function App() {
   return (
-    <NativeBaseProvider theme={theme}>
+    <NativeBaseProvider>
       <NavigationContainer>
-        <Drawer.Navigator initialRouteName="My Profile" screenOptions={navigatorOptions}>
-          <Drawer.Screen name="My Profile" component={HomeScreen} />
-          <Drawer.Screen name="Dashboard" component={DefaultScreen} />
-          <Drawer.Screen name="Log In" component={DefaultScreen} />
-        </Drawer.Navigator>
+        <Tab.Navigator
+          screenOptions={({ route }) => ({
+            tabBarIcon: ({ focused, color, size }) => {
+              let iconName:
+                | "list-circle-outline"
+                | "list-circle"
+                | "map"
+                | "map-outline";
+
+              if (route.name === "List View") {
+                iconName = focused ? "list-circle" : "list-circle-outline";
+
+                return <Ionicons name={iconName} size={24} color="#E76666" />;
+              } else if (route.name === "Map View") {
+                iconName = focused ? "map" : "map-outline";
+
+                return <Ionicons name={iconName} size={24} color="#E76666" />;
+              } else {
+                <AntDesign name="question" size={24} color="#E76666" />;
+              }
+            },
+            headerTitle: "daze",
+            headerStyle: {
+              backgroundColor: "#E76666",
+            },
+            headerTintColor: "#fff",
+            headerTitleStyle: {
+              fontWeight: "bold",
+            },
+            tabBarActiveTintColor: "tomato",
+            tabBarInactiveTintColor: "gray",
+            headerRight: () => (
+              <Ionicons
+                name="person-circle"
+                size={24}
+                color="white"
+                onPress={() => alert("Show login popup")}
+                style={{ paddingRight: 5 }}
+              />
+            ),
+          
+          })}
+        >
+              <Tab.Screen name="List View" component={ListView} />
+              <Tab.Screen name="Map View" component={MapView} />
+              <Tab.Screen name="Dining Hall" component={DiningHall} options={{ tabBarButton: () => null }} />
+        </Tab.Navigator>
       </NavigationContainer>
     </NativeBaseProvider>
   );

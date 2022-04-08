@@ -1,7 +1,9 @@
 import express from 'express';
-
-//import { pool } from './db';
-
+import {
+  insertData,
+  getDataForDiningHalls,
+  getDataForDiningHall
+} from './cache';
 import { queryCreateUser, queryUpdateUser, queryGetUser } from './db';
 
 export const createUser = async (
@@ -67,13 +69,75 @@ export const submitComments = (req: express.Request, res: express.Response) => {
   });
 };
 
-export const getDiningHallInfo = (
+export const getDiningHallInfoSpecific = async (
   req: express.Request,
   res: express.Response
 ) => {
   const diningHallName = req.params.dininghall_name;
-  // Insert DB function
-  res.send({
-    message: `Getting info for ${diningHallName}`
-  });
+  try {
+    const data = await getDataForDiningHall(diningHallName, 0);
+    const comments = await getDataForDiningHall(diningHallName, 1);
+
+    const lineMode = calculateMode(data);
+
+    res.send({
+      data: {
+        diningHallName: diningHallName,
+        lineLength: lineMode,
+        timeStamp: Date.now()
+      }
+    });
+  } catch (err) {
+    console.log(err);
+  }
 };
+
+export const getDiningHallInfo = async (
+  req: express.Request,
+  res: express.Response
+) => {
+  const diningHallName = req.params.dininghall_name;
+  try {
+    const data = await getDataForDiningHalls(0);
+    const result: any = {};
+    for (const key in data) {
+      const lineMode = calculateMode(data[key]);
+      result[key] = lineMode;
+    }
+
+    res.send({
+      data: result,
+      timeStamp: Date.now()
+    });
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+function calculateMode(data: any) {
+  const last10 = data.slice(-10);
+
+  // if we have no data, we'll just say length is unknown
+  if (last10.length === 0) {
+    return 'unknown';
+  }
+
+  const last10Lengths: string[] = [];
+  for (let i = 0; i < last10.length; ++i) {
+    last10Lengths.push(JSON.parse(last10[i])['lineLength']);
+  }
+
+  // create object with counts
+  // i.e. {"short": 2, "medium": 1, "long": 3}
+  const lengthMap = last10Lengths.reduce((map: any, val: any) => {
+    map[val] = (map[val] || 0) + 1;
+    return map;
+  }, {});
+
+  // find the mode
+  const lineMode = Object.keys(lengthMap).reduce((a, b) =>
+    lengthMap[a] > lengthMap[b] ? a : b
+  );
+
+  return lineMode;
+}
