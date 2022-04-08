@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { NativeBaseProvider } from "native-base";
 import { NavigationContainer } from "@react-navigation/native";
 import { Ionicons, AntDesign, Feather } from "@expo/vector-icons";
@@ -16,6 +16,24 @@ const Tab = createBottomTabNavigator();
 
 
 export default function App() {
+
+  const getAllLocations = async () => {
+    try {
+      const response = await fetch("http://localhost:8080/api/v1/dining_halls");
+      const json = await response.json();
+      const diningHalls = json.data;
+      console.log("Keys:", Object.keys(diningHalls))
+      // console.log(diningHalls)
+
+      // setLineLength(ebiLineLength)
+    } catch (error) {
+      console.error(error);
+    }
+  }
+  useEffect(() => {
+    getAllLocations()
+  }, [])
+
   return (
     <NativeBaseProvider>
       <NavigationContainer>
