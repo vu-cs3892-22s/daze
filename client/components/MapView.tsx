@@ -8,8 +8,13 @@ import DiningHall from "./DiningHall";
 const { width, height } = Dimensions.get("window");
 type NavigationProps = { navigation: DefaultScreenNavigationProp };
 
+interface DiningHallDataBody {
+  [key: string]: Number[];
+}
+
 export default function MapView({ navigation }: NavigationProps) {
-  const [diningHallData, setDiningHallData] = useState(null);
+  const [diningHallData, setDiningHallData] =
+    useState<DiningHallDataBody | null>(null);
 
   const signIn = async () => {
     try {
@@ -54,11 +59,19 @@ export default function MapView({ navigation }: NavigationProps) {
     console.log(JSON.stringify(diningHallData[diningHall]) !== "");*/
 
     //Right now it's saying that it's still null?
-    const long = diningHallData[diningHall].longitude;
-    const lat = diningHallData[diningHall].latitude;
-
+    let long = 0;
+    let lat = 0;
+    if (diningHallData !== null) {
+      long = diningHallData[diningHall].longitude;
+      lat = diningHallData[diningHall].latitude;
+      //long = 36.1493254;
+      //lat = -86.8018191;
+    }
+    console.log(long);
+    console.log(lat);
     //console.log("this is the longitude " + long);
 
+    let coordinate = { lat, long };
     return (
       <Marker
         coordinate={{
@@ -84,14 +97,7 @@ export default function MapView({ navigation }: NavigationProps) {
         }}
         style={{ width: width, height: height }}
       >
-        <Marker
-          coordinate={{
-            latitude: 36.14617723099077,
-            longitude: -86.8033166116821,
-          }}
-          description="Rand"
-        />
-        <DiningHallMarker diningHall={"EBI"}></DiningHallMarker>
+        <DiningHallMarker diningHall={"EBI"} />
       </Map>
     </View>
   );
