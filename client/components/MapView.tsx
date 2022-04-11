@@ -53,11 +53,6 @@ export default function MapView({ navigation }: NavigationProps) {
   const DiningHallMarker: React.FC<DiningHallMarkerProps> = ({
     diningHall,
   }) => {
-    /*
-    console.log("this is the dining hall " + diningHall + typeof diningHall);
-    console.log("this is the data " + JSON.stringify(diningHallData));
-    console.log(JSON.stringify(diningHallData[diningHall]) !== "");*/
-
     //Right now it's saying that it's still null?
     let long = 0;
     let lat = 0;
@@ -69,18 +64,12 @@ export default function MapView({ navigation }: NavigationProps) {
     }
     console.log(long);
     console.log(lat);
-    //console.log("this is the longitude " + long);
 
-    let coordinate = { lat, long };
-    return (
-      <Marker
-        coordinate={{
-          latitude: lat,
-          longitude: long,
-        }}
-        description={diningHall}
-      />
-    );
+    let coord = {
+      latitude: long,
+      longitude: lat,
+    };
+    return <Marker coordinate={coord} description={diningHall} />;
   };
 
   useEffect(() => {
@@ -97,6 +86,13 @@ export default function MapView({ navigation }: NavigationProps) {
         }}
         style={{ width: width, height: height }}
       >
+        <Marker
+          coordinate={{
+            latitude: 36.1455971,
+            longitude: -86.8042274,
+          }}
+          description={"Rand"}
+        />
         <DiningHallMarker diningHall={"EBI"} />
       </Map>
     </View>
