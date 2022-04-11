@@ -71,7 +71,6 @@ export default function MapView({ navigation }: NavigationProps) {
     console.log(lat);
     //console.log("this is the longitude " + long);
 
-    let coordinate = { lat, long };
     return (
       <Marker
         coordinate={{
