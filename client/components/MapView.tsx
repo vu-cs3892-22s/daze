@@ -15,6 +15,7 @@ interface DiningHallDataBody {
 export default function MapView({ navigation }: NavigationProps) {
   const [diningHallData, setDiningHallData] =
     useState<DiningHallDataBody | null>(null);
+  const [locations, setLocations] = useState<string[] | null>(null);
 
   const signIn = async () => {
     try {
@@ -33,14 +34,8 @@ export default function MapView({ navigation }: NavigationProps) {
       const response = await fetch("http://localhost:8080/api/v1/dining_halls");
       const json = await response.json();
       const data = json.data;
-      //const longitude = data[diningHall].longitude;
-      //const latitude = data[diningHall].latitude;
+
       setDiningHallData(data);
-      //console.log("this is the data " + JSON.stringify(diningHallData));
-      /*console.log(
-        "this is the longitude" +
-          JSON.stringify(diningHallData["EBI"].longitude)
-      ); */
     } catch (error) {
       console.error(error);
     }
@@ -59,11 +54,7 @@ export default function MapView({ navigation }: NavigationProps) {
     if (diningHallData !== null) {
       long = diningHallData[diningHall].longitude;
       lat = diningHallData[diningHall].latitude;
-      //long = 36.1493254;
-      //lat = -86.8018191;
     }
-    console.log(long);
-    console.log(lat);
 
     let coord = {
       latitude: long,
@@ -86,14 +77,9 @@ export default function MapView({ navigation }: NavigationProps) {
         }}
         style={{ width: width, height: height }}
       >
-        <Marker
-          coordinate={{
-            latitude: 36.1455971,
-            longitude: -86.8042274,
-          }}
-          description={"Rand"}
-        />
         <DiningHallMarker diningHall={"EBI"} />
+        <DiningHallMarker diningHall={"2301"} />
+        <DiningHallMarker diningHall={"Zeppos"} />
       </Map>
     </View>
   );
