@@ -2,7 +2,7 @@
   "compilerOptions": {
     "target": "es6",
     "jsx": "react",
-    "strict": true,
+    "strict": false,
     "baseUrl": "./"
   },
   "exclude": ["node_modules"],
