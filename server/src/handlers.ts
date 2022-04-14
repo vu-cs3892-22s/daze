@@ -199,9 +199,9 @@ function calculateWaitTime(diningHallName: string, lineLength: string) {
    * long - more than 12
    */
 
-  const shortUpperBound = 5
-  const mediumUpperBound = 12
-  const largeLowerBound = 13
+  const shortUpperBound = 5;
+  const mediumUpperBound = 12;
+  const largeLowerBound = 13;
 
   if (lineLength.toLowerCase() === 's') {
     // take the median of the range
@@ -210,7 +210,7 @@ function calculateWaitTime(diningHallName: string, lineLength: string) {
     waitTime = diningHallThroughputs[diningHallName] * (mediumUpperBound / 2);
   } else if (lineLength.toLowerCase() === 'l') {
     // Note: This is a lower bound, unlike the other two wait times
-    waitTime = diningHallThroughputs[diningHallName] * (largeLowerBound);
+    waitTime = diningHallThroughputs[diningHallName] * largeLowerBound;
   } else {
     // null for unknown
     return null;
