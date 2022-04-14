@@ -12,7 +12,6 @@ export default function DefaultScreen({ navigation }: NavigationProps) {
 
       const json = await response.json();
       const data = json.data;
-      console.log("JSON",json.google)
 
     } catch (error) {
       console.error(error);

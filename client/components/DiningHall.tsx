@@ -100,7 +100,6 @@ export default function DiningHall({ route, navigation }: NavigationProps) {
       const json = await response.json();
       const data = json.data;
       setDiningHall(data);
-      console.log("JSON", data);
     } catch (error) {
       console.error(error);
     }
@@ -114,7 +113,6 @@ export default function DiningHall({ route, navigation }: NavigationProps) {
 
   useEffect(() => {
     getDiningHall();
-    // "https://i.ibb.co/6bS28bP/grins.jpg"
   }, [route.params]);
 
   return (
@@ -130,7 +128,7 @@ export default function DiningHall({ route, navigation }: NavigationProps) {
       )}
     >
       <View style={styles.content}>
-        <Text style={styles.title}>{diningHall.diningHallName.replace(/_/g, ' ')}</Text>
+        <Text style={styles.title}>{name.replace(/_/g, ' ')}</Text>
 
         <View style={styles.center}>
           <Text>

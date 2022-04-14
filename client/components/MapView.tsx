@@ -8,20 +8,6 @@ const { width, height } = Dimensions.get("window");
 type NavigationProps = { navigation: DefaultScreenNavigationProp };
 
 export default function MapView({ navigation }: NavigationProps) {
-  const signIn = async () => {
-
-    try {
-      const response = await fetch("http://localhost:8080/auth");
-
-      const json = await response.json();
-      const data = json.data;
-      console.log("JSON",json.google)
-
-    } catch (error) {
-      console.error(error);
-    }
-  }
-
   return (
     <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
       <Map 
