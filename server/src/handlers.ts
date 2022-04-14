@@ -99,12 +99,6 @@ export const getDiningHall = async (
     const lineMode = calculateMode(data);
     const waitTime = calculateWaitTime(diningHallName, lineMode);
 
-    /**
-     * short - 5 or less
-     * medium - 6 to 12
-     * long - more than 12
-     */
-
     res.send({
       data: {
         diningHallName: diningHallName,
@@ -199,13 +193,24 @@ function calculateWaitTime(diningHallName: string, lineLength: string) {
 
   let waitTime = 0;
 
+  /**
+   * short - 5 or less
+   * medium - 6 to 12
+   * long - more than 12
+   */
+
+  const shortUpperBound = 5
+  const mediumUpperBound = 12
+  const largeLowerBound = 13
+
   if (lineLength.toLowerCase() === 's') {
-    waitTime = diningHallThroughputs[diningHallName] * 5;
+    // take the median of the range
+    waitTime = diningHallThroughputs[diningHallName] * (shortUpperBound / 2);
   } else if (lineLength.toLowerCase() === 'm') {
-    waitTime = diningHallThroughputs[diningHallName] * 12;
+    waitTime = diningHallThroughputs[diningHallName] * (mediumUpperBound / 2);
   } else if (lineLength.toLowerCase() === 'l') {
     // Note: This is a lower bound, unlike the other two wait times
-    waitTime = diningHallThroughputs[diningHallName] * 13;
+    waitTime = diningHallThroughputs[diningHallName] * (largeLowerBound);
   } else {
     // null for unknown
     return null;
