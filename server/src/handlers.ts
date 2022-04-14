@@ -119,17 +119,30 @@ export const getDiningHalls = async (
   try {
     const data = await getDataForDiningHalls(0);
     const result: any = {};
+    const rand: any = {};
+
     for (const key in data) {
       const lineMode = calculateMode(data[key].lineLength);
       const waitTime = calculateWaitTime(key, lineMode);
 
-      result[key] = {
-        lineLength: lineMode,
-        waitTime: waitTime,
-        longitude: data[key].longitude,
-        latitude: data[key].latitude
-      };
+      if (!key.includes('Rand')) {
+        result[key] = {
+          lineLength: lineMode,
+          waitTime: waitTime,
+          longitude: data[key].longitude,
+          latitude: data[key].latitude
+        };
+      } else {
+        rand[key] = {
+          lineLength: lineMode,
+          waitTime: waitTime,
+          longitude: data[key].longitude,
+          latitude: data[key].latitude
+        };
+      }
     }
+
+    result['Rand'] = rand;
 
     res.send({
       data: result,
