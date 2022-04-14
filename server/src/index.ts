@@ -6,8 +6,8 @@ import {
   getUser,
   submitData,
   submitComments,
-  getDiningHallInfoSpecific,
-  getDiningHallInfo
+  getDiningHall,
+  getDiningHalls
 } from './handlers';
 import bodyParser from 'body-parser';
 import cors from 'cors';
@@ -33,11 +33,8 @@ app.get(prefixRoute('user/:vunet_id'), getUser);
 // Data
 app.post(prefixRoute('data/lines'), submitData);
 app.post(prefixRoute('data/comments'), submitComments);
-app.get(
-  prefixRoute('dining_halls/:dininghall_name'),
-  getDiningHallInfoSpecific
-);
-app.get(prefixRoute('dining_halls'), getDiningHallInfo);
+app.get(prefixRoute('dining_halls/:dininghall_name'), getDiningHall);
+app.get(prefixRoute('dining_halls'), getDiningHalls);
 
 app.listen(port, () => {
   // eslint-disable-next-line no-console

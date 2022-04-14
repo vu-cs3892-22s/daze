@@ -87,7 +87,7 @@ export const submitComments = async (
   });
 };
 
-export const getDiningHallInfoSpecific = async (
+export const getDiningHall = async (
   req: express.Request,
   res: express.Response
 ) => {
@@ -97,11 +97,13 @@ export const getDiningHallInfoSpecific = async (
     const comments = await getDataForDiningHall(diningHallName, 1);
 
     const lineMode = calculateMode(data);
+    const waitTime = calculateWaitTime(diningHallName, lineMode);
 
     res.send({
       data: {
         diningHallName: diningHallName,
         lineLength: lineMode,
+        waitTime: waitTime,
         timeStamp: Date.now()
       }
     });
@@ -110,18 +112,20 @@ export const getDiningHallInfoSpecific = async (
   }
 };
 
-export const getDiningHallInfo = async (
+export const getDiningHalls = async (
   req: express.Request,
   res: express.Response
 ) => {
-  const diningHallName = req.params.dininghall_name;
   try {
     const data = await getDataForDiningHalls(0);
     const result: any = {};
     for (const key in data) {
       const lineMode = calculateMode(data[key].lineLength);
+      const waitTime = calculateWaitTime(key, lineMode);
+
       result[key] = {
         lineLength: lineMode,
+        waitTime: waitTime,
         longitude: data[key].longitude,
         latitude: data[key].latitude
       };
@@ -162,4 +166,55 @@ function calculateMode(data: any) {
   );
 
   return lineMode;
+}
+
+function calculateWaitTime(diningHallName: string, lineLength: string) {
+  const diningHallThroughputs: { [key: string]: number } = {
+    '2301': 1,
+    Commons: 2,
+    EBI: 3,
+    Kissam: 4,
+    McTyeire: 5,
+    Rand_Bowls: 6,
+    Rand_Randwich: 7,
+    Rand_Fresh_Mex: 8,
+    Rand_Mongolian: 9,
+    Rand_Chicken_Shack: 10,
+    Zeppos: 11,
+    Alumni: 12,
+    Grins: 13,
+    Holy_Smokes: 14,
+    Local_Java: 15,
+    Suzies_Blair: 16,
+    Suzies_FGH: 17,
+    Suzies_MRB: 18,
+    Food_For_Thought: 19
+  };
+
+  let waitTime = 0;
+
+  /**
+   * short - 5 or less
+   * medium - 6 to 12
+   * long - more than 12
+   */
+
+  const shortUpperBound = 5;
+  const mediumUpperBound = 12;
+  const largeLowerBound = 13;
+
+  if (lineLength.toLowerCase() === 's') {
+    // take the median of the range
+    waitTime = diningHallThroughputs[diningHallName] * (shortUpperBound / 2);
+  } else if (lineLength.toLowerCase() === 'm') {
+    waitTime = diningHallThroughputs[diningHallName] * (mediumUpperBound / 2);
+  } else if (lineLength.toLowerCase() === 'l') {
+    // Note: This is a lower bound, unlike the other two wait times
+    waitTime = diningHallThroughputs[diningHallName] * largeLowerBound;
+  } else {
+    // null for unknown
+    return null;
+  }
+
+  return waitTime;
 }
