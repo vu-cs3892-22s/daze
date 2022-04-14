@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Button, Dimensions, View } from "react-native";
+import { Button, Dimensions, View, Image } from "react-native";
 import Map, { Marker } from "react-native-maps";
 
 import type { DefaultScreenNavigationProp } from "../types";
@@ -43,10 +43,12 @@ export default function MapView({ navigation }: NavigationProps) {
 
   type DiningHallMarkerProps = {
     diningHall: string;
+    length: string;
   };
 
   const DiningHallMarker: React.FC<DiningHallMarkerProps> = ({
     diningHall,
+    length,
   }) => {
     //Right now it's saying that it's still null?
     let long = 0;
@@ -60,7 +62,22 @@ export default function MapView({ navigation }: NavigationProps) {
       latitude: long,
       longitude: lat,
     };
-    return <Marker coordinate={coord} description={diningHall} />;
+
+    let pin = require("../assets/gray-pin.png");
+
+    if (length === "short") {
+      pin = require("../assets/green-pin.png");
+    } else if (length === "medium") {
+      pin = require("../assets/yellow-pin.png");
+    } else if (length === "long") {
+      pin = require("../assets/red-pin.png");
+    }
+
+    return (
+      <Marker coordinate={coord} description={diningHall}>
+        <Image source={pin} style={{ height: 60, width: 60 }} />
+      </Marker>
+    );
   };
 
   useEffect(() => {
@@ -77,9 +94,10 @@ export default function MapView({ navigation }: NavigationProps) {
         }}
         style={{ width: width, height: height }}
       >
-        <DiningHallMarker diningHall={"EBI"} />
-        <DiningHallMarker diningHall={"2301"} />
-        <DiningHallMarker diningHall={"Zeppos"} />
+        <DiningHallMarker diningHall={"EBI"} length={"short"} />
+        <DiningHallMarker diningHall={"2301"} length={"medium"} />
+        <DiningHallMarker diningHall={"Kissam"} length={"closed"} />
+        <DiningHallMarker diningHall={"Zeppos"} length={"long"} />
       </Map>
     </View>
   );
