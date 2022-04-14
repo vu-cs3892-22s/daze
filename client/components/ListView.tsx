@@ -1,5 +1,5 @@
-import React, { useEffect } from "react";
-import { Button, View, StyleSheet } from "react-native";
+import React, { useEffect, useState } from "react";
+import { Button, Dimensions, View, ScrollView, StyleSheet } from "react-native";
 import type { DefaultScreenNavigationProp } from "../types";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import DiningHall from "./DiningHall";
@@ -8,8 +8,12 @@ import MiniCard from "./MiniCard";
 
 type NavigationProps = { navigation: DefaultScreenNavigationProp };
 
+
+const { width } = Dimensions.get("window");
+
 const Tab = createBottomTabNavigator();
 export default function ListView({ navigation }: NavigationProps) {
+  const [locations, setLocations] = useState<Object[]>([]);
 
   const getAllLocations = async () => {
     try {
@@ -18,8 +22,7 @@ export default function ListView({ navigation }: NavigationProps) {
       const diningHalls = json.data;
 
       console.log(diningHalls)
-
-      // setLineLength(ebiLineLength)
+      setLocations(Object.values(diningHalls));
     } catch (error) {
       console.error(error);
     }
@@ -44,13 +47,11 @@ export default function ListView({ navigation }: NavigationProps) {
 
   return (
     <View style={styles.root}>
-      <MiniCard navigation={navigation} />
-      <MiniCard navigation={navigation} />
-      <MiniCard navigation={navigation} />
-      <MiniCard navigation={navigation} />
-      {/* <Button onPress={() => navigation.navigate("Dining Hall")} title="Go to dining hall" />
-
-      <Button onPress={() => signIn()} title="list" /> */}
+      <ScrollView contentContainerStyle={styles.scrollRoot}>
+      {
+        locations && locations.map(location => <MiniCard key={location.name} name={location.name} navigation={navigation}/> )
+      }
+      </ScrollView>
     </View>
   );
 }
@@ -58,9 +59,12 @@ export default function ListView({ navigation }: NavigationProps) {
 
 const styles = StyleSheet.create({
   root: {
+    maxWidth: width,
+    top: 20,
+  },
+  scrollRoot: {
     display: "flex",
     flexDirection: "column",
-    alignItems: "center",
-    justifyContent: "flex-start",
-  },
+    alignItems: "center"
+  }
 });
