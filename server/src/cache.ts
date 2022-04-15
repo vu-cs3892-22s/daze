@@ -51,6 +51,28 @@ const diningHallLocations: { [key: string]: number[] } = {
   Food_For_Thought: [36.1453047, -86.8008198]
 };
 
+const diningHallTypes: { [key: string]: string } = {
+  2301: 'Residential Dining Hall',
+  Commons: 'Residential Dining Hall',
+  EBI: 'Residential Dining Hall',
+  Kissam: 'Residential Dining Hall',
+  McTyeire: 'Residential Dining Hall',
+  Rand_Bowls: 'Residential Dining Hall',
+  Rand_Randwich: 'Residential Dining Hall',
+  Rand_Fresh_Mex: 'Residential Dining Hall',
+  Rand_Mongolian: 'Residential Dining Hall',
+  Rand_Chicken_Shack: 'Residential Dining Hall',
+  Zeppos: 'Residential Dining Hall',
+  Alumni: 'Cafe',
+  Grins: 'Cafe',
+  Holy_Smokes: 'Cafe',
+  Local_Java: 'Cafe',
+  Suzies_Blair: 'Cafe',
+  Suzies_FGH: 'Cafe',
+  Suzies_MRB: 'Cafe',
+  Food_For_Thought: 'Cafe'
+};
+
 export const insertData = async (data: DataBody, db: number) => {
   await client.select(db);
   const diningHallName = data.diningHallName;
@@ -73,12 +95,14 @@ export const getDataForDiningHalls = async (db: number) => {
     const result = await client.lRange(diningHallName, 0, -1);
     const long = diningHallLocations[diningHallName][0];
     const lat = diningHallLocations[diningHallName][1];
+    const type = diningHallTypes[diningHallName];
     const name = diningHallName;
     results[diningHallName] = {
       lineLength: result,
       longitude: long,
       latitude: lat,
-      name: name
+      name: name,
+      type: type
     };
   }
 
