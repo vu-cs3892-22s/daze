@@ -3,7 +3,8 @@ import dotenv from 'dotenv';
 import {
   createUser,
   updateUser,
-  getUser,
+  // getUser,
+  loginUser,
   submitData,
   submitComments,
   getDiningHall,
@@ -26,9 +27,10 @@ app.use(bodyParser.json());
 const prefixRoute = (route: string) => `/api/v1/${route}`;
 
 // Users
-app.post(prefixRoute('user'), createUser);
-app.put(prefixRoute('user'), updateUser);
-app.get(prefixRoute('user/:vunet_id'), getUser);
+// app.post(prefixRoute('user'), createUser);
+// app.put(prefixRoute('user'), updateUser);
+app.put(prefixRoute('user'), loginUser);
+// app.get(prefixRoute('user/:vunet_id'), getUser);
 
 // Data
 app.post(prefixRoute('data/lines'), submitData);

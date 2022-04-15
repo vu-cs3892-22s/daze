@@ -34,17 +34,15 @@ pool.on('error', (err) => {
 
 interface UserBody {
   vanderbiltEmail: string;
-  firstName: string;
-  lastName: string;
-  phoneNumber: string;
+  secretKey: string;
 }
 
 export async function queryCreateUser(body: UserBody) {
-  const { vanderbiltEmail, firstName, lastName, phoneNumber } = body;
+  const { vanderbiltEmail, secretKey } = body;
 
   const text = `
-    INSERT INTO users ("VanderbiltEmail", "FirstName", "LastName", "PhoneNumber")
-    VALUES ('${vanderbiltEmail}', '${firstName}', '${lastName}', '${phoneNumber}')
+    INSERT INTO "Users" ("VanderbiltEmail", "SecretKey")
+    VALUES ('${vanderbiltEmail}', '${secretKey}')
     RETURNING "VanderbiltEmail"
   `;
 
@@ -52,23 +50,22 @@ export async function queryCreateUser(body: UserBody) {
 
   try {
     await client.query(text);
-
     client.release();
     return true;
   } catch (err: unknown) {
     console.log(err);
     client.release();
-
     return false;
   }
 }
 
+// TODO: there really is no need for this function
 export async function queryUpdateUser(body: UserBody) {
-  const { vanderbiltEmail, firstName, lastName, phoneNumber } = body;
+  const { vanderbiltEmail, secretKey } = body;
 
   const text = `
-    UPDATE users 
-    SET "FirstName" = '${firstName}', "LastName" = '${lastName}', "PhoneNumber" = '${phoneNumber}'
+    UPDATE "Users" 
+    SET "SecretKey" = '${secretKey}'
     WHERE "VanderbiltEmail" = '${vanderbiltEmail}'
   `;
 
@@ -84,19 +81,20 @@ export async function queryUpdateUser(body: UserBody) {
   }
 }
 
-export async function queryGetUser(email: string) {
+// TODO: might have to change this if we do anti-troll stuff, i.e. store a trust score
+export async function queryGetUserSecretKey(email: string) {
   const text = `
-    SELECT * 
-    FROM users
+    SELECT "SecretKey" 
+    FROM "Users"
     WHERE "VanderbiltEmail" = '${email}'
   `;
 
   const client = await pool.connect();
 
   try {
-    await client.query(text);
+    const result = await client.query(text);
     client.release();
-    return true;
+    return result.rows[0];
   } catch (err: unknown) {
     client.release();
     return false;

@@ -18,6 +18,42 @@ const Tab = createBottomTabNavigator();
 
 WebBrowser.maybeCompleteAuthSession();
 
+const attemptLogin = async (accessToken: string | undefined) => {
+  // Should only be called when user tries to log in
+  // Stores secret key in local storage and creates user on server side if not already created
+
+  // TODO: send picture
+  const { id, email, picture } = await (
+    await fetch("https://www.googleapis.com/userinfo/v2/me", {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        "Content-Length": "0",
+      },
+    })
+  ).json();
+
+  // TODO: no hardcode salt
+  const secretKey = id + email; //PBKDF2(id + email, "daze-secret-key");
+  console.log("hey what the fuck:", email, secretKey);
+  // TODO: no hardcode
+  try {
+    await fetch("https://cf93-129-59-122-20.ngrok.io/api/v1/user", {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        email,
+        secretKey,
+      }),
+    });
+  } catch (e: unknown) {
+    // TODO: handle error
+    throw Error(e as string);
+  }
+};
+
 export default function App() {
   // Get all locations
   const getAllLocations = async () => {
@@ -51,10 +87,10 @@ export default function App() {
   const [loggedIn, toggleLoggedIn] = React.useState(false);
   React.useEffect(() => {
     if (response?.type === "success") {
-      // attemptLogin(response.authentication?.accessToken)
-      //   .then(() => toggleLoggedIn(true))
-      //   // TODO: handle error
-      //   .catch(console.error);
+      attemptLogin(response.authentication?.accessToken)
+        .then(() => toggleLoggedIn(true))
+        // TODO: handle error
+        .catch(console.error);
 
       console.log("response:" + JSON.stringify(response, null, 2));
     }

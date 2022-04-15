@@ -4,7 +4,54 @@ import {
   getDataForDiningHalls,
   getDataForDiningHall
 } from './cache';
-import { queryCreateUser, queryUpdateUser, queryGetUser } from './db';
+import {
+  queryCreateUser,
+  queryUpdateUser,
+  // queryGetUser,
+  queryGetUserSecretKey
+} from './db';
+
+export const loginUser = async (
+  req: express.Request,
+  res: express.Response
+) => {
+  const { email, secretKey } = req.body;
+
+  // First, check if user exists.
+  const user = await queryGetUserSecretKey(email);
+  if (user) {
+    // User exists, check if secret key matches.
+    if (user.SecretKey === secretKey) {
+      // Secret key matches, login user.
+      console.log('Successfully logged in user.');
+      res.send({
+        success: true,
+        message: 'User logged in.'
+      });
+    } else {
+      // Secret key does not match, return error.
+      res.send({
+        success: false,
+        message: 'Secret key does not match.'
+      });
+    }
+  } else if (
+    await queryCreateUser({
+      vanderbiltEmail: email,
+      secretKey
+    })
+  ) {
+    res.send({
+      success: true,
+      message: 'User created.'
+    });
+  } else {
+    res.send({
+      success: false,
+      message: 'User could not be created.'
+    });
+  }
+};
 
 export const createUser = async (
   req: express.Request,
@@ -40,20 +87,20 @@ export const updateUser = async (
   }
 };
 
-export const getUser = async (req: express.Request, res: express.Response) => {
-  const vunetId = req.params.vunet_id;
+// export const getUser = async (req: express.Request, res: express.Response) => {
+//   const vunetId = req.params.vunet_id;
 
-  const success = await queryGetUser(vunetId);
-  if (success === true) {
-    res.status(200).send({
-      message: 'Getting user: Success'
-    });
-  } else {
-    res.status(400).send({
-      message: 'Getting user: Failure'
-    });
-  }
-};
+//   const success = await queryGetUser(vunetId);
+//   if (success === true) {
+//     res.status(200).send({
+//       message: 'Getting user: Success'
+//     });
+//   } else {
+//     res.status(400).send({
+//       message: 'Getting user: Failure'
+//     });
+//   }
+// };
 
 export const submitData = async (
   req: express.Request,
