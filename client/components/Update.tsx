@@ -45,14 +45,17 @@ export default function Update({ route, navigation }: NavigationProps) {
         timestamp: timestamp,
       };
 
-      const response = await fetch("http://localhost:8080/api/v1/data/lines", {
-        method: "POST",
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(sampleBody),
-      });
+      const response = await fetch(
+        "https://cf93-129-59-122-20.ngrok.io/api/v1/data/lines",
+        {
+          method: "POST",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(sampleBody),
+        }
+      );
       const json = await response.json();
       const message = json.message;
       showToast(message);
@@ -88,7 +91,7 @@ export default function Update({ route, navigation }: NavigationProps) {
   //       lineLength: "dd",
   //     };
   //     const response = await fetch(
-  //       "http://localhost:8080/api/v1/location/EBI",
+  //       "https://cf93-129-59-122-20.ngrok.io/api/v1/location/EBI",
   //       {
   //         method: "GET",
   //       }
@@ -101,7 +104,6 @@ export default function Update({ route, navigation }: NavigationProps) {
   // useEffect(() => {
   //   getLocData();
   // }, []);
-
 
   return (
     <View style={styles.container}>

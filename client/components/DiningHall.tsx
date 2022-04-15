@@ -83,7 +83,7 @@ const chartConfig = {
 };
 const { width, height } = Dimensions.get("window");
 export default function DiningHall({ route, navigation }: NavigationProps) {
-  const [diningHall, setDiningHall] = useState<Object>({});
+  const [diningHall, setDiningHall] = useState<unknown>({});
   const scrollRef = useRef<ScrollView | null>(null);
   const [value, setValue] = useState("Medium");
 
@@ -94,7 +94,7 @@ export default function DiningHall({ route, navigation }: NavigationProps) {
   const getDiningHall = async () => {
     try {
       const response = await fetch(
-        `http://localhost:8080/api/v1/dining_halls/${name}`
+        `https://cf93-129-59-122-20.ngrok.io/api/v1/dining_halls/${name}`
       );
 
       const json = await response.json();
@@ -116,131 +116,132 @@ export default function DiningHall({ route, navigation }: NavigationProps) {
   }, [route.params]);
 
   return (
-    <ParallaxScrollView
-      contentBackgroundColor="#FFF"
-      parallaxHeaderHeight={200}
-      fadeOutForeground={false}
-      renderForeground={() => (
-        <Image
-          style={{ width: width, height: 200 }}
-          source={{ uri: "https://i.ibb.co/6bS28bP/grins.jpg" }}
-        />
-      )}
-    >
-      <View style={styles.content}>
-        <Text style={styles.title}>{name.replace(/_/g, ' ')}</Text>
+    <View>Hello</View>
+    // <ParallaxScrollView
+    //   contentBackgroundColor="#FFF"
+    //   parallaxHeaderHeight={200}
+    //   fadeOutForeground={false}
+    //   renderForeground={() => (
+    //     <Image
+    //       style={{ width: width, height: 200 }}
+    //       source={{ uri: "https://i.ibb.co/6bS28bP/grins.jpg" }}
+    //     />
+    //   )}
+    // >
+    //   <View style={styles.content}>
+    //     <Text style={styles.title}>{name.replace(/_/g, " ")}</Text>
 
-        <View style={styles.center}>
-          <Text>
-            Current Wait:{" "}
-            {line === "l"
-              ? "Approx 40 minutes"
-              : line === "m"
-              ? "Approx 20 minutes"
-              : "Under 5 minutes"}{" "}
-          </Text>
-          <Text>Average Wait Times: {days[currentDay]}</Text>
-        </View>
-        <ScrollView
-          ref={scrollRef}
-          horizontal={true}
-          showsVerticalScrollIndicator={false}
-          showsHorizontalScrollIndicator={false}
-          decelerationRate={0}
-          snapToInterval={320}
-          snapToAlignment={"center"}
-          contentInset={{
-            left: 0,
-            right: 0,
-          }}
-        >
-          <View style={styles.center} onStartShouldSetResponder={() => true}>
-            <Text>Breakfast</Text>
-            <BarChart
-              style={{
-                marginVertical: 0,
-                borderRadius: 16,
-                padding: 0,
-                marginRight: 10,
-              }}
-              data={breakfastData}
-              width={width - 100}
-              height={180}
-              yAxisLabel=""
-              yAxisSuffix=""
-              chartConfig={chartConfig}
-              verticalLabelRotation={0}
-              withHorizontalLabels={true}
-              withInnerLines={false}
-              fromZero={true}
-            />
-          </View>
-          <View style={styles.center} onStartShouldSetResponder={() => true}>
-            <Text>Lunch</Text>
-            <BarChart
-              style={{
-                marginVertical: 0,
-                borderRadius: 16,
-              }}
-              data={data ? customLunchData(data) : lunchData}
-              width={width - 100}
-              height={180}
-              yAxisLabel=""
-              yAxisSuffix=""
-              chartConfig={chartConfig}
-              verticalLabelRotation={0}
-              withHorizontalLabels={true}
-              withInnerLines={false}
-              fromZero={true}
-            />
-          </View>
-          <View style={styles.center} onStartShouldSetResponder={() => true}>
-            <Text>Dinner</Text>
-            <BarChart
-              style={{
-                marginVertical: 0,
-                borderRadius: 16,
-              }}
-              data={dinnerData}
-              width={width - 100}
-              height={180}
-              yAxisLabel=""
-              yAxisSuffix=""
-              chartConfig={chartConfig}
-              verticalLabelRotation={0}
-              withHorizontalLabels={true}
-              withInnerLines={false}
-              fromZero={true}
-            />
-          </View>
-        </ScrollView>
-        <View style={styles.toggleButtonContainer}>
-          <ButtonToggleGroup
-            highlightBackgroundColor={"#E76666"}
-            highlightTextColor={"white"}
-            inactiveBackgroundColor={"transparent"}
-            inactiveTextColor={"#000"}
-            values={["Short", "Medium", "Long"]}
-            value={value}
-            onSelect={(val) => setValue(val)}
-            style={{
-              height: 40,
-              width: 300,
-            }}
-          />
-          <Text style={styles.subtitle}>
-            Line not medium right now? Be sure to...
-          </Text>
-        </View>
-        <Button
-          onPress={() => {
-            return sendLineData(locations[props.idx], value[0]);
-          }}
-          title={"Update"}
-          color={"#E76666"}
-        />
-      </View>
-    </ParallaxScrollView>
+    //     <View style={styles.center}>
+    //       <Text>
+    //         Current Wait:{" "}
+    //         {line === "l"
+    //           ? "Approx 40 minutes"
+    //           : line === "m"
+    //           ? "Approx 20 minutes"
+    //           : "Under 5 minutes"}{" "}
+    //       </Text>
+    //       <Text>Average Wait Times: {days[currentDay]}</Text>
+    //     </View>
+    //     <ScrollView
+    //       ref={scrollRef}
+    //       horizontal={true}
+    //       showsVerticalScrollIndicator={false}
+    //       showsHorizontalScrollIndicator={false}
+    //       decelerationRate={0}
+    //       snapToInterval={320}
+    //       snapToAlignment={"center"}
+    //       contentInset={{
+    //         left: 0,
+    //         right: 0,
+    //       }}
+    //     >
+    //       <View style={styles.center} onStartShouldSetResponder={() => true}>
+    //         <Text>Breakfast</Text>
+    //         <BarChart
+    //           style={{
+    //             marginVertical: 0,
+    //             borderRadius: 16,
+    //             padding: 0,
+    //             marginRight: 10,
+    //           }}
+    //           data={breakfastData}
+    //           width={width - 100}
+    //           height={180}
+    //           yAxisLabel=""
+    //           yAxisSuffix=""
+    //           chartConfig={chartConfig}
+    //           verticalLabelRotation={0}
+    //           withHorizontalLabels={true}
+    //           withInnerLines={false}
+    //           fromZero={true}
+    //         />
+    //       </View>
+    //       <View style={styles.center} onStartShouldSetResponder={() => true}>
+    //         <Text>Lunch</Text>
+    //         <BarChart
+    //           style={{
+    //             marginVertical: 0,
+    //             borderRadius: 16,
+    //           }}
+    //           data={data ? customLunchData(data) : lunchData}
+    //           width={width - 100}
+    //           height={180}
+    //           yAxisLabel=""
+    //           yAxisSuffix=""
+    //           chartConfig={chartConfig}
+    //           verticalLabelRotation={0}
+    //           withHorizontalLabels={true}
+    //           withInnerLines={false}
+    //           fromZero={true}
+    //         />
+    //       </View>
+    //       <View style={styles.center} onStartShouldSetResponder={() => true}>
+    //         <Text>Dinner</Text>
+    //         <BarChart
+    //           style={{
+    //             marginVertical: 0,
+    //             borderRadius: 16,
+    //           }}
+    //           data={dinnerData}
+    //           width={width - 100}
+    //           height={180}
+    //           yAxisLabel=""
+    //           yAxisSuffix=""
+    //           chartConfig={chartConfig}
+    //           verticalLabelRotation={0}
+    //           withHorizontalLabels={true}
+    //           withInnerLines={false}
+    //           fromZero={true}
+    //         />
+    //       </View>
+    //     </ScrollView>
+    //     <View style={styles.toggleButtonContainer}>
+    //       <ButtonToggleGroup
+    //         highlightBackgroundColor={"#E76666"}
+    //         highlightTextColor={"white"}
+    //         inactiveBackgroundColor={"transparent"}
+    //         inactiveTextColor={"#000"}
+    //         values={["Short", "Medium", "Long"]}
+    //         value={value}
+    //         onSelect={(val) => setValue(val)}
+    //         style={{
+    //           height: 40,
+    //           width: 300,
+    //         }}
+    //       />
+    //       <Text style={styles.subtitle}>
+    //         Line not medium right now? Be sure to...
+    //       </Text>
+    //     </View>
+    //     <Button
+    //       onPress={() => {
+    //         return sendLineData(locations[props.idx], value[0]);
+    //       }}
+    //       title={"Update"}
+    //       color={"#E76666"}
+    //     />
+    //   </View>
+    // </ParallaxScrollView>
   );
 }
 

@@ -87,7 +87,7 @@ const chartConfig = {
   decimalPlaces: 0,
 };
 
-const getBackgroundColor = (line: String) => {
+const getBackgroundColor = (line: string) => {
   switch (line) {
     case "s":
       return "#B0DF63";
@@ -101,9 +101,9 @@ const getBackgroundColor = (line: String) => {
 };
 
 interface CardProps {
-  name: String;
+  name: string;
   idx: number;
-  line: String;
+  line: string;
   img?: string;
   data?: number[];
   isOpen?: boolean;
@@ -144,14 +144,17 @@ export default function Card(props: CardProps) {
         timestamp: timestamp,
       };
 
-      const response = await fetch("http://localhost:8080/api/v1/data/lines", {
-        method: "POST",
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(sampleBody),
-      });
+      const response = await fetch(
+        "https://cf93-129-59-122-20.ngrok.io/api/v1/data/lines",
+        {
+          method: "POST",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(sampleBody),
+        }
+      );
       const json = await response.json();
       const message = json.message;
       showToast(message);
@@ -317,7 +320,9 @@ export default function Card(props: CardProps) {
                 width: 300,
               }}
             />
-            <Text style={styles.subtitle}>Line not medium right now? Be sure to...</Text>
+            <Text style={styles.subtitle}>
+              Line not medium right now? Be sure to...
+            </Text>
           </View>
           <Button
             onPress={() => {
