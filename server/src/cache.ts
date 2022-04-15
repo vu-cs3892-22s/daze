@@ -78,7 +78,7 @@ export const getDataForDiningHalls = async (db: number) => {
       lineLength: result,
       longitude: long,
       latitude: lat,
-      name: name,
+      name: name
     };
   }
 
