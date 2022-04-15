@@ -12,9 +12,10 @@ import type { DefaultScreenNavigationProp } from "../types";
 type NavigationProps = {
   navigation: DefaultScreenNavigationProp;
   name: string;
+  type: string;
 };
 
-export default function MiniCard({ navigation, name }: NavigationProps) {
+export default function MiniCard({ navigation, name, type }: NavigationProps) {
   const onPress = () => {
     navigation.navigate("Dining Hall", {
       name: name,
@@ -27,10 +28,18 @@ export default function MiniCard({ navigation, name }: NavigationProps) {
   return (
     <TouchableOpacity onPress={onPress} style={styles.root}>
       <View style={styles.iconContainer}>
-        <Image
-          style={{ width: 40, height: 40 }}
-          source={require("../assets/spoonfork.png")}
-        />
+        {
+          (type === "Residential Dining Hall") ? 
+            <Image
+              style={{ width: 40, height: 40 }}
+              source={require("../assets/spoonfork.png")}
+            />
+            :
+            <Image
+              style={{ width: 40, height: 40 }}
+              source={require("../assets/coffee.png")}
+            />
+        }
       </View>
       <View style={styles.middleContainer}>
         <Text style={styles.diningHallName}>{name.replace(/_/g, " ")}</Text>
