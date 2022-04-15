@@ -1,4 +1,4 @@
-import type { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
+import type { BottomTabNavigationProp } from "@react-navigation/bottom-tabs";
 
 export type RootTabParamList = {
   "Map View": { name: string };
