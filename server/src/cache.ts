@@ -8,7 +8,8 @@ interface DataBody {
 }
 
 const diningHallNames = [
-  '2301',
+  '2301_Bowls',
+  '2301_Smoothies',
   'Commons',
   'EBI',
   'Kissam',
@@ -30,7 +31,8 @@ const diningHallNames = [
 ];
 
 const diningHallLocations: { [key: string]: number[] } = {
-  2301: [36.1465882, -86.8035787],
+  '2301_Bowls': [36.1465882, -86.8035787],
+  '2301_Smoothies': [36.1465882, -86.8035787],
   Commons: [36.1418863, -86.7971635],
   EBI: [36.1486501, -86.8037112],
   Kissam: [36.1493254, -86.8018191],

@@ -183,7 +183,8 @@ function calculateMode(data: any) {
 
 function calculateWaitTime(diningHallName: string, lineLength: string) {
   const diningHallThroughputs: { [key: string]: number } = {
-    '2301': 1,
+    '2301_Bowls': 1,
+    '2301_Smoothies': 2,
     Commons: 2,
     EBI: 3,
     Kissam: 4,
