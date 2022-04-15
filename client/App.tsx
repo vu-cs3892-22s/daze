@@ -6,6 +6,7 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import * as Google from "expo-auth-session/providers/google";
 import * as WebBrowser from "expo-web-browser";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import HomeScreen from "./components/Home";
 import Update from "./components/Update";
@@ -13,6 +14,7 @@ import DefaultScreen from "./components/DefaultScreen";
 import MapView from "./components/MapView";
 import ListView from "./components/ListView";
 import DiningHall from "./components/DiningHall";
+import { Image } from "react-native";
 
 const Tab = createBottomTabNavigator();
 
@@ -22,7 +24,6 @@ const attemptLogin = async (accessToken: string | undefined) => {
   // Should only be called when user tries to log in
   // Stores secret key in local storage and creates user on server side if not already created
 
-  // TODO: send picture
   const { id, email, picture } = await (
     await fetch("https://www.googleapis.com/userinfo/v2/me", {
       method: "GET",
@@ -35,7 +36,6 @@ const attemptLogin = async (accessToken: string | undefined) => {
 
   // TODO: no hardcode salt
   const secretKey = id + email; //PBKDF2(id + email, "daze-secret-key");
-  console.log("hey what the fuck:", email, secretKey);
   // TODO: no hardcode
   try {
     await fetch("https://cf93-129-59-122-20.ngrok.io/api/v1/user", {
@@ -50,6 +50,15 @@ const attemptLogin = async (accessToken: string | undefined) => {
     });
   } catch (e: unknown) {
     // TODO: handle error
+    throw Error(e as string);
+  }
+
+  // Save picture to local storage
+  try {
+    const userInfo = { secretKey, picture, email };
+    await AsyncStorage.setItem("userInfo", JSON.stringify(userInfo));
+    return userInfo;
+  } catch (e: unknown) {
     throw Error(e as string);
   }
 };
@@ -74,6 +83,22 @@ export default function App() {
   }, []);
 
   // User login
+  const [user, setUser] = React.useState<{
+    picture: string;
+    email: string;
+    secretKey: string;
+  } | null>(null);
+
+  useEffect(() => {
+    AsyncStorage.getItem("userInfo").then((userInfo) => {
+      if (userInfo) {
+        setUser(JSON.parse(userInfo));
+      } else {
+        setUser(null);
+      }
+    });
+  }, []);
+
   const [request, response, promptAsync] = Google.useAuthRequest({
     expoClientId:
       "918301654843-4c4em6250rlful1nam4divl5v4f5278a.apps.googleusercontent.com",
@@ -84,11 +109,13 @@ export default function App() {
     webClientId:
       "918301654843-4c4em6250rlful1nam4divl5v4f5278a.apps.googleusercontent.com",
   });
-  const [loggedIn, toggleLoggedIn] = React.useState(false);
-  React.useEffect(() => {
+
+  useEffect(() => {
     if (response?.type === "success") {
       attemptLogin(response.authentication?.accessToken)
-        .then(() => toggleLoggedIn(true))
+        .then(async (userInfo) => {
+          setUser(userInfo);
+        })
         // TODO: handle error
         .catch(console.error);
 
@@ -130,15 +157,28 @@ export default function App() {
             },
             tabBarActiveTintColor: "tomato",
             tabBarInactiveTintColor: "gray",
-            headerRight: () => (
-              <Ionicons
-                name="person-circle"
-                size={24}
-                color="white"
-                onPress={() => promptAsync()}
-                style={{ paddingRight: 5 }}
-              />
-            ),
+            headerRight: () =>
+              user ? (
+                <Image
+                  source={{
+                    uri: user.picture,
+                  }}
+                  style={{
+                    width: 24,
+                    height: 24,
+                    marginRight: 8,
+                    borderRadius: 12,
+                  }}
+                />
+              ) : (
+                <Ionicons
+                  name="person-circle"
+                  size={24}
+                  color="white"
+                  onPress={() => promptAsync()}
+                  style={{ paddingRight: 5 }}
+                />
+              ),
           })}
         >
           <Tab.Screen name="List View" component={ListView} />
