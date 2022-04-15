@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { NativeBaseProvider } from "native-base";
+import { Button, NativeBaseProvider } from "native-base";
 import { NavigationContainer } from "@react-navigation/native";
 import { Ionicons, AntDesign, Feather } from "@expo/vector-icons";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
@@ -15,6 +15,7 @@ import MapView from "./components/MapView";
 import ListView from "./components/ListView";
 import DiningHall from "./components/DiningHall";
 import { Image } from "react-native";
+import { TouchableWithoutFeedback } from "react-native-gesture-handler";
 
 const Tab = createBottomTabNavigator();
 
@@ -159,17 +160,19 @@ export default function App() {
             tabBarInactiveTintColor: "gray",
             headerRight: () =>
               user ? (
-                <Image
-                  source={{
-                    uri: user.picture,
-                  }}
-                  style={{
-                    width: 24,
-                    height: 24,
-                    marginRight: 8,
-                    borderRadius: 12,
-                  }}
-                />
+                <TouchableWithoutFeedback onPress={() => promptAsync()}>
+                  <Image
+                    source={{
+                      uri: user.picture,
+                    }}
+                    style={{
+                      width: 24,
+                      height: 24,
+                      marginRight: 8,
+                      borderRadius: 12,
+                    }}
+                  />
+                </TouchableWithoutFeedback>
               ) : (
                 <Ionicons
                   name="person-circle"
