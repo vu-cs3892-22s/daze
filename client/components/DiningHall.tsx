@@ -14,6 +14,8 @@ import { BarChart } from "react-native-chart-kit";
 import ButtonToggleGroup from "react-native-button-toggle-group";
 
 import type { DefaultScreenNavigationProp } from "../types";
+import { Alert } from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 type NavigationProps = { route: any; navigation: DefaultScreenNavigationProp };
 
@@ -83,6 +85,71 @@ const chartConfig = {
   decimalPlaces: 0,
 };
 const { width, height } = Dimensions.get("window");
+
+const showToast = (message: string) => {
+  Alert.alert(message);
+};
+
+const verifyUser = async (body: { email: string; secretKey: string }) => {
+  return await fetch("https://cf93-129-59-122-20.ngrok.io/api/v1/verify", {
+    method: "POST",
+    body: JSON.stringify(body),
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+};
+
+const sendLineData = async (diningHallName: string, lineLength: string) => {
+  // First, check if user is logged in
+  const user = JSON.parse(await AsyncStorage.getItem("userInfo"));
+  // if (
+  //   !user ||
+  //   !(
+  //     await (
+  //       await verifyUser({ email: user.email, secretKey: user.secretKey })
+  //     ).json()
+  //   ).verified
+  // ) {
+  //   showToast("Please login to save your line length");
+  //   return;
+  // } else {
+
+  // }
+  try {
+    const timestamp = new Date().getTime();
+    const body = {
+      email: user?.email,
+      secretKey: user?.secretKey,
+      diningHallName: diningHallName,
+      lineLength: lineLength,
+      timestamp: timestamp,
+    };
+
+    const response = await fetch(
+      "https://cf93-129-59-122-20.ngrok.io/api/v1/data/lines",
+      {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(body),
+      }
+    );
+    if (response.status === 401) {
+      showToast("Please login to save your line length");
+      return;
+    }
+    const json = await response.json();
+    const message = json.message;
+    console.log("json.message", message);
+    showToast(message);
+  } catch (error) {
+    console.error(error);
+  }
+};
+
 export default function DiningHall({ route, navigation }: NavigationProps) {
   const [loading, setLoading] = useState(true);
   const [diningHall, setDiningHall] = useState<Object>({});
@@ -96,7 +163,7 @@ export default function DiningHall({ route, navigation }: NavigationProps) {
   const getDiningHall = async () => {
     try {
       const response = await fetch(
-        `http://localhost:8080/api/v1/dining_halls/${name}`
+        `https://cf93-129-59-122-20.ngrok.io/api/v1/dining_halls/${name}`
       );
 
       const json = await response.json();
@@ -120,6 +187,7 @@ export default function DiningHall({ route, navigation }: NavigationProps) {
   }, [route.params]);
 
   return (
+    // <View>Hello</View>
     <ParallaxScrollView
       contentBackgroundColor="#FFF"
       parallaxHeaderHeight={200}

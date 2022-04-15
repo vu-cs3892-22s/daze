@@ -6,17 +6,15 @@ type NavigationProps = { navigation: DefaultScreenNavigationProp };
 
 export default function DefaultScreen({ navigation }: NavigationProps) {
   const signIn = async () => {
-
     try {
-      const response = await fetch("http://localhost:8080/auth");
+      const response = await fetch("https://cf93-129-59-122-20.ngrok.io/auth");
 
       const json = await response.json();
       const data = json.data;
-
     } catch (error) {
       console.error(error);
     }
-  }
+  };
 
   return (
     <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>

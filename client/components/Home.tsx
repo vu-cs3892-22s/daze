@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { StyleSheet, ScrollView, View, Text } from "react-native";
 import { Box } from "native-base";
 import ModalDropdown from "react-native-modal-dropdown";
-import { GoogleSigninButton } from '@react-native-google-signin/google-signin';
+import { GoogleSigninButton } from "@react-native-google-signin/google-signin";
 
 import Card from "./Card";
 
@@ -11,9 +11,9 @@ interface HomeScreenProps {
 }
 
 interface DiningHallData {
-  diningHallName: string,
-  lineLength: string,
-  timestamp: number
+  diningHallName: string;
+  lineLength: string;
+  timestamp: number;
 }
 
 export default function HomeScreen({ navigation }: HomeScreenProps) {
@@ -21,25 +21,29 @@ export default function HomeScreen({ navigation }: HomeScreenProps) {
 
   const getAllLocations = async () => {
     try {
-      const response = await fetch("http://localhost:8080/api/v1/dining_halls");
+      const response = await fetch(
+        "https://cf93-129-59-122-20.ngrok.io/api/v1/dining_halls"
+      );
       const json = await response.json();
       const data = json.data;
-      alert(data)
+      alert(data);
 
       // setLineLength(ebiLineLength)
     } catch (error) {
       console.error(error);
     }
-  }
+  };
 
   const getLocData = async () => {
     try {
-      const response = await fetch("http://localhost:8080/api/v1/location/EBI");
+      const response = await fetch(
+        "https://cf93-129-59-122-20.ngrok.io/api/v1/location/EBI"
+      );
       const json = await response.json();
       const data = json.data;
       const ebiLineLength = data["lineLength"][0].toLowerCase();
 
-      setLineLength(ebiLineLength)
+      setLineLength(ebiLineLength);
     } catch (error) {
       console.error(error);
     }
@@ -48,19 +52,19 @@ export default function HomeScreen({ navigation }: HomeScreenProps) {
   const sortByWait = (locations: DiningHallData[]) => {
     return locations.sort((x, y) => {
       if (x.lineLength === "s" && y.lineLength === "m") {
-        return -1
+        return -1;
       }
       if (x.lineLength === "m" && y.lineLength === "l") {
-        return 1
+        return 1;
       }
-      return 0
+      return 0;
       //not tested
-    })
-  }
+    });
+  };
 
   useEffect(() => {
-    getAllLocations()
-  }, [])
+    getAllLocations();
+  }, []);
   return (
     <View style={styles.baseView}>
       <ScrollView style={styles.scrollView}>
@@ -75,9 +79,7 @@ export default function HomeScreen({ navigation }: HomeScreenProps) {
                 }}
               />
             </View>
-            <View>
-              
-            </View>
+            <View></View>
             <Card
               name={"2301 Allergen Free"}
               idx={0}
@@ -103,11 +105,51 @@ export default function HomeScreen({ navigation }: HomeScreenProps) {
               }
               isOpen
             />
-            <Card isOpen name={"Kissam Kitchen"} idx={3} line="s" img={"https://images.unsplash.com/photo-1466978913421-dad2ebd01d17?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=3474&q=80"} />
-            <Card isOpen={false} name={"McTyeire"} idx={4} line="s" img={"https://images.unsplash.com/photo-1466978913421-dad2ebd01d17?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=3474&q=80"}/>
-            <Card isOpen name={"Commons"} idx={5} line="m" img={"https://images.unsplash.com/photo-1466978913421-dad2ebd01d17?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=3474&q=80"}/>
-            <Card isOpen name={"Rand"} idx={6} line="l" img={"https://images.unsplash.com/photo-1466978913421-dad2ebd01d17?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=3474&q=80"}/>
-            <Card isOpen name={"Zeppos"} idx={7} line="l" img={"https://images.unsplash.com/photo-1466978913421-dad2ebd01d17?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=3474&q=80"}/>
+            <Card
+              isOpen
+              name={"Kissam Kitchen"}
+              idx={3}
+              line="s"
+              img={
+                "https://images.unsplash.com/photo-1466978913421-dad2ebd01d17?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=3474&q=80"
+              }
+            />
+            <Card
+              isOpen={false}
+              name={"McTyeire"}
+              idx={4}
+              line="s"
+              img={
+                "https://images.unsplash.com/photo-1466978913421-dad2ebd01d17?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=3474&q=80"
+              }
+            />
+            <Card
+              isOpen
+              name={"Commons"}
+              idx={5}
+              line="m"
+              img={
+                "https://images.unsplash.com/photo-1466978913421-dad2ebd01d17?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=3474&q=80"
+              }
+            />
+            <Card
+              isOpen
+              name={"Rand"}
+              idx={6}
+              line="l"
+              img={
+                "https://images.unsplash.com/photo-1466978913421-dad2ebd01d17?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=3474&q=80"
+              }
+            />
+            <Card
+              isOpen
+              name={"Zeppos"}
+              idx={7}
+              line="l"
+              img={
+                "https://images.unsplash.com/photo-1466978913421-dad2ebd01d17?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=3474&q=80"
+              }
+            />
 
             {/* <Card name={"Alumni Cafe"} idx={8} line="s" />
             <Card name={"Holy Smokes"} idx={9} line="l" />
@@ -164,6 +206,6 @@ const styles = StyleSheet.create({
   },
   sortText: {
     fontSize: 16,
-    fontWeight: 'bold',
-  }
+    fontWeight: "bold",
+  },
 });
