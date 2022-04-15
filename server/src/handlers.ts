@@ -106,6 +106,14 @@ export const submitData = async (
   req: express.Request,
   res: express.Response
 ) => {
+  // First verify user
+  const { email, secretKey } = req.body;
+  const user = await queryGetUserSecretKey(email);
+  if (!(email && secretKey && user && user.SecretKey === secretKey)) {
+    res.status(401).send();
+    return;
+  }
+
   try {
     const data = req.body;
     // index 0 is the database for the data
@@ -113,7 +121,7 @@ export const submitData = async (
   } catch (err) {
     console.log(err);
   }
-  res.send({
+  res.status(200).send({
     message: 'Posting new line data'
   });
 };
