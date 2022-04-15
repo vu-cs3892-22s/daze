@@ -7,6 +7,7 @@ import {
   Text,
   StyleSheet,
   Image,
+  ActivityIndicator
 } from "react-native";
 import ParallaxScrollView from "react-native-parallax-scroll-view";
 import { BarChart } from "react-native-chart-kit";
@@ -83,6 +84,7 @@ const chartConfig = {
 };
 const { width, height } = Dimensions.get("window");
 export default function DiningHall({ route, navigation }: NavigationProps) {
+  const [loading, setLoading] = useState(true);
   const [diningHall, setDiningHall] = useState<Object>({});
   const scrollRef = useRef<ScrollView | null>(null);
   const [value, setValue] = useState("Medium");
@@ -100,6 +102,7 @@ export default function DiningHall({ route, navigation }: NavigationProps) {
       const json = await response.json();
       const data = json.data;
       setDiningHall(data);
+      setLoading(false);
     } catch (error) {
       console.error(error);
     }
@@ -113,6 +116,7 @@ export default function DiningHall({ route, navigation }: NavigationProps) {
 
   useEffect(() => {
     getDiningHall();
+    return () => setLoading(true);
   }, [route.params]);
 
   return (
@@ -127,119 +131,125 @@ export default function DiningHall({ route, navigation }: NavigationProps) {
         />
       )}
     >
-      <View style={styles.content}>
-        <Text style={styles.title}>{name.replace(/_/g, ' ')}</Text>
+      {loading ? (
+        <View style={{ display: "flex", justifyContent: "center", alignItems: "center", height: height - 300 }}>
+          <ActivityIndicator size="large" />
+        </View>
+      ) : (
+        <View style={styles.content}>
+          <Text style={styles.title}>{name.replace(/_/g, " ")}</Text>
 
-        <View style={styles.center}>
-          <Text>
-            Current Wait:{" "}
-            {line === "l"
-              ? "Approx 40 minutes"
-              : line === "m"
-              ? "Approx 20 minutes"
-              : "Under 5 minutes"}{" "}
-          </Text>
-          <Text>Average Wait Times: {days[currentDay]}</Text>
-        </View>
-        <ScrollView
-          ref={scrollRef}
-          horizontal={true}
-          showsVerticalScrollIndicator={false}
-          showsHorizontalScrollIndicator={false}
-          decelerationRate={0}
-          snapToInterval={320}
-          snapToAlignment={"center"}
-          contentInset={{
-            left: 0,
-            right: 0,
-          }}
-        >
-          <View style={styles.center} onStartShouldSetResponder={() => true}>
-            <Text>Breakfast</Text>
-            <BarChart
-              style={{
-                marginVertical: 0,
-                borderRadius: 16,
-                padding: 0,
-                marginRight: 10,
-              }}
-              data={breakfastData}
-              width={width - 100}
-              height={180}
-              yAxisLabel=""
-              yAxisSuffix=""
-              chartConfig={chartConfig}
-              verticalLabelRotation={0}
-              withHorizontalLabels={true}
-              withInnerLines={false}
-              fromZero={true}
-            />
+          <View style={styles.center}>
+            <Text>
+              Current Wait:{" "}
+              {line === "l"
+                ? "Approx 40 minutes"
+                : line === "m"
+                ? "Approx 20 minutes"
+                : "Under 5 minutes"}{" "}
+            </Text>
+            <Text>Average Wait Times: {days[currentDay]}</Text>
           </View>
-          <View style={styles.center} onStartShouldSetResponder={() => true}>
-            <Text>Lunch</Text>
-            <BarChart
-              style={{
-                marginVertical: 0,
-                borderRadius: 16,
-              }}
-              data={data ? customLunchData(data) : lunchData}
-              width={width - 100}
-              height={180}
-              yAxisLabel=""
-              yAxisSuffix=""
-              chartConfig={chartConfig}
-              verticalLabelRotation={0}
-              withHorizontalLabels={true}
-              withInnerLines={false}
-              fromZero={true}
-            />
-          </View>
-          <View style={styles.center} onStartShouldSetResponder={() => true}>
-            <Text>Dinner</Text>
-            <BarChart
-              style={{
-                marginVertical: 0,
-                borderRadius: 16,
-              }}
-              data={dinnerData}
-              width={width - 100}
-              height={180}
-              yAxisLabel=""
-              yAxisSuffix=""
-              chartConfig={chartConfig}
-              verticalLabelRotation={0}
-              withHorizontalLabels={true}
-              withInnerLines={false}
-              fromZero={true}
-            />
-          </View>
-        </ScrollView>
-        <View style={styles.toggleButtonContainer}>
-          <ButtonToggleGroup
-            highlightBackgroundColor={"#E76666"}
-            highlightTextColor={"white"}
-            inactiveBackgroundColor={"transparent"}
-            inactiveTextColor={"#000"}
-            values={["Short", "Medium", "Long"]}
-            value={value}
-            onSelect={(val) => setValue(val)}
-            style={{
-              height: 40,
-              width: 300,
+          <ScrollView
+            ref={scrollRef}
+            horizontal={true}
+            showsVerticalScrollIndicator={false}
+            showsHorizontalScrollIndicator={false}
+            decelerationRate={0}
+            snapToInterval={320}
+            snapToAlignment={"center"}
+            contentInset={{
+              left: 0,
+              right: 0,
             }}
+          >
+            <View style={styles.center} onStartShouldSetResponder={() => true}>
+              <Text>Breakfast</Text>
+              <BarChart
+                style={{
+                  marginVertical: 0,
+                  borderRadius: 16,
+                  padding: 0,
+                  marginRight: 10,
+                }}
+                data={breakfastData}
+                width={width - 100}
+                height={180}
+                yAxisLabel=""
+                yAxisSuffix=""
+                chartConfig={chartConfig}
+                verticalLabelRotation={0}
+                withHorizontalLabels={true}
+                withInnerLines={false}
+                fromZero={true}
+              />
+            </View>
+            <View style={styles.center} onStartShouldSetResponder={() => true}>
+              <Text>Lunch</Text>
+              <BarChart
+                style={{
+                  marginVertical: 0,
+                  borderRadius: 16,
+                }}
+                data={data ? customLunchData(data) : lunchData}
+                width={width - 100}
+                height={180}
+                yAxisLabel=""
+                yAxisSuffix=""
+                chartConfig={chartConfig}
+                verticalLabelRotation={0}
+                withHorizontalLabels={true}
+                withInnerLines={false}
+                fromZero={true}
+              />
+            </View>
+            <View style={styles.center} onStartShouldSetResponder={() => true}>
+              <Text>Dinner</Text>
+              <BarChart
+                style={{
+                  marginVertical: 0,
+                  borderRadius: 16,
+                }}
+                data={dinnerData}
+                width={width - 100}
+                height={180}
+                yAxisLabel=""
+                yAxisSuffix=""
+                chartConfig={chartConfig}
+                verticalLabelRotation={0}
+                withHorizontalLabels={true}
+                withInnerLines={false}
+                fromZero={true}
+              />
+            </View>
+          </ScrollView>
+          <View style={styles.toggleButtonContainer}>
+            <ButtonToggleGroup
+              highlightBackgroundColor={"#E76666"}
+              highlightTextColor={"white"}
+              inactiveBackgroundColor={"transparent"}
+              inactiveTextColor={"#000"}
+              values={["Short", "Medium", "Long"]}
+              value={value}
+              onSelect={(val) => setValue(val)}
+              style={{
+                height: 40,
+                width: 300,
+              }}
+            />
+            <Text style={styles.subtitle}>
+              Line not medium right now? Be sure to...
+            </Text>
+          </View>
+          <Button
+            onPress={() => {
+              return sendLineData(locations[props.idx], value[0]);
+            }}
+            title={"Update"}
+            color={"#E76666"}
           />
-          <Text style={styles.subtitle}>
-            Line not medium right now? Be sure to...
-          </Text>
         </View>
-        <Button
-          onPress={() => {
-            return sendLineData(locations[props.idx], value[0]);
-          }}
-          title={"Update"}
-          color={"#E76666"}
-        />
-      </View>
+      )}
     </ParallaxScrollView>
   );
 }
@@ -259,6 +269,7 @@ const styles = StyleSheet.create({
   title: {
     fontWeight: "700",
     fontSize: 36,
+    marginBottom: 12,
   },
   center: {
     display: "flex",
