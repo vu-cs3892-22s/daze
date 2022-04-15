@@ -73,10 +73,12 @@ export const getDataForDiningHalls = async (db: number) => {
     const result = await client.lRange(diningHallName, 0, -1);
     const long = diningHallLocations[diningHallName][0];
     const lat = diningHallLocations[diningHallName][1];
+    const name = diningHallName;
     results[diningHallName] = {
       lineLength: result,
       longitude: long,
-      latitude: lat
+      latitude: lat,
+      name: name,
     };
   }
 

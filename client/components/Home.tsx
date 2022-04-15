@@ -19,6 +19,19 @@ interface DiningHallData {
 export default function HomeScreen({ navigation }: HomeScreenProps) {
   const [lineLength, setLineLength] = useState<string>("m");
 
+  const getAllLocations = async () => {
+    try {
+      const response = await fetch("http://localhost:8080/api/v1/dining_halls");
+      const json = await response.json();
+      const data = json.data;
+      alert(data)
+
+      // setLineLength(ebiLineLength)
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
   const getLocData = async () => {
     try {
       const response = await fetch("http://localhost:8080/api/v1/location/EBI");
@@ -46,7 +59,7 @@ export default function HomeScreen({ navigation }: HomeScreenProps) {
   }
 
   useEffect(() => {
-    getLocData()
+    getAllLocations()
   }, [])
   return (
     <View style={styles.baseView}>
