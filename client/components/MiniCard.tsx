@@ -1,5 +1,12 @@
 import React from "react";
-import { Button, View, Text, Image, StyleSheet, TouchableOpacity } from "react-native";
+import {
+  Button,
+  View,
+  Text,
+  Image,
+  StyleSheet,
+  TouchableOpacity,
+} from "react-native";
 import type { DefaultScreenNavigationProp } from "../types";
 
 type NavigationProps = {
@@ -13,29 +20,29 @@ export default function MiniCard({ navigation, name }: NavigationProps) {
       name: name,
       idx: 1,
       line: "m",
-      data: [90, 80, 70, 90, 50]
-    })
-  }
+      data: [90, 80, 70, 90, 50],
+    });
+  };
 
   return (
-      <TouchableOpacity onPress={onPress} style={styles.root}>
-        <View style={styles.iconContainer}>
-          <Image
-            style={{ width: 40, height: 40 }}
-            source={require("../assets/spoonfork.png")}
-          />
+    <TouchableOpacity onPress={onPress} style={styles.root}>
+      <View style={styles.iconContainer}>
+        <Image
+          style={{ width: 40, height: 40 }}
+          source={require("../assets/spoonfork.png")}
+        />
+      </View>
+      <View style={styles.middleContainer}>
+        <Text style={styles.diningHallName}>{name.replace(/_/g, " ")}</Text>
+        <Text style={styles.subtitle}>Open until xx:xx</Text>
+        <Text style={styles.subtitle}>Dinner starts xx:xx</Text>
+      </View>
+      <View style={styles.waitTimeContainer}>
+        <View style={styles.waitTimeBlob}>
+          <Text style={styles.waitTimeMinute}>7</Text>
+          <Text>min</Text>
         </View>
-        <View style={styles.middleContainer}>
-          <Text style={styles.diningHallName}>{name.replace(/_/g, ' ')}</Text>
-          <Text style={styles.subtitle}>Open until xx:xx</Text>
-          <Text style={styles.subtitle}>Dinner starts xx:xx</Text>
-        </View>
-        <View style={styles.waitTimeContainer}>
-          <View style={styles.waitTimeBlob}>
-            <Text style={styles.waitTimeMinute}>7</Text>
-            <Text>min</Text>
-          </View>
-        </View>
+      </View>
     </TouchableOpacity>
   );
 }
