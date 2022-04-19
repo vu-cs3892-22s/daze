@@ -187,7 +187,8 @@ export const getDiningHalls = async (
           longitude: data[key].longitude,
           latitude: data[key].latitude,
           type: data[key].type,
-          name: data[key].name
+          name: data[key].name,
+          image: data[key].image
         };
       } else {
         rand[key] = {
@@ -196,7 +197,8 @@ export const getDiningHalls = async (
           longitude: data[key].longitude,
           latitude: data[key].latitude,
           type: data[key].type,
-          name: data[key].name
+          name: data[key].name,
+          image: data[key].image
         };
       }
     }

@@ -51,6 +51,42 @@ const diningHallLocations: { [key: string]: number[] } = {
   Food_For_Thought: [36.1453047, -86.8008198]
 };
 
+const diningHallImages: { [key: string]: string } = {
+  2301: 'https://i.ibb.co/p4kMnkZ/2301.png',
+  Commons: 'https://i.ibb.co/y54yDbs/Commons.jpg',
+  EBI: 'https://www.simplyrecipes.com/thmb/NOwXpq1nenarGiJnOTV7o5Oe_Aw=/1777x1333/smart/filters:no_upscale()/__opt__aboutcom__coeus__resources__content_migration__simply_recipes__uploads__2019__04__Beef-Pho-LEAD-2-afc6b6a9144947fb9d72070d7ea8c95c.jpg',
+  Kissam:
+    'https://images.unsplash.com/photo-1631311695255-8dde6bf96cb5?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MXx8Z3JhaW4lMjBib3dsfGVufDB8fDB8fA%3D%3D&w=1000&q=80',
+  McTyeire:
+    'https://images.unsplash.com/photo-1466978913421-dad2ebd01d17?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=3474&q=80',
+  Rand_Bowls:
+    'https://cdn.vanderbilt.edu/vu-web/insidedores-wpcontent/20190412154412/IMG_5192-488x650.jpg',
+  Rand_Randwich:
+    'https://simply-delicious-food.com/wp-content/uploads/2020/07/Easy-salad-sandwiches-with-herb-mayo-5.jpg',
+  Rand_Fresh_Mex:
+    'https://food.fnr.sndimg.com/content/dam/images/food/fullset/2019/9/6/FNM_100119-Tex-Mex-Chicken-Salad-Bowl_s4x3.jpg.rend.hgtvcom.616.462.suffix/1567792788244.jpeg',
+  Rand_Mongolian:
+    'https://crazybowlsandwraps.com/wp-content/uploads/2019/09/stir-fry-bowl-edited.jpg',
+  Rand_Chicken_Shack:
+    'https://goldenfingers.us/wp-content/uploads/2020/03/Crispy_Chicken_Sandwich.jpg',
+  Zeppos:
+    'https://i0.wp.com/bucketlistjourney.net/wp-content/uploads/2016/06/Gyros-RF-2-2.jpg',
+  Alumni: 'https://farm4.staticflickr.com/3907/15390517111_10e4d037dd_b.jpg',
+  Grins: 'https://i.ibb.co/6bS28bP/grins.jpg',
+  Holy_Smokes:
+    'https://vanderbilthustler.com/wp-content/uploads/2019/10/AryehsKitchen20180830EG-900x675.jpg',
+  Local_Java:
+    'https://www.godairyfree.org/wp-content/uploads/2018/10/Pumpkin-Spice-Latte-online-vert5.jpg',
+  Suzies_Blair:
+    'https://farm4.staticflickr.com/3907/15390517111_10e4d037dd_b.jpg',
+  Suzies_FGH:
+    'https://farm4.staticflickr.com/3907/15390517111_10e4d037dd_b.jpg',
+  Suzies_MRB:
+    'https://farm4.staticflickr.com/3907/15390517111_10e4d037dd_b.jpg',
+  Food_For_Thought:
+    'https://farm4.staticflickr.com/3907/15390517111_10e4d037dd_b.jpg'
+};
+
 const diningHallTypes: { [key: string]: string } = {
   2301: 'Residential Dining Hall',
   Commons: 'Residential Dining Hall',
@@ -96,13 +132,15 @@ export const getDataForDiningHalls = async (db: number) => {
     const long = diningHallLocations[diningHallName][0];
     const lat = diningHallLocations[diningHallName][1];
     const type = diningHallTypes[diningHallName];
+    const image = diningHallImages[diningHallName];
     const name = diningHallName;
     results[diningHallName] = {
       lineLength: result,
       longitude: long,
       latitude: lat,
       name: name,
-      type: type
+      type: type,
+      image: image
     };
   }
 
