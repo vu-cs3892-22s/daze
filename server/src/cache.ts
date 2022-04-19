@@ -52,7 +52,9 @@ const diningHallLocations: { [key: string]: number[] } = {
 };
 
 const diningHallImages: { [key: string]: string } = {
-  2301: 'https://i.ibb.co/p4kMnkZ/2301.png',
+  '2301_Bowls': 'https://i.ibb.co/p4kMnkZ/2301.png',
+  '2301_Smoothies':
+    'https://marquemedical.com/wp-content/uploads/2017/09/61783418_l.jpg',
   Commons: 'https://i.ibb.co/y54yDbs/Commons.jpg',
   EBI: 'https://www.simplyrecipes.com/thmb/NOwXpq1nenarGiJnOTV7o5Oe_Aw=/1777x1333/smart/filters:no_upscale()/__opt__aboutcom__coeus__resources__content_migration__simply_recipes__uploads__2019__04__Beef-Pho-LEAD-2-afc6b6a9144947fb9d72070d7ea8c95c.jpg',
   Kissam:
