@@ -10,8 +10,6 @@ import {
 } from "react-native";
 import type { DefaultScreenNavigationProp } from "../types";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import DiningHall from "./DiningHall";
-import MapView from "./MapView";
 import MiniCard from "./MiniCard";
 
 type NavigationProps = { navigation: DefaultScreenNavigationProp };
