@@ -185,14 +185,18 @@ export const getDiningHalls = async (
           lineLength: lineMode,
           waitTime: waitTime,
           longitude: data[key].longitude,
-          latitude: data[key].latitude
+          latitude: data[key].latitude,
+          type: data[key].type,
+          name: data[key].name
         };
       } else {
         rand[key] = {
           lineLength: lineMode,
           waitTime: waitTime,
           longitude: data[key].longitude,
-          latitude: data[key].latitude
+          latitude: data[key].latitude,
+          type: data[key].type,
+          name: data[key].name
         };
       }
     }
@@ -238,7 +242,8 @@ function calculateMode(data: any) {
 
 function calculateWaitTime(diningHallName: string, lineLength: string) {
   const diningHallThroughputs: { [key: string]: number } = {
-    '2301': 1,
+    '2301_Bowls': 1,
+    '2301_Smoothies': 2,
     Commons: 2,
     EBI: 3,
     Kissam: 4,

@@ -8,7 +8,8 @@ interface DataBody {
 }
 
 const diningHallNames = [
-  '2301',
+  '2301_Bowls',
+  '2301_Smoothies',
   'Commons',
   'EBI',
   'Kissam',
@@ -30,7 +31,8 @@ const diningHallNames = [
 ];
 
 const diningHallLocations: { [key: string]: number[] } = {
-  2301: [36.1465882, -86.8035787],
+  '2301_Bowls': [36.1465882, -86.8035787],
+  '2301_Smoothies': [36.1465882, -86.8035787],
   Commons: [36.1418863, -86.7971635],
   EBI: [36.1486501, -86.8037112],
   Kissam: [36.1493254, -86.8018191],
@@ -49,6 +51,28 @@ const diningHallLocations: { [key: string]: number[] } = {
   Suzies_FGH: [36.1445184, -86.8036674],
   Suzies_MRB: [36.1445865, -86.8005806],
   Food_For_Thought: [36.1453047, -86.8008198]
+};
+
+const diningHallTypes: { [key: string]: string } = {
+  2301: 'Residential Dining Hall',
+  Commons: 'Residential Dining Hall',
+  EBI: 'Residential Dining Hall',
+  Kissam: 'Residential Dining Hall',
+  McTyeire: 'Residential Dining Hall',
+  Rand_Bowls: 'Residential Dining Hall',
+  Rand_Randwich: 'Residential Dining Hall',
+  Rand_Fresh_Mex: 'Residential Dining Hall',
+  Rand_Mongolian: 'Residential Dining Hall',
+  Rand_Chicken_Shack: 'Residential Dining Hall',
+  Zeppos: 'Residential Dining Hall',
+  Alumni: 'Cafe',
+  Grins: 'Cafe',
+  Holy_Smokes: 'Cafe',
+  Local_Java: 'Cafe',
+  Suzies_Blair: 'Cafe',
+  Suzies_FGH: 'Cafe',
+  Suzies_MRB: 'Cafe',
+  Food_For_Thought: 'Cafe'
 };
 
 export const insertData = async (data: DataBody, db: number) => {
@@ -73,12 +97,14 @@ export const getDataForDiningHalls = async (db: number) => {
     const result = await client.lRange(diningHallName, 0, -1);
     const long = diningHallLocations[diningHallName][0];
     const lat = diningHallLocations[diningHallName][1];
+    const type = diningHallTypes[diningHallName];
     const name = diningHallName;
     results[diningHallName] = {
       lineLength: result,
       longitude: long,
       latitude: lat,
-      name: name
+      name: name,
+      type: type
     };
   }
 

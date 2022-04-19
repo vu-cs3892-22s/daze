@@ -15,19 +15,8 @@ interface DiningHallDataBody {
 export default function MapView({ navigation }: NavigationProps) {
   const [diningHallData, setDiningHallData] =
     useState<DiningHallDataBody | null>(null);
-  const [locations, setLocations] = useState<string[] | null>(null);
+  const [locations, setLocations] = useState<Object[]>([]);
 
-  const signIn = async () => {
-    try {
-      const response = await fetch("http://localhost:8080/auth");
-
-      const json = await response.json();
-      const data = json.data;
-      console.log("JSON", json.google);
-    } catch (error) {
-      console.error(error);
-    }
-  };
 
   const getDiningHallLongLat = async () => {
     try {
@@ -89,8 +78,8 @@ export default function MapView({ navigation }: NavigationProps) {
         initialRegion={{
           latitude: 36.1455971,
           longitude: -86.8042274,
-          latitudeDelta: 0.00922,
-          longitudeDelta: 0.00421,
+          latitudeDelta: 0.016,
+          longitudeDelta: 0.008,
         }}
         style={{ width: width, height: height }}
       >
