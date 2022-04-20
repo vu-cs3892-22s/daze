@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { NativeBaseProvider } from "native-base";
 import { NavigationContainer } from "@react-navigation/native";
 import { Ionicons, AntDesign } from "@expo/vector-icons";
@@ -10,7 +10,8 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import MapView from "./components/MapView";
 import ListView from "./components/ListView";
 import DiningHall from "./components/DiningHall";
-import { Image } from "react-native";
+import ModalPopup from "./components/ModalPopup";
+import { Image, Modal, View, StyleSheet, Text } from "react-native";
 import { TouchableWithoutFeedback } from "react-native-gesture-handler";
 
 const Tab = createBottomTabNavigator();
@@ -35,7 +36,7 @@ const attemptLogin = async (accessToken: string | undefined) => {
   const secretKey = id + email; //PBKDF2(id + email, "daze-secret-key");
   // TODO: no hardcode
   try {
-    await fetch("https://451f-129-59-122-76.ngrok.io/api/v1/user", {
+    await fetch("http://localhost:8080/api/v1/user", {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
@@ -67,7 +68,7 @@ export default function App() {
   // const getAllLocations = async () => {
   //   try {
   //     const response = await fetch(
-  //       "https://451f-129-59-122-76.ngrok.io/api/v1/dining_halls"
+  //       "http://localhost:8080/api/v1/dining_halls"
   //     );
   //     // const json = await response.json();
   //     // const diningHalls = json.data;
@@ -87,6 +88,8 @@ export default function App() {
     email: string;
     secretKey: string;
   } | null>(null);
+
+  const [visible, setVisible] = useState(false);
 
   useEffect(() => {
     AsyncStorage.getItem("userInfo").then((userInfo) => {
@@ -180,6 +183,15 @@ export default function App() {
                   style={{ paddingRight: 5 }}
                 />
               ),
+            headerLeft: () => (
+              <Ionicons
+                name="information-circle-outline"
+                size={24}
+                color="white"
+                onPress={() => setVisible(true)}
+                style={{ paddingLeft: 5 }}
+              />
+            ),
           })}
         >
           <Tab.Screen name="List View" component={ListView} />
@@ -191,6 +203,17 @@ export default function App() {
           />
         </Tab.Navigator>
       </NavigationContainer>
+      <ModalPopup visible={visible}>
+        <View>
+          <Ionicons
+            name="close-outline"
+            size={24}
+            color="black"
+            onPress={() => setVisible(false)}
+            style={{}}
+          />
+        </View>
+      </ModalPopup>
     </NativeBaseProvider>
   );
 }
