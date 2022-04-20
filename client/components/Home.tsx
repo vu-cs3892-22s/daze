@@ -2,13 +2,12 @@ import React, { useEffect, useState } from "react";
 import { StyleSheet, ScrollView, View, Text } from "react-native";
 import { Box } from "native-base";
 import ModalDropdown from "react-native-modal-dropdown";
-// TODO: actually use this @Sam
 import { GoogleSigninButton } from "@react-native-google-signin/google-signin";
 
 import Card from "./Card";
 
 interface HomeScreenProps {
-  navigation?: any; // TODO: fix this type
+  navigation?: Object;
 }
 
 interface DiningHallData {
@@ -23,7 +22,7 @@ export default function HomeScreen({ navigation }: HomeScreenProps) {
   const getAllLocations = async () => {
     try {
       const response = await fetch(
-        "https://451f-129-59-122-76.ngrok.io/api/v1/dining_halls"
+        "https://cf93-129-59-122-20.ngrok.io/api/v1/dining_halls"
       );
       const json = await response.json();
       const data = json.data;
@@ -38,7 +37,7 @@ export default function HomeScreen({ navigation }: HomeScreenProps) {
   const getLocData = async () => {
     try {
       const response = await fetch(
-        "https://451f-129-59-122-76.ngrok.io/api/v1/location/EBI"
+        "https://cf93-129-59-122-20.ngrok.io/api/v1/location/EBI"
       );
       const json = await response.json();
       const data = json.data;
