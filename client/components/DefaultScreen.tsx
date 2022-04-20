@@ -1,26 +1,28 @@
-import React from "react";
-import { Button, View } from "react-native";
-import type { DefaultScreenNavigationProp } from "../types";
+// TODO: unused file, remove!
 
-type NavigationProps = { navigation: DefaultScreenNavigationProp };
+// import React from "react";
+// import { Button, View } from "react-native";
+// import type { DefaultScreenNavigationProp } from "../types";
 
-export default function DefaultScreen({ navigation }: NavigationProps) {
-  const signIn = async () => {
-    try {
-      const response = await fetch("https://cf93-129-59-122-20.ngrok.io/auth");
+// type NavigationProps = { navigation: DefaultScreenNavigationProp };
 
-      const json = await response.json();
-      const data = json.data;
-    } catch (error) {
-      console.error(error);
-    }
-  };
+// export default function DefaultScreen({ navigation }: NavigationProps) {
+//   const signIn = async () => {
+//     try {
+//       const response = await fetch("https://cf93-129-59-122-20.ngrok.io/auth");
 
-  return (
-    <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
-      <Button onPress={() => navigation.goBack()} title="Go back home" />
+//       const json = await response.json();
+//       const data = json.data;
+//     } catch (error) {
+//       console.error(error);
+//     }
+//   };
 
-      <Button onPress={() => signIn()} title="Sign in" />
-    </View>
-  );
-}
+//   return (
+//     <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
+//       <Button onPress={() => navigation.goBack()} title="Go back home" />
+
+//       <Button onPress={() => signIn()} title="Sign in" />
+//     </View>
+//   );
+// }
