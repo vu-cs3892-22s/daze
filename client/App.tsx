@@ -14,6 +14,7 @@ import DefaultScreen from "./components/DefaultScreen";
 import MapView from "./components/MapView";
 import ListView from "./components/ListView";
 import DiningHall from "./components/DiningHall";
+import ModalPopup from "./components/ModalPopup";
 import { Image, Modal, View, StyleSheet, Text } from "react-native";
 import { TouchableWithoutFeedback } from "react-native-gesture-handler";
 
@@ -94,66 +95,6 @@ export default function App() {
   } | null>(null);
 
   const [visible, setVisible] = useState(false);
-
-  const ModalPopup = ({ visible, children }) => {
-    return (
-      <Modal visible={visible} animationType="slide">
-        <View style={styles.modalBackground}>
-          <View style={[styles.modalContent]}>{children}</View>
-        </View>
-      </Modal>
-    );
-  };
-
-  const LineExplanation = () => {
-    return (
-      <View>
-        <View style={styles.LineExplanation}>
-          <View style={styles.waitTimeContainer}>
-            <View style={[styles.waitTimeBlob, { backgroundColor: "#B0DF63" }]}>
-              <Text style={styles.waitTimeMinute}>X</Text>
-              <Text>min</Text>
-            </View>
-          </View>
-          <View style={styles.textContainer}>
-            <Text>Short Line: &lt;5 mins</Text>
-          </View>
-        </View>
-        <View style={styles.LineExplanation}>
-          <View style={styles.waitTimeContainer}>
-            <View style={[styles.waitTimeBlob, { backgroundColor: "#FFFA76" }]}>
-              <Text style={styles.waitTimeMinute}>X</Text>
-              <Text>min</Text>
-            </View>
-          </View>
-          <View style={styles.textContainer}>
-            <Text>Medium Line: &lt;5 mins</Text>
-          </View>
-        </View>
-        <View style={styles.LineExplanation}>
-          <View style={styles.waitTimeContainer}>
-            <View style={[styles.waitTimeBlob, { backgroundColor: "#FF9B70" }]}>
-              <Text style={styles.waitTimeMinute}>X</Text>
-              <Text>min</Text>
-            </View>
-          </View>
-          <View style={styles.textContainer}>
-            <Text>Long Line: &lt;15 mins</Text>
-          </View>
-        </View>
-        <View style={styles.LineExplanation}>
-          <View style={styles.waitTimeContainer}>
-            <View
-              style={[styles.waitTimeBlob, { backgroundColor: "#CACACA" }]}
-            ></View>
-          </View>
-          <View style={styles.textContainer}>
-            <Text>Dining hall is closed</Text>
-          </View>
-        </View>
-      </View>
-    );
-  };
 
   useEffect(() => {
     AsyncStorage.getItem("userInfo").then((userInfo) => {
@@ -276,77 +217,8 @@ export default function App() {
             onPress={() => setVisible(false)}
             style={{}}
           />
-          <LineExplanation></LineExplanation>
         </View>
       </ModalPopup>
     </NativeBaseProvider>
   );
 }
-
-const styles = StyleSheet.create({
-  LineExplanation: {
-    display: "flex",
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    width: "90%",
-    minHeight: 94,
-    backgroundColor: "#EFEFEF",
-    borderRadius: 25,
-    padding: 5,
-    marginBottom: 20,
-    marginLeft: 10,
-  },
-  textContainer: {
-    display: "flex",
-    flexGrow: 5,
-    marginLeft: 60,
-  },
-  waitTimeContainer: {
-    flex: 1,
-    flexDirection: "row",
-    flexGrow: 3,
-    marginLeft: 10,
-  },
-  waitTimeBlob: {
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    borderRadius: 50,
-    height: 60,
-    width: 60,
-    padding: 10,
-  },
-  waitTimeMinute: {
-    fontSize: 24,
-    fontWeight: "700",
-  },
-  modalToggle: {
-    justifyContent: "center",
-    alignItems: "center",
-    marginBottom: 10,
-    borderWidth: 1,
-    borderColor: "#f2f2f2",
-    padding: 10,
-    borderRadius: 10,
-    alignSelf: "center",
-  },
-  modalClose: {
-    marginTop: 20,
-    marginBottom: 0,
-  },
-  modalBackground: {
-    flex: 1,
-    backgroundColor: "rgba(0,0,0,0.5)",
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  modalContent: {
-    width: "80%",
-    backgroundColor: "white",
-    paddingHorizontal: 20,
-    paddingVertical: 30,
-    borderRadius: 10,
-    elevation: 10,
-  },
-});
