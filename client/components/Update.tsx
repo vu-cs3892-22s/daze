@@ -46,7 +46,7 @@ export default function Update({ route, navigation }: NavigationProps) {
       };
 
       const response = await fetch(
-        "https://cf93-129-59-122-20.ngrok.io/api/v1/data/lines",
+        "https://451f-129-59-122-76.ngrok.io/api/v1/data/lines",
         {
           method: "POST",
           headers: {
@@ -91,7 +91,7 @@ export default function Update({ route, navigation }: NavigationProps) {
   //       lineLength: "dd",
   //     };
   //     const response = await fetch(
-  //       "https://cf93-129-59-122-20.ngrok.io/api/v1/location/EBI",
+  //       "https://451f-129-59-122-76.ngrok.io/api/v1/location/EBI",
   //       {
   //         method: "GET",
   //       }
