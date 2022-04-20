@@ -187,7 +187,6 @@ export default function DiningHall({ route, navigation }: NavigationProps) {
   }, [route.params]);
 
   return (
-    // <View>Hello</View>
     <ParallaxScrollView
       contentBackgroundColor="#FFF"
       parallaxHeaderHeight={200}
@@ -311,7 +310,7 @@ export default function DiningHall({ route, navigation }: NavigationProps) {
           </View>
           <Button
             onPress={() => {
-              return sendLineData(locations[props.idx], value[0]);
+              return sendLineData(name, value[0]);
             }}
             title={"Update"}
             color={"#E76666"}
