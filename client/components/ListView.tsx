@@ -6,7 +6,7 @@ import {
   ScrollView,
   StyleSheet,
   Text,
-  RefreshControl
+  RefreshControl,
 } from "react-native";
 import type { DefaultScreenNavigationProp } from "../types";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
@@ -31,7 +31,7 @@ export default function ListView({ navigation }: NavigationProps) {
   const getAllLocations = async () => {
     try {
       const response = await fetch(
-        "https://cf93-129-59-122-20.ngrok.io/api/v1/dining_halls"
+        "https://451f-129-59-122-76.ngrok.io/api/v1/dining_halls"
       );
       const json = await response.json();
       const diningHalls = json.data;
@@ -40,10 +40,10 @@ export default function ListView({ navigation }: NavigationProps) {
         if (key === "Rand") {
           //handle superstation
           for (const [subKey, subValue] of Object.entries(value)) {
-            setLocations(prev => [...prev, { ...subValue }])
+            setLocations((prev) => [...prev, { ...subValue }]);
           }
         } else {
-          setLocations(prev => [...prev, { ...value }]);
+          setLocations((prev) => [...prev, { ...value }]);
         }
       }
     } catch (error) {
@@ -55,21 +55,23 @@ export default function ListView({ navigation }: NavigationProps) {
     getAllLocations();
     return () => setLocations([]);
   }, []);
-  
+
   return (
     <View style={styles.root}>
-      <ScrollView 
+      <ScrollView
         contentContainerStyle={styles.scrollRoot}
         refreshControl={
-          <RefreshControl
-            refreshing={refreshing}
-            onRefresh={onRefresh}
-          />
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
         }
       >
         {locations ? (
           locations.map((location) => (
-            <MiniCard key={location.name} type={location.type} name={location.name} navigation={navigation} />
+            <MiniCard
+              key={location.name}
+              type={location.type}
+              name={location.name}
+              navigation={navigation}
+            />
           ))
         ) : (
           <View>

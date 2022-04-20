@@ -17,10 +17,11 @@ export default function MapView({ navigation }: NavigationProps) {
     useState<DiningHallDataBody | null>(null);
   const [locations, setLocations] = useState<Object[]>([]);
 
-
   const getDiningHallLongLat = async () => {
     try {
-      const response = await fetch("http://localhost:8080/api/v1/dining_halls");
+      const response = await fetch(
+        "https://451f-129-59-122-76.ngrok.io/api/v1/dining_halls"
+      );
       const json = await response.json();
       const data = json.data;
 

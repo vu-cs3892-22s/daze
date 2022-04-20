@@ -10,12 +10,12 @@ import {
   ScrollView,
   Dimensions,
 } from "react-native";
-import { AspectRatio, Box, Center } from "native-base";
+import { AspectRatio, Box } from "native-base";
 import CardFlip from "react-native-card-flip";
 import { BarChart } from "react-native-chart-kit";
 import { useEffect } from "react";
-import { useNavigation } from "@react-navigation/native";
-import { NavigationProp, ParamListBase } from "@react-navigation/native";
+// import { useNavigation } from "@react-navigation/native";
+// import { NavigationProp, ParamListBase } from "@react-navigation/native";
 import ButtonToggleGroup from "react-native-button-toggle-group";
 import Toast from "react-native-toast-message";
 
@@ -120,7 +120,7 @@ const days = [
 ];
 
 export default function Card(props: CardProps) {
-  const navigation = useNavigation<NavigationProp<ParamListBase>>();
+  // const navigation = useNavigation<NavigationProp<ParamListBase>>();
 
   const cardRef = useRef<CardFlip | null>(null);
   const scrollRef = useRef<ScrollView | null>(null);
@@ -145,7 +145,7 @@ export default function Card(props: CardProps) {
       };
 
       const response = await fetch(
-        "https://cf93-129-59-122-20.ngrok.io/api/v1/data/lines",
+        "https://451f-129-59-122-76.ngrok.io/api/v1/data/lines",
         {
           method: "POST",
           headers: {
