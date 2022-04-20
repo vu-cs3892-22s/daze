@@ -187,7 +187,8 @@ export const getDiningHalls = async (
           longitude: data[key].longitude,
           latitude: data[key].latitude,
           type: data[key].type,
-          name: data[key].name
+          name: data[key].name,
+          image: data[key].image
         };
       } else {
         rand[key] = {
@@ -196,7 +197,8 @@ export const getDiningHalls = async (
           longitude: data[key].longitude,
           latitude: data[key].latitude,
           type: data[key].type,
-          name: data[key].name
+          name: data[key].name,
+          image: data[key].image
         };
       }
     }
@@ -242,7 +244,8 @@ function calculateMode(data: any) {
 
 function calculateWaitTime(diningHallName: string, lineLength: string) {
   const diningHallThroughputs: { [key: string]: number } = {
-    '2301': 1,
+    '2301_Bowls': 1,
+    '2301_Smoothies': 2,
     Commons: 2,
     EBI: 3,
     Kissam: 4,

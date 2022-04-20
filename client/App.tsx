@@ -22,11 +22,6 @@ const Tab = createBottomTabNavigator();
 
 WebBrowser.maybeCompleteAuthSession();
 
-interface lengthBody {
-  Color: String;
-  Explanation: String;
-}
-
 const attemptLogin = async (accessToken: string | undefined) => {
   // Should only be called when user tries to log in
   // Stores secret key in local storage and creates user on server side if not already created
@@ -188,15 +183,6 @@ export default function App() {
                   style={{ paddingRight: 5 }}
                 />
               ),
-            headerLeft: () => (
-              <Ionicons
-                name="information-circle-outline"
-                size={24}
-                color="white"
-                onPress={() => setVisible(true)}
-                style={{ paddingLeft: 5 }}
-              />
-            ),
           })}
         >
           <Tab.Screen name="List View" component={ListView} />
