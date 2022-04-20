@@ -1,16 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { Button, NativeBaseProvider } from "native-base";
+import { NativeBaseProvider } from "native-base";
 import { NavigationContainer } from "@react-navigation/native";
-import { Ionicons, AntDesign, Feather } from "@expo/vector-icons";
+import { Ionicons, AntDesign } from "@expo/vector-icons";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import * as Google from "expo-auth-session/providers/google";
 import * as WebBrowser from "expo-web-browser";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-import HomeScreen from "./components/Home";
-import Update from "./components/Update";
-import DefaultScreen from "./components/DefaultScreen";
 import MapView from "./components/MapView";
 import ListView from "./components/ListView";
 import DiningHall from "./components/DiningHall";
@@ -67,20 +63,24 @@ const attemptLogin = async (accessToken: string | undefined) => {
 
 export default function App() {
   // Get all locations
-  const getAllLocations = async () => {
-    try {
-      const response = await fetch("http://localhost:8080/api/v1/dining_halls");
-      const json = await response.json();
-      const diningHalls = json.data;
 
-      // setLineLength(ebiLineLength)
-    } catch (error) {
-      console.error(error);
-    }
-  };
-  useEffect(() => {
-    getAllLocations();
-  }, []);
+  // TODO: unused block of code
+  // const getAllLocations = async () => {
+  //   try {
+  //     const response = await fetch(
+  //       "http://localhost:8080/api/v1/dining_halls"
+  //     );
+  //     // const json = await response.json();
+  //     // const diningHalls = json.data;
+
+  //     // setLineLength(ebiLineLength)
+  //   } catch (error) {
+  //     console.error(error);
+  //   }
+  // };
+  // useEffect(() => {
+  //   getAllLocations();
+  // }, []);
 
   // User login
   const [user, setUser] = React.useState<{
@@ -101,7 +101,7 @@ export default function App() {
     });
   }, []);
 
-  const [request, response, promptAsync] = Google.useAuthRequest({
+  const [, response, promptAsync] = Google.useAuthRequest({
     expoClientId:
       "918301654843-4c4em6250rlful1nam4divl5v4f5278a.apps.googleusercontent.com",
     iosClientId:
@@ -130,7 +130,7 @@ export default function App() {
       <NavigationContainer>
         <Tab.Navigator
           screenOptions={({ route }) => ({
-            tabBarIcon: ({ focused, color, size }) => {
+            tabBarIcon: ({ focused }) => {
               let iconName:
                 | "list-circle-outline"
                 | "list-circle"
@@ -146,7 +146,7 @@ export default function App() {
 
                 return <Ionicons name={iconName} size={24} color="#E76666" />;
               } else {
-                <AntDesign name="question" size={24} color="#E76666" />;
+                return <AntDesign name="question" size={24} color="#E76666" />;
               }
             },
             headerTitle: "daze",
@@ -183,6 +183,15 @@ export default function App() {
                   style={{ paddingRight: 5 }}
                 />
               ),
+            headerLeft: () => (
+              <Ionicons
+                name="information-circle-outline"
+                size={24}
+                color="white"
+                onPress={() => setVisible(true)}
+                style={{ paddingLeft: 5 }}
+              />
+            ),
           })}
         >
           <Tab.Screen name="List View" component={ListView} />
