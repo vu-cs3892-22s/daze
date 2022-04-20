@@ -163,7 +163,6 @@ export default function DiningHall({ route, navigation }: NavigationProps) {
   }, [route.params]);
 
   return (
-    // <View>Hello</View>
     <ParallaxScrollView
       contentBackgroundColor="#FFF"
       parallaxHeaderHeight={200}
