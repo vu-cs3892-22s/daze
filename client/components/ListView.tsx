@@ -29,7 +29,7 @@ export default function ListView({ navigation }: NavigationProps) {
   const getAllLocations = async () => {
     try {
       const response = await fetch(
-        "https://451f-129-59-122-76.ngrok.io/api/v1/dining_halls"
+        `${process.env.SERVER_URL}/api/v1/dining_halls`
       );
       const json = await response.json();
       const diningHalls = json.data;
