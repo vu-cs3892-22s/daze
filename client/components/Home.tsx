@@ -23,7 +23,7 @@ export default function HomeScreen({ navigation }: HomeScreenProps) {
   const getAllLocations = async () => {
     try {
       const response = await fetch(
-        "https://451f-129-59-122-76.ngrok.io/api/v1/dining_halls"
+        `${process.env.SERVER_URL}/api/v1/dining_halls`
       );
       const json = await response.json();
       const data = json.data;
@@ -38,7 +38,7 @@ export default function HomeScreen({ navigation }: HomeScreenProps) {
   const getLocData = async () => {
     try {
       const response = await fetch(
-        "https://451f-129-59-122-76.ngrok.io/api/v1/location/EBI"
+        `${process.env.SERVER_URL}/api/v1/location/EBI`
       );
       const json = await response.json();
       const data = json.data;

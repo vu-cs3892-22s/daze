@@ -29,29 +29,29 @@ export default function MiniCard({ navigation, name, type }: NavigationProps) {
 
   const rng = () => {
     return (Math.round((Math.random() * 40) / 5) * 5).toFixed();
-  }
+  };
 
   useEffect(() => {
     setWaitTime(rng());
-  }, [])
+  }, []);
 
-  const getBgColor = (min: number) => (min < 15) ? "#B0DF63" : (min < 40) ? "#FFFA76" : "#FF9B70";
+  const getBgColor = (min: number) =>
+    min < 15 ? "#B0DF63" : min < 40 ? "#FFFA76" : "#FF9B70";
 
   return (
     <TouchableOpacity onPress={onPress} style={styles.root}>
       <View style={styles.iconContainer}>
-        {
-          (type === "Residential Dining Hall") ? 
-            <Image
-              style={{ width: 40, height: 40 }}
-              source={require("../assets/spoonfork.png")}
-            />
-            :
-            <Image
-              style={{ width: 40, height: 40 }}
-              source={require("../assets/coffee.png")}
-            />
-        }
+        {type === "Residential Dining Hall" ? (
+          <Image
+            style={{ width: 40, height: 40 }}
+            source={require("../assets/spoonfork.png")}
+          />
+        ) : (
+          <Image
+            style={{ width: 40, height: 40 }}
+            source={require("../assets/coffee.png")}
+          />
+        )}
       </View>
       <View style={styles.middleContainer}>
         <Text style={styles.diningHallName}>{name.replace(/_/g, " ")}</Text>
@@ -59,7 +59,12 @@ export default function MiniCard({ navigation, name, type }: NavigationProps) {
         <Text style={styles.subtitle}>Dinner starts 16:30</Text>
       </View>
       <View style={styles.waitTimeContainer}>
-        <View style={[styles.waitTimeBlob, { backgroundColor: getBgColor(parseInt(waitTime))}]}>
+        <View
+          style={[
+            styles.waitTimeBlob,
+            { backgroundColor: getBgColor(parseInt(waitTime)) },
+          ]}
+        >
           <Text style={styles.waitTimeMinute}>{waitTime}</Text>
           <Text>min</Text>
         </View>

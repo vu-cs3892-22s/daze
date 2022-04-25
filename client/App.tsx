@@ -36,7 +36,7 @@ const attemptLogin = async (accessToken: string | undefined) => {
   const secretKey = id + email; //PBKDF2(id + email, "daze-secret-key");
   // TODO: no hardcode
   try {
-    await fetch("https://451f-129-59-122-76.ngrok.io/api/v1/user", {
+    await fetch(`${process.env.SERVER_URL}/api/v1/user`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
@@ -68,7 +68,7 @@ export default function App() {
   // const getAllLocations = async () => {
   //   try {
   //     const response = await fetch(
-  //       "http://localhost:8080/api/v1/dining_halls"
+  //       `${process.env.SERVER_URL}/api/v1/dining_halls`
   //     );
   //     // const json = await response.json();
   //     // const diningHalls = json.data;

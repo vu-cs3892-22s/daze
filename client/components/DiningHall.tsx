@@ -103,9 +103,8 @@ const sendLineData = async (diningHallName: string, lineLength: string) => {
       lineLength: lineLength,
       timestamp: new Date().getTime(),
     };
-
     const response = await fetch(
-      "https://451f-129-59-122-76.ngrok.io/api/v1/data/lines",
+      `${process.env.SERVER_URL}/api/v1/data/lines`,
       {
         method: "POST",
         headers: {
