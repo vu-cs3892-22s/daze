@@ -18,6 +18,7 @@ interface NavigationProps {
   route: UpdateRoute;
 }
 
+//TODO: remove this and select from given locations from backend
 const locations = [
   "2301 Allergen Free",
   "Grins",
