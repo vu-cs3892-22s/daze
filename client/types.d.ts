@@ -12,12 +12,12 @@ export interface RootTabParamList {
 }
 
 export interface DiningHallInfo {
-  latitude: number;
-  lineLength: string;
-  longitude: number;
-  name: string;
-  type: string;
-  waitTime: number | null;
+  latitude?: number;
+  lineLength?: string;
+  longitude?: number;
+  name?: string;
+  type?: string;
+  waitTime?: number | null;
 }
 export interface NavigationProps {
   navigation: DefaultScreenNavigationProp;

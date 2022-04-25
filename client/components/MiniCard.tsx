@@ -1,13 +1,6 @@
 import React, { useState } from "react";
 import { useEffect } from "react";
-import {
-  Button,
-  View,
-  Text,
-  Image,
-  StyleSheet,
-  TouchableOpacity,
-} from "react-native";
+import { View, Text, Image, StyleSheet, TouchableOpacity } from "react-native";
 import type { DefaultScreenNavigationProp } from "../types";
 
 type NavigationProps = {

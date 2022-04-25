@@ -5,7 +5,18 @@ import Toast from "react-native-toast-message";
 
 import type { DefaultScreenNavigationProp } from "../types";
 
-type NavigationProps = { navigation: DefaultScreenNavigationProp; route: any };
+interface UpdateRouteParams {
+  locationIndex: number;
+}
+
+interface UpdateRoute {
+  params: UpdateRouteParams;
+}
+
+interface NavigationProps {
+  navigation: DefaultScreenNavigationProp;
+  route: UpdateRoute;
+}
 
 const locations = [
   "2301 Allergen Free",
@@ -39,6 +50,7 @@ export default function Update({ route, navigation }: NavigationProps) {
     try {
       const timestamp = new Date().getTime();
       const sampleBody = {
+        //TODO: change to actual user email or key
         vanderbiltEmail: "chuka@vanderbilt.edu",
         diningHallName: diningHallName,
         lineLength: lineLength,
@@ -81,29 +93,6 @@ export default function Update({ route, navigation }: NavigationProps) {
       setSize(-1);
     };
   }, []);
-
-  // const getLocData = async () => {
-  //   try {
-  //     const sampleBody = {
-  //       vanderbiltEmail: "xx",
-  //       diningHallName: "aa",
-  //       timestamp: "ss",
-  //       lineLength: "dd",
-  //     };
-  //     const response = await fetch(
-  //       `${process.env.SERVER_URL}/api/v1/location/EBI`,
-  //       {
-  //         method: "GET",
-  //       }
-  //     );
-  //     const json = await response.json();
-  //   } catch (error) {
-  //     console.error(error);
-  //   }
-  // };
-  // useEffect(() => {
-  //   getLocData();
-  // }, []);
 
   return (
     <View style={styles.container}>
