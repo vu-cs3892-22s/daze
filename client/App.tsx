@@ -1,4 +1,6 @@
 import React, { useEffect, useState } from "react";
+import { Image, View } from "react-native";
+import { TouchableWithoutFeedback } from "react-native-gesture-handler";
 import { NativeBaseProvider } from "native-base";
 import { NavigationContainer } from "@react-navigation/native";
 import { Ionicons, AntDesign } from "@expo/vector-icons";
@@ -11,8 +13,6 @@ import MapView from "./components/MapView";
 import ListView from "./components/ListView";
 import DiningHall from "./components/DiningHall";
 import ModalPopup from "./components/ModalPopup";
-import { Image, Modal, View, StyleSheet, Text } from "react-native";
-import { TouchableWithoutFeedback } from "react-native-gesture-handler";
 
 const Tab = createBottomTabNavigator();
 
