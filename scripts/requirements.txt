@@ -1,0 +1,11 @@
+async-timeout==4.0.2
+autopep8==1.6.0
+Deprecated==1.2.13
+packaging==21.3
+psycopg2==2.9.3
+pycodestyle==2.8.0
+pyparsing==3.0.7
+python-dotenv==0.20.0
+redis==4.2.1
+toml==0.10.2
+wrapt==1.14.0
