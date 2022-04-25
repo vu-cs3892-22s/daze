@@ -14,7 +14,9 @@ export default function MapView({ navigation }: NavigationProps) {
   const getAllLocations = async () => {
     const locations = [];
     try {
-      const response = await fetch("https://cf93-129-59-122-20.ngrok.io/api/v1/dining_halls");
+      const response = await fetch(
+        `${process.env.SERVER_URL}/api/v1/dining_halls`
+      );
       const json = await response.json();
       const diningHalls = json.data;
       for (const [key, value] of Object.entries(diningHalls)) {
