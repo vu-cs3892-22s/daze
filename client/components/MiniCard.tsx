@@ -7,9 +7,21 @@ type NavigationProps = {
   navigation: DefaultScreenNavigationProp;
   name: string;
   type: string;
+  isOpen: boolean;
+  openUntil: string;
+  nextMeal: string;
+  nextMealStart: string;
 };
 
-export default function MiniCard({ navigation, name, type }: NavigationProps) {
+export default function MiniCard({
+  navigation,
+  name,
+  type,
+  isOpen,
+  openUntil,
+  nextMeal,
+  nextMealStart,
+}: NavigationProps) {
   const [waitTime, setWaitTime] = useState("0");
   const onPress = () => {
     navigation.navigate("Dining Hall", {
@@ -48,8 +60,12 @@ export default function MiniCard({ navigation, name, type }: NavigationProps) {
       </View>
       <View style={styles.middleContainer}>
         <Text style={styles.diningHallName}>{name.replace(/_/g, " ")}</Text>
-        <Text style={styles.subtitle}>Open until 15:00</Text>
-        <Text style={styles.subtitle}>Dinner starts 16:30</Text>
+        <Text style={styles.subtitle}>
+          {isOpen ? `Open until ${openUntil}` : "Closed"}
+        </Text>
+        <Text style={styles.subtitle}>
+          {nextMealStart ? `${nextMeal} starts ${nextMealStart}` : "CLOSED"}
+        </Text>
       </View>
       <View style={styles.waitTimeContainer}>
         <View

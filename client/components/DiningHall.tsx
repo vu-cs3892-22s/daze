@@ -137,9 +137,8 @@ export default function DiningHall({ route, navigation }: NavigationProps) {
 
   const getDiningHall = async () => {
     try {
-      const response = await fetch(
-        `https://451f-129-59-122-76.ngrok.io/api/v1/dining_halls/${name}`
-      );
+      const serverUrl = process.env.SERVER_URL;
+      const response = await fetch(`${serverUrl}/api/v1/dining_halls/${name}`);
 
       const json = await response.json();
       const data = json.data;
