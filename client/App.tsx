@@ -14,9 +14,38 @@ import ListView from "./components/ListView";
 import DiningHall from "./components/DiningHall";
 import ModalPopup from "./components/ModalPopup";
 
+type DazeUser = {
+  secretKey: string;
+  picture: string;
+  email: string;
+} | null;
+
 const Tab = createBottomTabNavigator();
 
 WebBrowser.maybeCompleteAuthSession();
+
+const promptLogout = async (
+  setUser: (user: DazeUser) => void,
+  promptAsync: () => Promise<unknown>
+) => {
+  const attemptLogout = async () =>
+    AsyncStorage.removeItem("userInfo", () => setUser(null));
+
+  Alert.alert("Logout", "Are you sure you want to logout?", [
+    {
+      text: "Logout",
+      onPress: attemptLogout,
+    },
+    {
+      text: "Sign in as a new user",
+      onPress: () => attemptLogout().then(promptAsync),
+    },
+    {
+      text: "Cancel",
+      style: "cancel",
+    },
+  ]);
+};
 
 const attemptLogin = async (accessToken: string | undefined) => {
   // Should only be called when user tries to log in
@@ -63,11 +92,7 @@ const attemptLogin = async (accessToken: string | undefined) => {
 
 export default function App() {
   // User login
-  const [user, setUser] = React.useState<{
-    picture: string;
-    email: string;
-    secretKey: string;
-  } | null>(null);
+  const [user, setUser] = React.useState<DazeUser>(null);
 
   const [visible, setVisible] = useState(false);
 
@@ -139,7 +164,13 @@ export default function App() {
             tabBarInactiveTintColor: "gray",
             headerRight: () =>
               user ? (
-                <TouchableWithoutFeedback onPress={() => promptAsync()}>
+                <TouchableWithoutFeedback
+                  onPress={() =>
+                    user === null
+                      ? promptAsync()
+                      : promptLogout(setUser, promptAsync)
+                  }
+                >
                   <Image
                     source={{
                       uri: user.picture,
