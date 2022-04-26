@@ -18,14 +18,15 @@ export default function DiningHallMarker({
     });
   };
 
-  let pin = require("../assets/gray-pin.png");
-
+  let pin;
   if (length === "short") {
     pin = require("../assets/green-pin.png");
   } else if (length === "medium") {
     pin = require("../assets/yellow-pin.png");
   } else if (length === "long") {
     pin = require("../assets/red-pin.png");
+  } else {
+    pin = require("../assets/gray-pin.png");
   }
   return (
     <Marker coordinate={{ latitude, longitude }} pointerEvents="auto">

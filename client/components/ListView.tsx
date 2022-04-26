@@ -1,6 +1,5 @@
 import React, { useCallback, useEffect, useState } from "react";
 import {
-  Button,
   Dimensions,
   View,
   ScrollView,
@@ -9,14 +8,13 @@ import {
   RefreshControl,
 } from "react-native";
 import type { DefaultScreenNavigationProp } from "../types";
-import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+
 import MiniCard from "./MiniCard";
 
 type NavigationProps = { navigation: DefaultScreenNavigationProp };
 
 const { width } = Dimensions.get("window");
 
-const Tab = createBottomTabNavigator();
 export default function ListView({ navigation }: NavigationProps) {
   const [locations, setLocations] = useState<any[]>([]);
   const [refreshing, setRefreshing] = useState(false);

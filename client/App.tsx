@@ -1,4 +1,6 @@
 import React, { useEffect, useState } from "react";
+import { Image, View, Alert } from "react-native";
+import { TouchableWithoutFeedback } from "react-native-gesture-handler";
 import { NativeBaseProvider } from "native-base";
 import { NavigationContainer } from "@react-navigation/native";
 import { Ionicons, AntDesign } from "@expo/vector-icons";
@@ -11,8 +13,6 @@ import MapView from "./components/MapView";
 import ListView from "./components/ListView";
 import DiningHall from "./components/DiningHall";
 import ModalPopup from "./components/ModalPopup";
-import { Image, Modal, View, StyleSheet, Text, Alert } from "react-native";
-import { TouchableWithoutFeedback } from "react-native-gesture-handler";
 
 type DazeUser = {
   secretKey: string;
@@ -91,26 +91,6 @@ const attemptLogin = async (accessToken: string | undefined) => {
 };
 
 export default function App() {
-  // Get all locations
-
-  // TODO: unused block of code
-  // const getAllLocations = async () => {
-  //   try {
-  //     const response = await fetch(
-  //       `${process.env.SERVER_URL}/api/v1/dining_halls`
-  //     );
-  //     // const json = await response.json();
-  //     // const diningHalls = json.data;
-
-  //     // setLineLength(ebiLineLength)
-  //   } catch (error) {
-  //     console.error(error);
-  //   }
-  // };
-  // useEffect(() => {
-  //   getAllLocations();
-  // }, []);
-
   // User login
   const [user, setUser] = React.useState<DazeUser>(null);
 
@@ -126,15 +106,13 @@ export default function App() {
     });
   }, []);
 
+  const clientIds =
+    "918301654843-4c4em6250rlful1nam4divl5v4f5278a.apps.googleusercontent.com";
   const [, response, promptAsync] = Google.useAuthRequest({
-    expoClientId:
-      "918301654843-4c4em6250rlful1nam4divl5v4f5278a.apps.googleusercontent.com",
-    iosClientId:
-      "918301654843-4c4em6250rlful1nam4divl5v4f5278a.apps.googleusercontent.com",
-    androidClientId:
-      "918301654843-4c4em6250rlful1nam4divl5v4f5278a.apps.googleusercontent.com",
-    webClientId:
-      "918301654843-4c4em6250rlful1nam4divl5v4f5278a.apps.googleusercontent.com",
+    expoClientId: clientIds,
+    iosClientId: clientIds,
+    androidClientId: clientIds,
+    webClientId: clientIds,
   });
 
   useEffect(() => {
