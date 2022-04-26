@@ -418,14 +418,14 @@ export const getDiningHall = async (
 
     if (!diningHallInfo) {
       return res.status(500).send({
-        error: "Failed to retrieve data from PostgreSQL"
-      })
+        error: 'Failed to retrieve data from PostgreSQL'
+      });
     }
 
-    let throughput = diningHallInfo['throughput'];
-    let longitude = diningHallInfo['location'][1];
-    let latitude = diningHallInfo['location'][0];
-    let image = diningHallInfo['imageURL'];
+    const throughput = diningHallInfo['throughput'];
+    const longitude = diningHallInfo['location'][1];
+    const latitude = diningHallInfo['location'][0];
+    const image = diningHallInfo['imageURL'];
 
     // const comments = await getDataForDiningHall(diningHallName, 1);
 
@@ -447,7 +447,7 @@ export const getDiningHall = async (
   } catch (err) {
     res.status(500).send({
       error: err
-    })
+    });
     console.log(err);
   }
 };
@@ -461,28 +461,29 @@ export const getDiningHalls = async (
     const result: any = {};
     const rand: any = {};
 
-    const diningHallInformation: {
-      name: string;
-      location: string[];
-      throughput: number;
-      type: string;
-      imageURL: string;
-    }[] | null = await queryGetDiningHallsInformation();
+    const diningHallInformation:
+      | {
+          name: string;
+          location: string[];
+          throughput: number;
+          type: string;
+          imageURL: string;
+        }[]
+      | null = await queryGetDiningHallsInformation();
 
     if (!diningHallInformation) {
       return res.status(500).send({
-        error: "Failed to retrieve data from PostgreSQL"
-      }
-      )
+        error: 'Failed to retrieve data from PostgreSQL'
+      });
     }
 
     for (let i = 0; i < diningHallInformation.length; ++i) {
-      let name = diningHallInformation[i]['name'];
-      let latitude = diningHallInformation[i]['location'][0];
-      let longitude = diningHallInformation[i]['location'][1];
-      let type = diningHallInformation[i]['type'];
-      let image = diningHallInformation[i]['imageURL'];
-      let throughput = diningHallInformation[i]['throughput'];
+      const name = diningHallInformation[i]['name'];
+      const latitude = diningHallInformation[i]['location'][0];
+      const longitude = diningHallInformation[i]['location'][1];
+      const type = diningHallInformation[i]['type'];
+      const image = diningHallInformation[i]['imageURL'];
+      const throughput = diningHallInformation[i]['throughput'];
 
       const lineMode = calculateMode(data[name].lineLength);
       const waitTime = calculateWaitTime(lineMode, throughput);
@@ -521,7 +522,7 @@ export const getDiningHalls = async (
   } catch (err) {
     res.status(500).send({
       error: err
-    })
+    });
     console.log(err);
   }
 };

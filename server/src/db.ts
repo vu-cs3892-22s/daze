@@ -16,12 +16,12 @@ const dbConnectionDetails =
   process.env.ENV === 'production' || process.env.ENV === 'staging'
     ? parseDBUrl(process.env.DATABASE_URL || '')
     : {
-      user: process.env.DB_USER,
-      host: process.env.DB_HOST,
-      password: process.env.DB_PASSWORD,
-      port: Number(process.env.DB_PORT),
-      database: process.env.DB_NAME
-    };
+        user: process.env.DB_USER,
+        host: process.env.DB_HOST,
+        password: process.env.DB_PASSWORD,
+        port: Number(process.env.DB_PORT),
+        database: process.env.DB_NAME
+      };
 
 const pool = new Pool({
   ...dbConnectionDetails,
@@ -101,7 +101,9 @@ export async function queryGetUserSecretKey(email: string) {
   }
 }
 
-export async function queryGetDiningHallInformation(diningHallName: string): Promise<DiningHallInformation | null> {
+export async function queryGetDiningHallInformation(
+  diningHallName: string
+): Promise<DiningHallInformation | null> {
   const text = `
   SELECT * 
   FROM "DiningHallInformation"
@@ -128,7 +130,9 @@ interface DiningHallInformation {
   imageURL: string;
 }
 
-export async function queryGetDiningHallsInformation(): Promise<DiningHallInformation[] | null> {
+export async function queryGetDiningHallsInformation(): Promise<
+  DiningHallInformation[] | null
+> {
   const text = `
   SELECT * 
   FROM "DiningHallInformation"
