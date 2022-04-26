@@ -24,7 +24,7 @@ cursor = conn.cursor()
 cursor.execute('''DROP TABLE IF EXISTS "DiningHallInformation"''')
 
 # Create the table if it doesn't exist
-cursor.execute('''CREATE TABLE IF NOT EXISTS "DiningHallInformation" ( "Name" text NOT NULL, "Location" numeric[] NOT NULL, "Throughput" integer NOT NULL, "Type" text NOT NULL, "ImageURL" text NOT NULL, CONSTRAINT "Dininghall_pkey" PRIMARY KEY ("Name") )
+cursor.execute('''CREATE TABLE IF NOT EXISTS "DiningHallInformation" ( "name" text NOT NULL, "location" numeric[] NOT NULL, "throughput" integer NOT NULL, "type" text NOT NULL, "imageURL" text NOT NULL, CONSTRAINT "Dininghall_pkey" PRIMARY KEY ("name") )
 ''')
     
 # Insert data
@@ -159,7 +159,7 @@ dining_hall_types = {
 }
 
 for dining_hall_name in dining_hall_names:
-    cursor.execute('INSERT INTO "DiningHallInformation" ("Name", "Location", "Throughput", "Type", "ImageURL") VALUES(%s, %s, %s, %s, %s)',
+    cursor.execute('INSERT INTO "DiningHallInformation" ("name", "location", "throughput", "type", "imageURL") VALUES(%s, %s, %s, %s, %s)',
                    (dining_hall_name, dining_hall_locations[dining_hall_name], dining_hall_throughputs[dining_hall_name], dining_hall_types[dining_hall_name], dining_hall_images[dining_hall_name]))
 
 cursor.execute('''SELECT * FROM "DiningHallInformation"''')

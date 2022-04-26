@@ -3,7 +3,8 @@
     "target": "es6",
     "jsx": "react",
     "strict": false,
-    "baseUrl": "./"
+    "baseUrl": "./",
+    "moduleResolution": "node"
   },
   "exclude": ["node_modules"],
   "extends": "expo/tsconfig.base"

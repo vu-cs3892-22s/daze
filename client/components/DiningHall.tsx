@@ -1,3 +1,5 @@
+// TODO: I left some unused variables in here because @Chuka I think you might be using them later?
+
 import React, { useEffect, useState, useRef } from "react";
 import {
   Button,
@@ -7,7 +9,7 @@ import {
   Text,
   StyleSheet,
   Image,
-  ActivityIndicator
+  ActivityIndicator,
 } from "react-native";
 import ParallaxScrollView from "react-native-parallax-scroll-view";
 import { BarChart } from "react-native-chart-kit";
@@ -90,44 +92,19 @@ const showToast = (message: string) => {
   Alert.alert(message);
 };
 
-const verifyUser = async (body: { email: string; secretKey: string }) => {
-  return await fetch("https://cf93-129-59-122-20.ngrok.io/api/v1/verify", {
-    method: "POST",
-    body: JSON.stringify(body),
-    headers: {
-      "Content-Type": "application/json",
-    },
-  });
-};
-
 const sendLineData = async (diningHallName: string, lineLength: string) => {
-  // First, check if user is logged in
   const user = JSON.parse(await AsyncStorage.getItem("userInfo"));
-  // if (
-  //   !user ||
-  //   !(
-  //     await (
-  //       await verifyUser({ email: user.email, secretKey: user.secretKey })
-  //     ).json()
-  //   ).verified
-  // ) {
-  //   showToast("Please login to save your line length");
-  //   return;
-  // } else {
 
-  // }
   try {
-    const timestamp = new Date().getTime();
     const body = {
       email: user?.email,
       secretKey: user?.secretKey,
       diningHallName: diningHallName,
       lineLength: lineLength,
-      timestamp: timestamp,
+      timestamp: new Date().getTime(),
     };
-
     const response = await fetch(
-      "https://cf93-129-59-122-20.ngrok.io/api/v1/data/lines",
+      `${process.env.SERVER_URL}/api/v1/data/lines`,
       {
         method: "POST",
         headers: {
@@ -152,7 +129,6 @@ const sendLineData = async (diningHallName: string, lineLength: string) => {
 
 export default function DiningHall({ route, navigation }: NavigationProps) {
   const [loading, setLoading] = useState(true);
-  const [diningHall, setDiningHall] = useState<Object>({});
   const scrollRef = useRef<ScrollView | null>(null);
   const [value, setValue] = useState("Medium");
 
@@ -163,12 +139,11 @@ export default function DiningHall({ route, navigation }: NavigationProps) {
   const getDiningHall = async () => {
     try {
       const response = await fetch(
-        `https://cf93-129-59-122-20.ngrok.io/api/v1/dining_halls/${name}`
+        `https://451f-129-59-122-76.ngrok.io/api/v1/dining_halls/${name}`
       );
 
       const json = await response.json();
       const data = json.data;
-      setDiningHall(data);
       setLoading(false);
     } catch (error) {
       console.error(error);
@@ -187,7 +162,6 @@ export default function DiningHall({ route, navigation }: NavigationProps) {
   }, [route.params]);
 
   return (
-    // <View>Hello</View>
     <ParallaxScrollView
       contentBackgroundColor="#FFF"
       parallaxHeaderHeight={200}
@@ -200,7 +174,14 @@ export default function DiningHall({ route, navigation }: NavigationProps) {
       )}
     >
       {loading ? (
-        <View style={{ display: "flex", justifyContent: "center", alignItems: "center", height: height - 300 }}>
+        <View
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            height: height - 300,
+          }}
+        >
           <ActivityIndicator size="large" />
         </View>
       ) : (
@@ -311,7 +292,7 @@ export default function DiningHall({ route, navigation }: NavigationProps) {
           </View>
           <Button
             onPress={() => {
-              return sendLineData(locations[props.idx], value[0]);
+              return sendLineData(name, value[0]);
             }}
             title={"Update"}
             color={"#E76666"}

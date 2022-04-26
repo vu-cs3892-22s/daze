@@ -8,8 +8,266 @@ import {
   queryCreateUser,
   queryUpdateUser,
   // queryGetUser,
-  queryGetUserSecretKey
+  queryGetUserSecretKey,
+  queryGetDiningHallInformation,
+  queryGetDiningHallsInformation
 } from './db';
+
+interface WeeklyHours {
+  Monday: number[][];
+  Tuesday: number[][];
+  Wednesday: number[][];
+  Thursday: number[][];
+  Friday: number[][];
+  Saturday: number[][];
+  Sunday: number[][];
+}
+
+const _2301Hours = {
+  Monday: [
+    [7, 10],
+    [11, 15],
+    [16.5, 20]
+  ],
+  Tuesday: [
+    [7, 10],
+    [11, 15],
+    [16.5, 20]
+  ],
+  Wednesday: [
+    [7, 10],
+    [11, 15],
+    [16.5, 20]
+  ],
+  Thursday: [
+    [7, 10],
+    [11, 15],
+    [16.5, 20]
+  ],
+  Friday: [[7, 10], [11, 15], []],
+  Saturday: [[], [], []],
+  Sunday: [[], [], [16.5, 20]]
+};
+
+const randHours = {
+  Monday: [[7, 11], [11, 15], []],
+  Tuesday: [[7, 11], [11, 15], []],
+  Wednesday: [[7, 11], [11, 15], []],
+  Thursday: [[7, 11], [11, 15], []],
+  Friday: [[7, 11], [11, 15], []],
+  Saturday: [[], [], []],
+  Sunday: [[], [], []]
+};
+
+const suziesHours = {
+  Monday: [[8, 11], [11, 14.5], []],
+  Tuesday: [[8, 11], [11, 14.5], []],
+  Wednesday: [[8, 11], [11, 14.5], []],
+  Thursday: [[8, 11], [11, 14.5], []],
+  Friday: [[8, 11], [11, 14.5], []],
+  Saturday: [[], [], []],
+  Sunday: [[], [], []]
+};
+
+const commonsKissamHours = {
+  Monday: [
+    [7, 10],
+    [11, 14.5],
+    [16.5, 20]
+  ],
+  Tuesday: [
+    [7, 10],
+    [11, 14.5],
+    [16.5, 20]
+  ],
+  Wednesday: [
+    [7, 10],
+    [11, 14.5],
+    [16.5, 20]
+  ],
+  Thursday: [
+    [7, 10],
+    [11, 14.5],
+    [16.5, 20]
+  ],
+  Friday: [
+    [7, 10],
+    [11, 14.5],
+    [16.5, 20]
+  ],
+  Saturday: [
+    [9, 11],
+    [11, 14],
+    [16.5, 20]
+  ],
+  Sunday: [
+    [9, 11],
+    [11, 14],
+    [16.5, 20]
+  ]
+};
+
+const ebiZepposHours = {
+  Monday: [
+    [7, 10.5],
+    [11, 14.5],
+    [16.5, 19.5]
+  ],
+  Tuesday: [
+    [7, 10.5],
+    [11, 14.5],
+    [16.5, 19.5]
+  ],
+  Wednesday: [
+    [7, 10.5],
+    [11, 14.5],
+    [16.5, 19.5]
+  ],
+  Thursday: [
+    [7, 10.5],
+    [11, 14.5],
+    [16.5, 19.5]
+  ],
+  Friday: [
+    [7, 10.5],
+    [11, 14.5],
+    [16.5, 19.5]
+  ],
+  Saturday: [
+    [9, 11],
+    [11, 14],
+    [16.5, 19.5]
+  ],
+  Sunday: [
+    [9, 11],
+    [11, 14],
+    [16.5, 19.5]
+  ]
+};
+
+// Structure representing hourly schedules of dining halls
+// {
+//   location: {
+//     day: [
+//       [breakfastStart, breakfastEnd],
+//       [lunchStart, lunchEnd],
+//       [dinnerStart, dinnerEnd]
+//     ]
+//     ...
+//   }
+//   ...
+// }
+
+const diningHallSchedules: { [key: string]: WeeklyHours } = {
+  '2301_Bowls': _2301Hours,
+  '2301_Smoothies': _2301Hours,
+  Commons: commonsKissamHours,
+  EBI: ebiZepposHours,
+  Kissam: commonsKissamHours,
+  McTyeire: {
+    Monday: [[], [], [17.75, 19]],
+    Tuesday: [[], [], [17.75, 19]],
+    Wednesday: [[], [], [17.75, 19]],
+    Thursday: [[], [], [17.75, 19]],
+    Friday: [[], [], []],
+    Saturday: [[], [], []],
+    Sunday: [[], [], []]
+  },
+  Rand_Bowls: randHours,
+  Rand_Randwich: randHours,
+  Rand_Fresh_Mex: randHours,
+  Rand_Mongolian: randHours,
+  Rand_Chicken_Shack: randHours,
+  Zeppos: ebiZepposHours,
+  Alumni: {
+    Monday: [[], [11, 14], [14, 16]],
+    Tuesday: [[], [11, 14], [14, 16]],
+    Wednesday: [[], [11, 14], [14, 16]],
+    Thursday: [[], [11, 14], [14, 16]],
+    Friday: [[], [11, 14], [14, 16]],
+    Saturday: [[], [], []],
+    Sunday: [[], [], []]
+  },
+  Grins: {
+    Monday: [
+      [7, 11],
+      [11, 14],
+      [14, 18.5]
+    ],
+    Tuesday: [
+      [7, 11],
+      [11, 14],
+      [14, 18.5]
+    ],
+    Wednesday: [
+      [7, 11],
+      [11, 14],
+      [14, 18.5]
+    ],
+    Thursday: [
+      [7, 11],
+      [11, 14],
+      [14, 18.5]
+    ],
+    Friday: [[7, 11], [11, 14], []],
+    Saturday: [[], [], []],
+    Sunday: [[], [], []]
+  },
+  Holy_Smokes: {
+    Monday: [[], [12, 13.5], [17, 19.5]],
+    Tuesday: [[], [12, 13.5], [17, 19.5]],
+    Wednesday: [[], [12, 13.5], [17, 19.5]],
+    Thursday: [[], [12, 13.5], [17, 19.5]],
+    Friday: [[], [], []],
+    Saturday: [[], [], []],
+    Sunday: [[], [12, 14], []]
+  },
+  Local_Java: {
+    Monday: [[7, 10], [10, 13.5], []],
+    Tuesday: [[7, 10], [10, 13.5], []],
+    Wednesday: [[7, 10], [10, 13.5], []],
+    Thursday: [[7, 10], [10, 13.5], []],
+    Friday: [[7, 10], [10, 13.5], []],
+    Saturday: [[], [], []],
+    Sunday: [[], [], []]
+  },
+  Suzies_Blair: suziesHours,
+  Suzies_FGH: suziesHours,
+  Suzies_MRB: {
+    Monday: [[7.5, 12.5], [12.5, 16.5], []],
+    Tuesday: [[7.5, 12.5], [12.5, 16.5], []],
+    Wednesday: [[7.5, 12.5], [12.5, 16.5], []],
+    Thursday: [[7.5, 12.5], [12.5, 16.5], []],
+    Friday: [[7.5, 12.5], [12.5, 16.5], []],
+    Saturday: [[], [], []],
+    Sunday: [[], [], []]
+  },
+  Food_For_Thought: {
+    Monday: [
+      [8, 12],
+      [12, 15],
+      [15, 20]
+    ],
+    Tuesday: [
+      [8, 12],
+      [12, 15],
+      [15, 20]
+    ],
+    Wednesday: [
+      [8, 12],
+      [12, 15],
+      [15, 20]
+    ],
+    Thursday: [
+      [8, 12],
+      [12, 15],
+      [15, 20]
+    ],
+    Friday: [[8, 12], [12, 15], []],
+    Saturday: [[], [], []],
+    Sunday: [[], [], []]
+  }
+};
 
 export const loginUser = async (
   req: express.Request,
@@ -148,21 +406,48 @@ export const getDiningHall = async (
 ) => {
   const diningHallName = req.params.dininghall_name;
   try {
-    const data = await getDataForDiningHall(diningHallName, 0);
-    const comments = await getDataForDiningHall(diningHallName, 1);
+    const lineLengths = await getDataForDiningHall(diningHallName, 0);
 
-    const lineMode = calculateMode(data);
-    const waitTime = calculateWaitTime(diningHallName, lineMode);
+    const diningHallInfo: {
+      name: string;
+      location: string[];
+      throughput: number;
+      type: string;
+      imageURL: string;
+    } | null = await queryGetDiningHallInformation(diningHallName);
 
-    res.send({
+    if (!diningHallInfo) {
+      return res.status(500).send({
+        error: "Failed to retrieve data from PostgreSQL"
+      })
+    }
+
+    let throughput = diningHallInfo['throughput'];
+    let longitude = diningHallInfo['location'][1];
+    let latitude = diningHallInfo['location'][0];
+    let image = diningHallInfo['imageURL'];
+
+    // const comments = await getDataForDiningHall(diningHallName, 1);
+
+    const lineMode = calculateMode(lineLengths);
+    const waitTime = calculateWaitTime(lineMode, throughput);
+
+    res.status(200).send({
       data: {
-        diningHallName: diningHallName,
+        name: diningHallName,
         lineLength: lineMode,
         waitTime: waitTime,
+        longitude: longitude,
+        latitude: latitude,
+        image: image,
+        schedule: diningHallSchedules[diningHallName],
         timeStamp: Date.now()
       }
     });
   } catch (err) {
+    res.status(500).send({
+      error: err
+    })
     console.log(err);
   }
 };
@@ -176,40 +461,67 @@ export const getDiningHalls = async (
     const result: any = {};
     const rand: any = {};
 
-    for (const key in data) {
-      const lineMode = calculateMode(data[key].lineLength);
-      const waitTime = calculateWaitTime(key, lineMode);
+    const diningHallInformation: {
+      name: string;
+      location: string[];
+      throughput: number;
+      type: string;
+      imageURL: string;
+    }[] | null = await queryGetDiningHallsInformation();
 
-      if (!key.includes('Rand')) {
-        result[key] = {
+    if (!diningHallInformation) {
+      return res.status(500).send({
+        error: "Failed to retrieve data from PostgreSQL"
+      }
+      )
+    }
+
+    for (let i = 0; i < diningHallInformation.length; ++i) {
+      let name = diningHallInformation[i]['name'];
+      let latitude = diningHallInformation[i]['location'][0];
+      let longitude = diningHallInformation[i]['location'][1];
+      let type = diningHallInformation[i]['type'];
+      let image = diningHallInformation[i]['imageURL'];
+      let throughput = diningHallInformation[i]['throughput'];
+
+      const lineMode = calculateMode(data[name].lineLength);
+      const waitTime = calculateWaitTime(lineMode, throughput);
+
+      if (!name.includes('Rand')) {
+        result[name] = {
           lineLength: lineMode,
           waitTime: waitTime,
-          longitude: data[key].longitude,
-          latitude: data[key].latitude,
-          type: data[key].type,
-          name: data[key].name,
-          image: data[key].image
+          longitude: longitude,
+          latitude: latitude,
+          type: type,
+          name: name,
+          image: image,
+          schedule: diningHallSchedules[name]
         };
       } else {
-        rand[key] = {
+        rand[name] = {
           lineLength: lineMode,
           waitTime: waitTime,
-          longitude: data[key].longitude,
-          latitude: data[key].latitude,
-          type: data[key].type,
-          name: data[key].name,
-          image: data[key].image
+          longitude: longitude,
+          latitude: latitude,
+          type: type,
+          name: name,
+          image: image,
+          schedule: diningHallSchedules[name]
         };
       }
     }
 
     result['Rand'] = rand;
 
-    res.send({
+    res.status(200).send({
       data: result,
       timeStamp: Date.now()
     });
   } catch (err) {
+    res.status(500).send({
+      error: err
+    })
     console.log(err);
   }
 };
@@ -242,30 +554,7 @@ function calculateMode(data: any) {
   return lineMode;
 }
 
-function calculateWaitTime(diningHallName: string, lineLength: string) {
-  const diningHallThroughputs: { [key: string]: number } = {
-    '2301_Bowls': 1,
-    '2301_Smoothies': 2,
-    Commons: 2,
-    EBI: 3,
-    Kissam: 4,
-    McTyeire: 5,
-    Rand_Bowls: 6,
-    Rand_Randwich: 7,
-    Rand_Fresh_Mex: 8,
-    Rand_Mongolian: 9,
-    Rand_Chicken_Shack: 10,
-    Zeppos: 11,
-    Alumni: 12,
-    Grins: 13,
-    Holy_Smokes: 14,
-    Local_Java: 15,
-    Suzies_Blair: 16,
-    Suzies_FGH: 17,
-    Suzies_MRB: 18,
-    Food_For_Thought: 19
-  };
-
+function calculateWaitTime(lineLength: string, throughput: number) {
   let waitTime = 0;
 
   /**
@@ -280,12 +569,12 @@ function calculateWaitTime(diningHallName: string, lineLength: string) {
 
   if (lineLength.toLowerCase() === 's') {
     // take the median of the range
-    waitTime = diningHallThroughputs[diningHallName] * (shortUpperBound / 2);
+    waitTime = throughput * (shortUpperBound / 2);
   } else if (lineLength.toLowerCase() === 'm') {
-    waitTime = diningHallThroughputs[diningHallName] * (mediumUpperBound / 2);
+    waitTime = throughput * (mediumUpperBound / 2);
   } else if (lineLength.toLowerCase() === 'l') {
     // Note: This is a lower bound, unlike the other two wait times
-    waitTime = diningHallThroughputs[diningHallName] * largeLowerBound;
+    waitTime = throughput * largeLowerBound;
   } else {
     // null for unknown
     return null;
