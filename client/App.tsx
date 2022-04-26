@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Image, View } from "react-native";
+import { Image, View, Alert } from "react-native";
 import { TouchableWithoutFeedback } from "react-native-gesture-handler";
 import { NativeBaseProvider } from "native-base";
 import { NavigationContainer } from "@react-navigation/native";
