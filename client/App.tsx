@@ -24,6 +24,8 @@ const Tab = createBottomTabNavigator();
 
 WebBrowser.maybeCompleteAuthSession();
 
+const serverUrl = process.env.SERVER_URL;
+
 const promptLogout = async (
   setUser: (user: DazeUser) => void,
   promptAsync: () => Promise<unknown>
@@ -65,7 +67,7 @@ const attemptLogin = async (accessToken: string | undefined) => {
   const secretKey = id + email; //PBKDF2(id + email, "daze-secret-key");
   // TODO: no hardcode
   try {
-    await fetch(`${process.env.SERVER_URL}/api/v1/user`, {
+    await fetch(`${serverUrl}/api/v1/user`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
@@ -106,8 +108,7 @@ export default function App() {
     });
   }, []);
 
-  const clientIds =
-    "918301654843-4c4em6250rlful1nam4divl5v4f5278a.apps.googleusercontent.com";
+  const clientIds = process.env.GOOGLE_CLIENT_ID;
   const [, response, promptAsync] = Google.useAuthRequest({
     expoClientId: clientIds,
     iosClientId: clientIds,

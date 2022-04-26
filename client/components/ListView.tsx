@@ -15,6 +15,8 @@ type NavigationProps = { navigation: DefaultScreenNavigationProp };
 
 const { width } = Dimensions.get("window");
 
+const serverUrl = process.env.SERVER_URL;
+
 export default function ListView({ navigation }: NavigationProps) {
   const [locations, setLocations] = useState<any[]>([]);
   const [refreshing, setRefreshing] = useState(false);
@@ -26,9 +28,7 @@ export default function ListView({ navigation }: NavigationProps) {
 
   const getAllLocations = async () => {
     try {
-      const response = await fetch(
-        `${process.env.SERVER_URL}/api/v1/dining_halls`
-      );
+      const response = await fetch(`${serverUrl}/api/v1/dining_halls`);
       const json = await response.json();
       const diningHalls = json.data;
       setLocations([]);

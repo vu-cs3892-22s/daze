@@ -8,15 +8,15 @@ import { DiningHallInfo, NavigationProps } from "../types";
 
 const { width, height } = Dimensions.get("window");
 
+const serverUrl = process.env.SERVER_URL;
+
 export default function MapView({ navigation }: NavigationProps) {
   const [nodes, setNodes] = useState<any[]>([]);
 
   const getAllLocations = async () => {
     const locations = [];
     try {
-      const response = await fetch(
-        `${process.env.SERVER_URL}/api/v1/dining_halls`
-      );
+      const response = await fetch(`${serverUrl}/api/v1/dining_halls`);
       const json = await response.json();
       const diningHalls = json.data;
       for (const [key, value] of Object.entries(diningHalls)) {

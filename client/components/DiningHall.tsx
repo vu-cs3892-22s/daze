@@ -21,6 +21,8 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 
 type NavigationProps = { route: any; navigation: DefaultScreenNavigationProp };
 
+const serverUrl = process.env.SERVER_URL;
+
 const days = [
   "Sunday",
   "Monday",
@@ -103,17 +105,14 @@ const sendLineData = async (diningHallName: string, lineLength: string) => {
       lineLength: lineLength,
       timestamp: new Date().getTime(),
     };
-    const response = await fetch(
-      `${process.env.SERVER_URL}/api/v1/data/lines`,
-      {
-        method: "POST",
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(body),
-      }
-    );
+    const response = await fetch(`${serverUrl}/api/v1/data/lines`, {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(body),
+    });
     if (response.status === 401) {
       showToast("Please login to save your line length");
       return;

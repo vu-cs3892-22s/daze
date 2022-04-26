@@ -32,6 +32,8 @@ const locations = [
 
 const sizes = ["S", "M", "L"];
 
+const serverUrl = process.env.SERVER_URL;
+
 export default function Update({ route, navigation }: NavigationProps) {
   const { locationIndex } = route.params;
   const stationDropdownRef = useRef<ModalDropdown | null>(null);
@@ -58,17 +60,14 @@ export default function Update({ route, navigation }: NavigationProps) {
         timestamp: timestamp,
       };
 
-      const response = await fetch(
-        `${process.env.SERVER_URL}/api/v1/data/lines`,
-        {
-          method: "POST",
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(sampleBody),
-        }
-      );
+      const response = await fetch(`${serverUrl}/api/v1/data/lines`, {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(sampleBody),
+      });
       const json = await response.json();
       const message = json.message;
       showToast(message);
