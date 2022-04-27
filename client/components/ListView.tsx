@@ -9,7 +9,7 @@ import {
 } from "react-native";
 
 import MiniCard from "./MiniCard";
-import { DiningHallInfo } from "types";
+import { ScheduledDiningHallInfo } from "types";
 
 const { width } = Dimensions.get("window");
 
@@ -24,8 +24,10 @@ const days = [
 ];
 
 export default function ListView() {
-  const [locations, setLocations] = useState<DiningHallInfo[]>([]);
-  const [sortedLocations, setSortedLocations] = useState<DiningHallInfo[]>([]);
+  const [locations, setLocations] = useState<ScheduledDiningHallInfo[]>([]);
+  const [sortedLocations, setSortedLocations] = useState<
+    ScheduledDiningHallInfo[]
+  >([]);
   const [refreshing, setRefreshing] = useState(false);
 
   const [currentDay, setCurrentDay] = useState(1);

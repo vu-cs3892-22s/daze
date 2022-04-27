@@ -31,6 +31,13 @@ export interface DiningHallInfo {
   schedule?: WeeklyHours;
 }
 
+export interface ScheduledDiningHallInfo extends DiningHallInfo {
+  isOpen?: boolean;
+  openUntil?: number;
+  nextMeal?: string;
+  nextMealStarts?: number;
+}
+
 export interface NavigationProps {
   navigation: NavigationProp;
 }

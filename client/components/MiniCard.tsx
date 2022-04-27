@@ -8,9 +8,9 @@ type NavigationProps = {
   name: string;
   type: string;
   isOpen: boolean;
-  openUntil: string;
+  openUntil: number;
   nextMeal: string;
-  nextMealStart: string;
+  nextMealStart: number;
   waitTimeProp: number | null;
 };
 
