@@ -7,6 +7,22 @@ interface DataBody {
   timeStamp: string;
 }
 
+interface WeeklyHours {
+  Monday: number[][];
+  Tuesday: number[][];
+  Wednesday: number[][];
+  Thursday: number[][];
+  Friday: number[][];
+  Saturday: number[][];
+  Sunday: number[][];
+}
+
+interface DiningHallResults {
+  result?: string[];
+  image?: string;
+  schedule?: WeeklyHours;
+}
+
 const diningHallNames = [
   '2301_Bowls',
   '2301_Smoothies',
