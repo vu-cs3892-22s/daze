@@ -62,8 +62,8 @@ export default function MapView() {
             key={v[0].name}
             diningHallNames={v.map((s) => s.name)}
             length={v[0].lineLength}
-            longitude={numCoords[0]}
-            latitude={numCoords[1]}
+            longitude={numCoords[1]}
+            latitude={numCoords[0]}
           />
         );
       });
