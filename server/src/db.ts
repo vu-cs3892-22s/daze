@@ -1,4 +1,4 @@
-import { Pool } from 'node-postgres';
+import { Pool } from 'pg';
 import dotenv from 'dotenv';
 
 dotenv.config({
@@ -106,6 +106,7 @@ export async function queryGetUserSecretKey(email: string) {
     client.release();
     return result.rows[0];
   } catch (err: unknown) {
+    console.log(err);
     client.release();
     return false;
   }
@@ -127,6 +128,7 @@ export async function queryGetDiningHallInformation(
     client.release();
     return result.rows[0];
   } catch (err: unknown) {
+    console.log(err);
     client.release();
     return null;
   }
@@ -156,6 +158,7 @@ export async function queryGetDiningHallsInformation(): Promise<
     client.release();
     return result.rows;
   } catch (err: unknown) {
+    console.log(err);
     client.release();
     return null;
   }
