@@ -7,11 +7,11 @@ import {
   Text,
   RefreshControl,
 } from "react-native";
+
 import MiniCard from "./MiniCard";
+import { DiningHallInfo } from "types";
 
 const { width } = Dimensions.get("window");
-
-const serverUrl = process.env.SERVER_URL;
 
 const days = [
   "Sunday",
@@ -24,12 +24,14 @@ const days = [
 ];
 
 export default function ListView() {
-  const [locations, setLocations] = useState<any[]>([]);
-  const [sortedLocations, setSortedLocations] = useState<any[]>([]);
+  const [locations, setLocations] = useState<DiningHallInfo[]>([]);
+  const [sortedLocations, setSortedLocations] = useState<DiningHallInfo[]>([]);
   const [refreshing, setRefreshing] = useState(false);
 
   const [currentDay, setCurrentDay] = useState(1);
   const [currentHour, setCurrentHour] = useState(7);
+
+  const serverUrl = process.env.SERVER_URL;
 
   const getAllLocations = async () => {
     setLocations([]);
@@ -52,6 +54,7 @@ export default function ListView() {
     }
   };
 
+  // I apologize for the logic below, scheduling is so weird
   const addSchedule = () => {
     const locs = locations;
     for (const location of locs) {
@@ -60,31 +63,75 @@ export default function ListView() {
         [lunchOpen, lunchClose],
         [dinnerOpen, dinnerClose],
       ] = location.schedule[days[currentDay]];
-      location["isOpen"] = true;
+      Object.assign(location, { isOpen: true });
+      // Check whether it's breakfast/lunch/dinner session
       if (breakfastOpen <= currentHour && currentHour <= breakfastClose) {
-        location["openUntil"] = breakfastClose;
-        location["nextMeal"] = "Lunch";
-        location["nextMealStarts"] = lunchOpen;
-      } else if (lunchOpen <= currentHour && currentHour <= lunchClose) {
-        location["openUntil"] = lunchClose;
-        location["nextMeal"] = "Lunch";
-        location["nextMealStarts"] = dinnerOpen;
-      } else if (dinnerOpen <= currentHour && currentHour <= dinnerClose) {
-        location["openUntil"] = dinnerClose;
-        location["nextMeal"] = "Breakfast";
-        location["nextMealStarts"] = breakfastOpen;
-      } else {
-        if (currentHour < breakfastOpen) {
-          location["nextMeal"] = "Breakfast";
-          location["nextMealStarts"] = breakfastOpen;
-        } else if (currentHour < lunchOpen) {
-          location["nextMeal"] = "Lunch";
-          location["nextMealStarts"] = lunchOpen;
+        // If breakfast and lunch are back-to-back
+        if (breakfastClose === lunchOpen) {
+          // If breakfast, lunch, and dinner are back-to-back-to-back
+          if (lunchClose === dinnerOpen) {
+            Object.assign(location, { openUntil: dinnerClose });
+          } else {
+            // If there is break between breakfast/lunch and dinner
+            Object.assign(
+              location,
+              { openUntil: lunchClose },
+              { nextMeal: "Dinner" },
+              { nextMealStarts: dinnerOpen }
+            );
+          }
         } else {
-          location["nextMeal"] = "Dinner";
-          location["nextMealStarts"] = dinnerOpen;
+          // If there is break between breakfast and lunch
+          Object.assign(
+            location,
+            { openUntil: breakfastClose },
+            { nextMeal: "Lunch" },
+            { nextMealStarts: lunchOpen }
+          );
         }
-        location["isOpen"] = false;
+      } else if (lunchOpen <= currentHour && currentHour <= lunchClose) {
+        if (lunchClose === dinnerOpen) {
+          // If lunch and dinner are back-to-back
+          Object.assign(location, { openUntil: dinnerClose });
+        } else {
+          // If there is break between lunch and dinner
+          Object.assign(
+            location,
+            { openUntil: lunchClose },
+            { nextMeal: "Lunch" },
+            { nextMealStarts: dinnerOpen }
+          );
+        }
+      } else if (dinnerOpen <= currentHour && currentHour <= dinnerClose) {
+        // Dinnertime!
+        Object.assign(
+          location,
+          { openUntil: dinnerClose },
+          { nextMeal: "Breakfast" },
+          { nextMealStarts: breakfastOpen }
+        );
+      } else {
+        // What is the next food session when closed
+        if (currentHour < breakfastOpen) {
+          Object.assign(
+            location,
+            { nextMeal: "Breakfast" },
+            { nextMealStarts: breakfastOpen }
+          );
+        } else if (currentHour < lunchOpen) {
+          Object.assign(
+            location,
+            { nextMeal: "Lunch" },
+            { nextMealStarts: lunchOpen }
+          );
+        } else {
+          Object.assign(
+            location,
+            { nextMeal: "Dinner" },
+            { nextMealStarts: dinnerOpen }
+          );
+        }
+        Object.assign(location, { isOpen: false });
       }
     }
     return locs;
@@ -119,9 +166,8 @@ export default function ListView() {
   };
 
   useEffect(() => {
-    if (locations.length > 19) {
-      sortLocations();
-    }
+    // Once we have all locations, sort them
+    locations.length > 19 && sortLocations();
   }, [locations]);
 
   return (

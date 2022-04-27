@@ -1,5 +1,15 @@
 import type { BottomTabNavigationProp } from "@react-navigation/bottom-tabs";
 
+interface WeeklyHours {
+  Monday: number[][];
+  Tuesday: number[][];
+  Wednesday: number[][];
+  Thursday: number[][];
+  Friday: number[][];
+  Saturday: number[][];
+  Sunday: number[][];
+}
+
 export type NavigationProp = BottomTabNavigationProp<
   RootTabParamList,
   "List View"
@@ -18,7 +28,9 @@ export interface DiningHallInfo {
   name?: string;
   type?: string;
   waitTime?: number | null;
+  schedule?: WeeklyHours;
 }
+
 export interface NavigationProps {
   navigation: NavigationProp;
 }
