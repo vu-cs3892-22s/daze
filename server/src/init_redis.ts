@@ -29,7 +29,7 @@ client.on('ready', () => {
   console.log('Client connected to redis and ready to use.');
 });
 
-client.on('error', (err: any) => {
+client.on('error', (err: unknown) => {
   console.log(err);
 });
 

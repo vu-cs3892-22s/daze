@@ -8,8 +8,33 @@ import {
   queryCreateUser,
   queryUpdateUser,
   // queryGetUser,
-  queryGetUserSecretKey
+  queryGetUserSecretKey,
+  queryGetDiningHallInformation,
+  queryGetDiningHallsInformation
 } from './db';
+
+interface WeeklyHours {
+  Monday: number[][];
+  Tuesday: number[][];
+  Wednesday: number[][];
+  Thursday: number[][];
+  Friday: number[][];
+  Saturday: number[][];
+  Sunday: number[][];
+}
+
+// Structure representing hourly schedules of dining halls
+// {
+//   location: {
+//     day: [
+//       [breakfastStart, breakfastEnd],
+//       [lunchStart, lunchEnd],
+//       [dinnerStart, dinnerEnd]
+//     ]
+//     ...
+//   }
+//   ...
+// }
 
 export const loginUser = async (
   req: express.Request,
@@ -148,21 +173,50 @@ export const getDiningHall = async (
 ) => {
   const diningHallName = req.params.dininghall_name;
   try {
-    const data = await getDataForDiningHall(diningHallName, 0);
-    const comments = await getDataForDiningHall(diningHallName, 1);
+    const lineLengths = await getDataForDiningHall(diningHallName, 0);
 
-    const lineMode = calculateMode(data);
-    const waitTime = calculateWaitTime(diningHallName, lineMode);
+    const diningHallInfo: {
+      name: string;
+      location: string[];
+      throughput: number;
+      type: string;
+      imageURL: string;
+      schedule: WeeklyHours;
+    } | null = await queryGetDiningHallInformation(diningHallName);
 
-    res.send({
+    if (!diningHallInfo) {
+      return res.status(500).send({
+        error: 'Failed to retrieve data from PostgreSQL'
+      });
+    }
+
+    const throughput = diningHallInfo['throughput'];
+    const longitude = diningHallInfo['location'][1];
+    const latitude = diningHallInfo['location'][0];
+    const image = diningHallInfo['imageURL'];
+    const schedule = diningHallInfo['schedule'];
+
+    // const comments = await getDataForDiningHall(diningHallName, 1);
+
+    const lineMode = calculateMode(lineLengths);
+    const waitTime = calculateWaitTime(lineMode, throughput);
+
+    res.status(200).send({
       data: {
-        diningHallName: diningHallName,
+        name: diningHallName,
         lineLength: lineMode,
         waitTime: waitTime,
+        longitude: longitude,
+        latitude: latitude,
+        image: image,
+        schedule: schedule,
         timeStamp: Date.now()
       }
     });
   } catch (err) {
+    res.status(500).send({
+      error: err
+    });
     console.log(err);
   }
 };
@@ -176,42 +230,70 @@ export const getDiningHalls = async (
     const result: any = {};
     const rand: any = {};
 
-    for (const key in data) {
-      const lineMode = calculateMode(data[key].lineLength);
-      const waitTime = calculateWaitTime(key, lineMode);
+    const diningHallInformation:
+      | {
+          name: string;
+          location: string[];
+          throughput: number;
+          type: string;
+          imageURL: string;
+          schedule: WeeklyHours;
+        }[]
+      | null = await queryGetDiningHallsInformation();
 
-      if (!key.includes('Rand')) {
-        result[key] = {
+    if (!diningHallInformation) {
+      return res.status(500).send({
+        error: 'Failed to retrieve data from PostgreSQL'
+      });
+    }
+
+    for (let i = 0; i < diningHallInformation.length; ++i) {
+      const name = diningHallInformation[i]['name'];
+      const latitude = diningHallInformation[i]['location'][0];
+      const longitude = diningHallInformation[i]['location'][1];
+      const type = diningHallInformation[i]['type'];
+      const image = diningHallInformation[i]['imageURL'];
+      const throughput = diningHallInformation[i]['throughput'];
+      const schedule = diningHallInformation[i]['schedule'];
+
+      const lineMode = calculateMode(data[name].lineLength);
+      const waitTime = calculateWaitTime(lineMode, throughput);
+
+      if (!name.includes('Rand')) {
+        result[name] = {
           lineLength: lineMode,
           waitTime: waitTime,
-          longitude: data[key].longitude,
-          latitude: data[key].latitude,
-          type: data[key].type,
-          name: data[key].name,
-          image: data[key].image,
-          schedule: data[key].schedule
+          longitude: longitude,
+          latitude: latitude,
+          type: type,
+          name: name,
+          image: image,
+          schedule: schedule
         };
       } else {
-        rand[key] = {
+        rand[name] = {
           lineLength: lineMode,
           waitTime: waitTime,
-          longitude: data[key].longitude,
-          latitude: data[key].latitude,
-          type: data[key].type,
-          name: data[key].name,
-          image: data[key].image,
-          schedule: data[key].schedule
+          longitude: longitude,
+          latitude: latitude,
+          type: type,
+          name: name,
+          image: image,
+          schedule: schedule
         };
       }
     }
 
     result['Rand'] = rand;
 
-    res.send({
+    res.status(200).send({
       data: result,
       timeStamp: Date.now()
     });
   } catch (err) {
+    res.status(500).send({
+      error: err
+    });
     console.log(err);
   }
 };
@@ -244,30 +326,7 @@ function calculateMode(data: any) {
   return lineMode;
 }
 
-function calculateWaitTime(diningHallName: string, lineLength: string) {
-  const diningHallThroughputs: { [key: string]: number } = {
-    '2301_Bowls': 1,
-    '2301_Smoothies': 2,
-    Commons: 2,
-    EBI: 3,
-    Kissam: 4,
-    McTyeire: 5,
-    Rand_Bowls: 6,
-    Rand_Randwich: 7,
-    Rand_Fresh_Mex: 8,
-    Rand_Mongolian: 9,
-    Rand_Chicken_Shack: 10,
-    Zeppos: 11,
-    Alumni: 12,
-    Grins: 13,
-    Holy_Smokes: 14,
-    Local_Java: 15,
-    Suzies_Blair: 16,
-    Suzies_FGH: 17,
-    Suzies_MRB: 18,
-    Food_For_Thought: 19
-  };
-
+function calculateWaitTime(lineLength: string, throughput: number) {
   let waitTime = 0;
 
   /**
@@ -282,12 +341,12 @@ function calculateWaitTime(diningHallName: string, lineLength: string) {
 
   if (lineLength.toLowerCase() === 's') {
     // take the median of the range
-    waitTime = diningHallThroughputs[diningHallName] * (shortUpperBound / 2);
+    waitTime = throughput * (shortUpperBound / 2);
   } else if (lineLength.toLowerCase() === 'm') {
-    waitTime = diningHallThroughputs[diningHallName] * (mediumUpperBound / 2);
+    waitTime = throughput * (mediumUpperBound / 2);
   } else if (lineLength.toLowerCase() === 'l') {
     // Note: This is a lower bound, unlike the other two wait times
-    waitTime = diningHallThroughputs[diningHallName] * largeLowerBound;
+    waitTime = throughput * largeLowerBound;
   } else {
     // null for unknown
     return null;
