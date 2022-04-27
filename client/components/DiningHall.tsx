@@ -17,6 +17,7 @@ import ButtonToggleGroup from "react-native-button-toggle-group";
 
 import { Alert } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { Box } from "native-base";
 
 interface DiningHallProps {
   route: {
@@ -202,6 +203,7 @@ export default function DiningHall({ route }: DiningHallProps) {
         </View>
       ) : (
         <View style={styles.content}>
+          <Box style={styles.handle} />
           <Text style={styles.title}>{name.replace(/_/g, " ")}</Text>
 
           <View style={styles.center}>
@@ -335,6 +337,7 @@ const styles = StyleSheet.create({
     fontWeight: "700",
     fontSize: 36,
     marginBottom: 12,
+    paddingLeft: 10,
   },
   center: {
     display: "flex",
@@ -352,5 +355,13 @@ const styles = StyleSheet.create({
     alignSelf: "center",
     paddingTop: 3,
     paddingBottom: 3,
+  },
+  handle: {
+    width: 80,
+    height: 6,
+    backgroundColor: "#D3D3D3",
+    alignSelf: "center",
+    borderRadius: 12,
+    top: -8,
   },
 });
