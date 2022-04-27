@@ -151,7 +151,7 @@ export const getDiningHall = async (
     const data = await getDataForDiningHall(diningHallName, 0);
     const comments = await getDataForDiningHall(diningHallName, 1);
 
-    const lineMode = calculateMode(data);
+    const lineMode = calculateMode(data.result);
     const waitTime = calculateWaitTime(diningHallName, lineMode);
 
     res.send({
@@ -159,7 +159,9 @@ export const getDiningHall = async (
         diningHallName: diningHallName,
         lineLength: lineMode,
         waitTime: waitTime,
-        timeStamp: Date.now()
+        timeStamp: Date.now(),
+        image: data.image,
+        schedule: data.schedule
       }
     });
   } catch (err) {

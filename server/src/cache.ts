@@ -17,6 +17,12 @@ interface WeeklyHours {
   Sunday: number[][];
 }
 
+interface DiningHallResults {
+  result?: string[];
+  image?: string;
+  schedule?: WeeklyHours;
+}
+
 const diningHallNames = [
   '2301_Bowls',
   '2301_Smoothies',
@@ -379,9 +385,13 @@ export const getDataForDiningHall = async (
   diningHallName: string,
   db: number
 ) => {
+  let results: DiningHallResults = {};
   await client.select(db);
   const result = await client.lRange(diningHallName, 0, -1);
-  return result;
+  const image = diningHallImages[diningHallName];
+  const schedule = diningHallSchedules[diningHallName];
+  results = { result, image, schedule };
+  return results;
 };
 
 export const getDataForDiningHalls = async (db: number) => {
