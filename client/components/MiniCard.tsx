@@ -11,6 +11,7 @@ type NavigationProps = {
   openUntil: string;
   nextMeal: string;
   nextMealStart: string;
+  waitTimeProp: number | null;
 };
 
 const numberToTime = (num) => {
@@ -29,6 +30,7 @@ export default function MiniCard({
   openUntil,
   nextMeal,
   nextMealStart,
+  waitTimeProp,
 }: NavigationProps) {
   const [waitTime, setWaitTime] = useState("0");
   const navigation: NavigationProp = useNavigation();
@@ -41,19 +43,20 @@ export default function MiniCard({
     });
   };
 
-  const rng = () => {
-    return (Math.round((Math.random() * 40) / 5) * 5).toFixed();
-  };
-
   useEffect(() => {
-    setWaitTime(rng());
-  }, []);
+    if (waitTimeProp) {
+      setWaitTime(waitTimeProp.toString());
+    }
+  }, [waitTimeProp]);
 
   const getBgColor = (min: number) =>
     min < 15 ? "#B0DF63" : min < 40 ? "#FFFA76" : "#FF9B70";
 
   return (
-    <TouchableOpacity onPress={onPress} style={styles.root}>
+    <TouchableOpacity
+      onPress={onPress}
+      style={isOpen ? [styles.root] : [styles.root, { opacity: 0.85 }]}
+    >
       <View style={styles.iconContainer}>
         <Image
           style={{ width: 40, height: 40 }}
@@ -76,14 +79,25 @@ export default function MiniCard({
         )}
       </View>
       <View style={styles.waitTimeContainer}>
+        {waitTimeProp >= 60 && (
+          <Text style={{ color: "#616265", fontSize: 10, bottom: 4 }}>
+            more than
+          </Text>
+        )}
         <View
           style={[
             styles.waitTimeBlob,
-            { backgroundColor: getBgColor(parseInt(waitTime)) },
+            {
+              backgroundColor: waitTimeProp
+                ? getBgColor(parseInt(waitTime))
+                : "#D3D3D3",
+            },
           ]}
         >
-          <Text style={styles.waitTimeMinute}>{waitTime}</Text>
-          <Text>min</Text>
+          <Text style={styles.waitTimeMinute}>
+            {waitTimeProp >= 60 ? "1" : waitTime === "0" ? "?" : waitTime}
+          </Text>
+          <Text>{waitTimeProp >= 60 ? "hr" : "min"}</Text>
         </View>
       </View>
     </TouchableOpacity>
@@ -118,9 +132,8 @@ const styles = StyleSheet.create({
     flexGrow: 15,
   },
   waitTimeContainer: {
-    flexGrow: 2,
-    alignItems: "flex-end",
-    paddingRight: 12,
+    flexGrow: 4,
+    alignItems: "center",
   },
   diningHallName: {
     fontWeight: "700",

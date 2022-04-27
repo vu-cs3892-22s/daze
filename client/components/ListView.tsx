@@ -92,7 +92,9 @@ export default function ListView() {
 
   const onRefresh = useCallback(() => {
     setRefreshing(true);
-    getAllLocations().then(() => setRefreshing(false));
+    getAllLocations()
+      .then(() => sortLocations())
+      .then(() => setRefreshing(false));
   }, []);
 
   useEffect(() => {
@@ -105,12 +107,20 @@ export default function ListView() {
     return () => setLocations([]);
   }, []);
 
+  const sortLocations = () => {
+    const locationsWithSchedule = addSchedule();
+    // Sort by ascending wait time
+    locationsWithSchedule.sort((a, b) => a.waitTime - b.waitTime);
+    // Move all unknown wait time locations to end
+    locationsWithSchedule.sort((a, b) => (b.waitTime !== null ? 1 : -10));
+    // Sort by open/closed
+    locationsWithSchedule.sort((a, b) => Number(b.isOpen) - Number(a.isOpen));
+    setSortedLocations(locationsWithSchedule);
+  };
+
   useEffect(() => {
     if (locations.length > 19) {
-      const locationsWithSchedule = addSchedule();
-      // Sort by open/closed
-      locationsWithSchedule.sort((a, b) => Number(b.isOpen) - Number(a.isOpen));
-      setSortedLocations(locationsWithSchedule);
+      sortLocations();
     }
   }, [locations]);
 
@@ -132,6 +142,7 @@ export default function ListView() {
               openUntil={location.openUntil}
               nextMeal={location.nextMeal}
               nextMealStart={location.nextMealStarts}
+              waitTimeProp={location.waitTime}
             />
           ))
         ) : (
