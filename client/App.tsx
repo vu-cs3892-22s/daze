@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Image, View, Alert } from "react-native";
 import { TouchableWithoutFeedback } from "react-native-gesture-handler";
-import { NativeBaseProvider } from "native-base";
+import { Box, NativeBaseProvider } from "native-base";
 import { NavigationContainer } from "@react-navigation/native";
 import { Ionicons, AntDesign } from "@expo/vector-icons";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
@@ -194,13 +194,23 @@ export default function App() {
                 />
               ),
             headerLeft: () => (
-              <Ionicons
-                name="information-circle-outline"
-                size={24}
-                color="white"
-                onPress={() => setVisible(true)}
-                style={{ paddingLeft: 5 }}
-              />
+              <Box
+                style={{
+                  width: 32,
+                  height: 32,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "flex-end",
+                }}
+              >
+                <Ionicons
+                  name="information-circle-outline"
+                  size={24}
+                  color="white"
+                  onPress={() => setVisible(true)}
+                  style={{ paddingLeft: 5 }}
+                />
+              </Box>
             ),
           })}
         >
