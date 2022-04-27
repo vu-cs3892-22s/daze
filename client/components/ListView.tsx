@@ -209,11 +209,12 @@ export default function ListView() {
 const styles = StyleSheet.create({
   root: {
     maxWidth: width,
-    top: 20,
   },
   scrollRoot: {
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
+    top: 20,
+    paddingBottom: 20,
   },
 });
