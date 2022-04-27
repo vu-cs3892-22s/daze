@@ -23,128 +23,6 @@ interface WeeklyHours {
   Sunday: number[][];
 }
 
-const _2301Hours = {
-  Monday: [
-    [7, 10],
-    [11, 15],
-    [16.5, 20]
-  ],
-  Tuesday: [
-    [7, 10],
-    [11, 15],
-    [16.5, 20]
-  ],
-  Wednesday: [
-    [7, 10],
-    [11, 15],
-    [16.5, 20]
-  ],
-  Thursday: [
-    [7, 10],
-    [11, 15],
-    [16.5, 20]
-  ],
-  Friday: [[7, 10], [11, 15], []],
-  Saturday: [[], [], []],
-  Sunday: [[], [], [16.5, 20]]
-};
-
-const randHours = {
-  Monday: [[7, 11], [11, 15], []],
-  Tuesday: [[7, 11], [11, 15], []],
-  Wednesday: [[7, 11], [11, 15], []],
-  Thursday: [[7, 11], [11, 15], []],
-  Friday: [[7, 11], [11, 15], []],
-  Saturday: [[], [], []],
-  Sunday: [[], [], []]
-};
-
-const suziesHours = {
-  Monday: [[8, 11], [11, 14.5], []],
-  Tuesday: [[8, 11], [11, 14.5], []],
-  Wednesday: [[8, 11], [11, 14.5], []],
-  Thursday: [[8, 11], [11, 14.5], []],
-  Friday: [[8, 11], [11, 14.5], []],
-  Saturday: [[], [], []],
-  Sunday: [[], [], []]
-};
-
-const commonsKissamHours = {
-  Monday: [
-    [7, 10],
-    [11, 14.5],
-    [16.5, 20]
-  ],
-  Tuesday: [
-    [7, 10],
-    [11, 14.5],
-    [16.5, 20]
-  ],
-  Wednesday: [
-    [7, 10],
-    [11, 14.5],
-    [16.5, 20]
-  ],
-  Thursday: [
-    [7, 10],
-    [11, 14.5],
-    [16.5, 20]
-  ],
-  Friday: [
-    [7, 10],
-    [11, 14.5],
-    [16.5, 20]
-  ],
-  Saturday: [
-    [9, 11],
-    [11, 14],
-    [16.5, 20]
-  ],
-  Sunday: [
-    [9, 11],
-    [11, 14],
-    [16.5, 20]
-  ]
-};
-
-const ebiZepposHours = {
-  Monday: [
-    [7, 10.5],
-    [11, 14.5],
-    [16.5, 19.5]
-  ],
-  Tuesday: [
-    [7, 10.5],
-    [11, 14.5],
-    [16.5, 19.5]
-  ],
-  Wednesday: [
-    [7, 10.5],
-    [11, 14.5],
-    [16.5, 19.5]
-  ],
-  Thursday: [
-    [7, 10.5],
-    [11, 14.5],
-    [16.5, 19.5]
-  ],
-  Friday: [
-    [7, 10.5],
-    [11, 14.5],
-    [16.5, 19.5]
-  ],
-  Saturday: [
-    [9, 11],
-    [11, 14],
-    [16.5, 19.5]
-  ],
-  Sunday: [
-    [9, 11],
-    [11, 14],
-    [16.5, 19.5]
-  ]
-};
-
 // Structure representing hourly schedules of dining halls
 // {
 //   location: {
@@ -157,117 +35,6 @@ const ebiZepposHours = {
 //   }
 //   ...
 // }
-
-const diningHallSchedules: { [key: string]: WeeklyHours } = {
-  '2301_Bowls': _2301Hours,
-  '2301_Smoothies': _2301Hours,
-  Commons: commonsKissamHours,
-  EBI: ebiZepposHours,
-  Kissam: commonsKissamHours,
-  McTyeire: {
-    Monday: [[], [], [17.75, 19]],
-    Tuesday: [[], [], [17.75, 19]],
-    Wednesday: [[], [], [17.75, 19]],
-    Thursday: [[], [], [17.75, 19]],
-    Friday: [[], [], []],
-    Saturday: [[], [], []],
-    Sunday: [[], [], []]
-  },
-  Rand_Bowls: randHours,
-  Rand_Randwich: randHours,
-  Rand_Fresh_Mex: randHours,
-  Rand_Mongolian: randHours,
-  Rand_Chicken_Shack: randHours,
-  Zeppos: ebiZepposHours,
-  Alumni: {
-    Monday: [[], [11, 14], [14, 16]],
-    Tuesday: [[], [11, 14], [14, 16]],
-    Wednesday: [[], [11, 14], [14, 16]],
-    Thursday: [[], [11, 14], [14, 16]],
-    Friday: [[], [11, 14], [14, 16]],
-    Saturday: [[], [], []],
-    Sunday: [[], [], []]
-  },
-  Grins: {
-    Monday: [
-      [7, 11],
-      [11, 14],
-      [14, 18.5]
-    ],
-    Tuesday: [
-      [7, 11],
-      [11, 14],
-      [14, 18.5]
-    ],
-    Wednesday: [
-      [7, 11],
-      [11, 14],
-      [14, 18.5]
-    ],
-    Thursday: [
-      [7, 11],
-      [11, 14],
-      [14, 18.5]
-    ],
-    Friday: [[7, 11], [11, 14], []],
-    Saturday: [[], [], []],
-    Sunday: [[], [], []]
-  },
-  Holy_Smokes: {
-    Monday: [[], [12, 13.5], [17, 19.5]],
-    Tuesday: [[], [12, 13.5], [17, 19.5]],
-    Wednesday: [[], [12, 13.5], [17, 19.5]],
-    Thursday: [[], [12, 13.5], [17, 19.5]],
-    Friday: [[], [], []],
-    Saturday: [[], [], []],
-    Sunday: [[], [12, 14], []]
-  },
-  Local_Java: {
-    Monday: [[7, 10], [10, 13.5], []],
-    Tuesday: [[7, 10], [10, 13.5], []],
-    Wednesday: [[7, 10], [10, 13.5], []],
-    Thursday: [[7, 10], [10, 13.5], []],
-    Friday: [[7, 10], [10, 13.5], []],
-    Saturday: [[], [], []],
-    Sunday: [[], [], []]
-  },
-  Suzies_Blair: suziesHours,
-  Suzies_FGH: suziesHours,
-  Suzies_MRB: {
-    Monday: [[7.5, 12.5], [12.5, 16.5], []],
-    Tuesday: [[7.5, 12.5], [12.5, 16.5], []],
-    Wednesday: [[7.5, 12.5], [12.5, 16.5], []],
-    Thursday: [[7.5, 12.5], [12.5, 16.5], []],
-    Friday: [[7.5, 12.5], [12.5, 16.5], []],
-    Saturday: [[], [], []],
-    Sunday: [[], [], []]
-  },
-  Food_For_Thought: {
-    Monday: [
-      [8, 12],
-      [12, 15],
-      [15, 20]
-    ],
-    Tuesday: [
-      [8, 12],
-      [12, 15],
-      [15, 20]
-    ],
-    Wednesday: [
-      [8, 12],
-      [12, 15],
-      [15, 20]
-    ],
-    Thursday: [
-      [8, 12],
-      [12, 15],
-      [15, 20]
-    ],
-    Friday: [[8, 12], [12, 15], []],
-    Saturday: [[], [], []],
-    Sunday: [[], [], []]
-  }
-};
 
 export const loginUser = async (
   req: express.Request,
@@ -414,6 +181,7 @@ export const getDiningHall = async (
       throughput: number;
       type: string;
       imageURL: string;
+      schedule: WeeklyHours;
     } | null = await queryGetDiningHallInformation(diningHallName);
 
     if (!diningHallInfo) {
@@ -426,6 +194,7 @@ export const getDiningHall = async (
     const longitude = diningHallInfo['location'][1];
     const latitude = diningHallInfo['location'][0];
     const image = diningHallInfo['imageURL'];
+    const schedule = diningHallInfo['schedule'];
 
     // const comments = await getDataForDiningHall(diningHallName, 1);
 
@@ -440,7 +209,7 @@ export const getDiningHall = async (
         longitude: longitude,
         latitude: latitude,
         image: image,
-        schedule: diningHallSchedules[diningHallName],
+        schedule: schedule,
         timeStamp: Date.now()
       }
     });
@@ -468,6 +237,7 @@ export const getDiningHalls = async (
           throughput: number;
           type: string;
           imageURL: string;
+          schedule: WeeklyHours;
         }[]
       | null = await queryGetDiningHallsInformation();
 
@@ -484,6 +254,7 @@ export const getDiningHalls = async (
       const type = diningHallInformation[i]['type'];
       const image = diningHallInformation[i]['imageURL'];
       const throughput = diningHallInformation[i]['throughput'];
+      const schedule = diningHallInformation[i]['schedule'];
 
       const lineMode = calculateMode(data[name].lineLength);
       const waitTime = calculateWaitTime(lineMode, throughput);
@@ -497,7 +268,7 @@ export const getDiningHalls = async (
           type: type,
           name: name,
           image: image,
-          schedule: diningHallSchedules[name]
+          schedule: schedule
         };
       } else {
         rand[name] = {
@@ -508,7 +279,7 @@ export const getDiningHalls = async (
           type: type,
           name: name,
           image: image,
-          schedule: diningHallSchedules[name]
+          schedule: schedule
         };
       }
     }

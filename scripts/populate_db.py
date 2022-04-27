@@ -2,6 +2,7 @@ import psycopg2
 from datetime import date
 from dotenv import load_dotenv
 import os
+import json
 
 load_dotenv()
 
@@ -24,7 +25,7 @@ cursor = conn.cursor()
 cursor.execute('''DROP TABLE IF EXISTS "DiningHallInformation"''')
 
 # Create the table if it doesn't exist
-cursor.execute('''CREATE TABLE IF NOT EXISTS "DiningHallInformation" ( "name" text NOT NULL, "location" numeric[] NOT NULL, "throughput" integer NOT NULL, "type" text NOT NULL, "imageURL" text NOT NULL, CONSTRAINT "Dininghall_pkey" PRIMARY KEY ("name") )
+cursor.execute('''CREATE TABLE IF NOT EXISTS "DiningHallInformation" ( "name" text NOT NULL, "location" numeric[] NOT NULL, "throughput" integer NOT NULL, "type" text NOT NULL, "imageURL" text NOT NULL, "schedule" json, CONSTRAINT "Dininghall_pkey" PRIMARY KEY ("name") )
 ''')
     
 # Insert data
@@ -158,9 +159,242 @@ dining_hall_types = {
   'Food_For_Thought': 'Cafe'
 }
 
+_2301Hours = {
+  'Monday': [
+    [7, 10],
+    [11, 15],
+    [16.5, 20]
+  ],
+  'Tuesday': [
+    [7, 10],
+    [11, 15],
+    [16.5, 20]
+  ],
+  'Wednesday': [
+    [7, 10],
+    [11, 15],
+    [16.5, 20]
+  ],
+  'Thursday': [
+    [7, 10],
+    [11, 15],
+    [16.5, 20]
+  ],
+  'Friday': [[7, 10], [11, 15], []],
+  'Saturday': [[], [], []],
+  'Sunday': [[], [], [16.5, 20]]
+}
+
+randHours = {
+  'Monday': [[7, 11], [11, 15], []],
+  'Tuesday': [[7, 11], [11, 15], []],
+  'Wednesday': [[7, 11], [11, 15], []],
+  'Thursday': [[7, 11], [11, 15], []],
+  'Friday': [[7, 11], [11, 15], []],
+  'Saturday': [[], [], []],
+  'Sunday': [[], [], []]
+}
+
+suziesHours = {
+  'Monday': [[8, 11], [11, 14.5], []],
+  'Tuesday': [[8, 11], [11, 14.5], []],
+  'Wednesday': [[8, 11], [11, 14.5], []],
+  'Thursday': [[8, 11], [11, 14.5], []],
+  'Friday': [[8, 11], [11, 14.5], []],
+  'Saturday': [[], [], []],
+  'Sunday': [[], [], []]
+}
+
+commonsKissamHours = {
+  'Monday': [
+    [7, 10],
+    [11, 14.5],
+    [16.5, 20]
+  ],
+  'Tuesday': [
+    [7, 10],
+    [11, 14.5],
+    [16.5, 20]
+  ],
+  'Wednesday': [
+    [7, 10],
+    [11, 14.5],
+    [16.5, 20]
+  ],
+  'Thursday': [
+    [7, 10],
+    [11, 14.5],
+    [16.5, 20]
+  ],
+  'Friday': [
+    [7, 10],
+    [11, 14.5],
+    [16.5, 20]
+  ],
+  'Saturday': [
+    [9, 11],
+    [11, 14],
+    [16.5, 20]
+  ],
+  'Sunday': [
+    [9, 11],
+    [11, 14],
+    [16.5, 20]
+  ]
+}
+
+ebiZepposHours = {
+  'Monday': [
+    [7, 10.5],
+    [11, 14.5],
+    [16.5, 19.5]
+  ],
+  'Tuesday': [
+    [7, 10.5],
+    [11, 14.5],
+    [16.5, 19.5]
+  ],
+  'Wednesday': [
+    [7, 10.5],
+    [11, 14.5],
+    [16.5, 19.5]
+  ],
+  'Thursday': [
+    [7, 10.5],
+    [11, 14.5],
+    [16.5, 19.5]
+  ],
+  'Friday': [
+    [7, 10.5],
+    [11, 14.5],
+    [16.5, 19.5]
+  ],
+  'Saturday': [
+    [9, 11],
+    [11, 14],
+    [16.5, 19.5]
+  ],
+  'Sunday': [
+    [9, 11],
+    [11, 14],
+    [16.5, 19.5]
+  ]
+}
+
+dining_hall_schedules = {
+  '2301_Bowls': _2301Hours,
+  '2301_Smoothies': _2301Hours,
+  'Commons': commonsKissamHours,
+  'EBI': ebiZepposHours,
+  'Kissam': commonsKissamHours,
+  'McTyeire': {
+    'Monday': [[], [], [17.75, 19]],
+    'Tuesday': [[], [], [17.75, 19]],
+    'Wednesday': [[], [], [17.75, 19]],
+    'Thursday': [[], [], [17.75, 19]],
+    'Friday': [[], [], []],
+    'Saturday': [[], [], []],
+    'Sunday': [[], [], []]
+  },
+  'Rand_Bowls': randHours,
+  'Rand_Randwich': randHours,
+  'Rand_Fresh_Mex': randHours,
+  'Rand_Mongolian': randHours,
+  'Rand_Chicken_Shack': randHours,
+  'Zeppos': ebiZepposHours,
+  'Alumni': {
+    'Monday': [[], [11, 14], [14, 16]],
+    'Tuesday': [[], [11, 14], [14, 16]],
+    'Wednesday': [[], [11, 14], [14, 16]],
+    'Thursday': [[], [11, 14], [14, 16]],
+    'Friday': [[], [11, 14], [14, 16]],
+    'Saturday': [[], [], []],
+    'Sunday': [[], [], []]
+  },
+  'Grins': {
+    'Monday': [
+      [7, 11],
+      [11, 14],
+      [14, 18.5]
+    ],
+    'Tuesday': [
+      [7, 11],
+      [11, 14],
+      [14, 18.5]
+    ],
+    'Wednesday': [
+      [7, 11],
+      [11, 14],
+      [14, 18.5]
+    ],
+    'Thursday': [
+      [7, 11],
+      [11, 14],
+      [14, 18.5]
+    ],
+    'Friday': [[7, 11], [11, 14], []],
+    'Saturday': [[], [], []],
+    'Sunday': [[], [], []]
+  },
+  'Holy_Smokes': {
+    'Monday': [[], [12, 13.5], [17, 19.5]],
+    'Tuesday': [[], [12, 13.5], [17, 19.5]],
+    'Wednesday': [[], [12, 13.5], [17, 19.5]],
+    'Thursday': [[], [12, 13.5], [17, 19.5]],
+    'Friday': [[], [], []],
+    'Saturday': [[], [], []],
+    'Sunday': [[], [12, 14], []]
+  },
+  'Local_Java': {
+    'Monday': [[7, 10], [10, 13.5], []],
+    'Tuesday': [[7, 10], [10, 13.5], []],
+    'Wednesday': [[7, 10], [10, 13.5], []],
+    'Thursday': [[7, 10], [10, 13.5], []],
+    'Friday': [[7, 10], [10, 13.5], []],
+    'Saturday': [[], [], []],
+    'Sunday': [[], [], []]
+  },
+  'Suzies_Blair': suziesHours,
+  'Suzies_FGH': suziesHours,
+  'Suzies_MRB': {
+    'Monday': [[7.5, 12.5], [12.5, 16.5], []],
+    'Tuesday': [[7.5, 12.5], [12.5, 16.5], []],
+    'Wednesday': [[7.5, 12.5], [12.5, 16.5], []],
+    'Thursday': [[7.5, 12.5], [12.5, 16.5], []],
+    'Friday': [[7.5, 12.5], [12.5, 16.5], []],
+    'Saturday': [[], [], []],
+    'Sunday': [[], [], []]
+  },
+  'Food_For_Thought': {
+    'Monday': [
+      [8, 12],
+      [12, 15],
+      [15, 20]
+    ],
+    'Tuesday': [
+      [8, 12],
+      [12, 15],
+      [15, 20]
+    ],
+    'Wednesday': [
+      [8, 12],
+      [12, 15],
+      [15, 20]
+    ],
+    'Thursday': [
+      [8, 12],
+      [12, 15],
+      [15, 20]
+    ],
+    'Friday': [[8, 12], [12, 15], []],
+    'Saturday': [[], [], []],
+    'Sunday': [[], [], []]
+  }
+}
+
 for dining_hall_name in dining_hall_names:
-    cursor.execute('INSERT INTO "DiningHallInformation" ("name", "location", "throughput", "type", "imageURL") VALUES(%s, %s, %s, %s, %s)',
-                   (dining_hall_name, dining_hall_locations[dining_hall_name], dining_hall_throughputs[dining_hall_name], dining_hall_types[dining_hall_name], dining_hall_images[dining_hall_name]))
+    cursor.execute('INSERT INTO "DiningHallInformation" ("name", "location", "throughput", "type", "imageURL", "schedule") VALUES(%s, %s, %s, %s, %s, %s)',
+                   (dining_hall_name, dining_hall_locations[dining_hall_name], dining_hall_throughputs[dining_hall_name], dining_hall_types[dining_hall_name], dining_hall_images[dining_hall_name], json.dumps(dining_hall_schedules[dining_hall_name])))
 
 cursor.execute('''SELECT * FROM "DiningHallInformation"''')
 result = cursor.fetchall()
@@ -171,8 +405,3 @@ print(result)
 # close the connections
 cursor.close()
 conn.close()
-
-
-
-
-

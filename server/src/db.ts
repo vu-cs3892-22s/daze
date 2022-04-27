@@ -37,6 +37,16 @@ interface UserBody {
   secretKey: string;
 }
 
+interface WeeklyHours {
+  Monday: number[][];
+  Tuesday: number[][];
+  Wednesday: number[][];
+  Thursday: number[][];
+  Friday: number[][];
+  Saturday: number[][];
+  Sunday: number[][];
+}
+
 export async function queryCreateUser(body: UserBody) {
   const { vanderbiltEmail, secretKey } = body;
 
@@ -128,6 +138,7 @@ interface DiningHallInformation {
   throughput: number;
   type: string;
   imageURL: string;
+  schedule: WeeklyHours;
 }
 
 export async function queryGetDiningHallsInformation(): Promise<
