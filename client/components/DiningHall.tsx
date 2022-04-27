@@ -98,6 +98,9 @@ const chartConfig = {
 
 const { width, height } = Dimensions.get("window");
 
+const fallbackImage =
+  "https://cdn.dribbble.com/users/3320958/screenshots/15732917/media/53f561f774a12b5fa15a8884636d0c30.jpeg?compress=1&resize=1200x900&vertical=top";
+
 const showToast = (message: string) => {
   Alert.alert(message);
 };
@@ -150,7 +153,6 @@ export default function DiningHall({ route }: DiningHallProps) {
 
       const json = await response.json();
       const data = json.data;
-      console.log(data);
       setBgImage(data.image);
       setLoading(false);
     } catch (error) {
@@ -181,9 +183,7 @@ export default function DiningHall({ route }: DiningHallProps) {
           <Image
             style={{ width: width, height: 200, resizeMode: "cover" }}
             source={{
-              uri: bgImage.length
-                ? bgImage
-                : "https://i.ibb.co/6bS28bP/grins.jpg",
+              uri: bgImage.length ? bgImage : fallbackImage,
             }}
           />
         )
