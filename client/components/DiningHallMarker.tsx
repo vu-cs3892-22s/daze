@@ -15,18 +15,15 @@ export default function DiningHallMarker({
   const onCalloutPress = (name) => {
     navigation.navigate("Dining Hall", {
       name: name,
-      idx: 1,
-      line: "m",
-      data: [90, 80, 70, 90, 50],
     });
   };
 
   let pin;
-  if (length === "short") {
+  if (length === "S") {
     pin = require("../assets/green-pin.png");
-  } else if (length === "medium") {
+  } else if (length === "M") {
     pin = require("../assets/yellow-pin.png");
-  } else if (length === "long") {
+  } else if (length === "L") {
     pin = require("../assets/red-pin.png");
   } else {
     pin = require("../assets/gray-pin.png");
