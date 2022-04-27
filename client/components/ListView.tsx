@@ -7,39 +7,36 @@ import {
   Text,
   RefreshControl,
 } from "react-native";
-import type { DefaultScreenNavigationProp } from "../types";
 import MiniCard from "./MiniCard";
-
-type NavigationProps = { navigation: DefaultScreenNavigationProp };
 
 const { width } = Dimensions.get("window");
 
 const serverUrl = process.env.SERVER_URL;
 
-export default function ListView({ navigation }: NavigationProps) {
+const days = [
+  "Sunday",
+  "Monday",
+  "Tuesday",
+  "Wednesday",
+  "Thursday",
+  "Friday",
+  "Saturday",
+];
+
+export default function ListView() {
   const [locations, setLocations] = useState<any[]>([]);
+  const [sortedLocations, setSortedLocations] = useState<any[]>([]);
   const [refreshing, setRefreshing] = useState(false);
 
   const [currentDay, setCurrentDay] = useState(1);
   const [currentHour, setCurrentHour] = useState(7);
 
-  useEffect(() => {
-    const date = new Date();
-    setCurrentDay(date.getDay());
-    setCurrentHour(date.getHours() + date.getMinutes() / 60);
-  }, []);
-
-  const onRefresh = useCallback(() => {
-    setRefreshing(true);
-    getAllLocations().then(() => setRefreshing(false));
-  }, []);
-
   const getAllLocations = async () => {
+    setLocations([]);
     try {
       const response = await fetch(`${serverUrl}/api/v1/dining_halls`);
       const json = await response.json();
       const diningHalls = json.data;
-      setLocations([]);
       for (const [key, value] of Object.entries(diningHalls)) {
         if (key === "Rand") {
           //handle superstation
@@ -54,57 +51,68 @@ export default function ListView({ navigation }: NavigationProps) {
       console.error(error);
     }
   };
+
+  const addSchedule = () => {
+    const locs = locations;
+    for (const location of locs) {
+      const [
+        [breakfastOpen, breakfastClose],
+        [lunchOpen, lunchClose],
+        [dinnerOpen, dinnerClose],
+      ] = location.schedule[days[currentDay]];
+      location["isOpen"] = true;
+      if (breakfastOpen <= currentHour && currentHour <= breakfastClose) {
+        location["openUntil"] = breakfastClose;
+        location["nextMeal"] = "Lunch";
+        location["nextMealStarts"] = lunchOpen;
+      } else if (lunchOpen <= currentHour && currentHour <= lunchClose) {
+        location["openUntil"] = lunchClose;
+        location["nextMeal"] = "Lunch";
+        location["nextMealStarts"] = dinnerOpen;
+      } else if (dinnerOpen <= currentHour && currentHour <= dinnerClose) {
+        location["openUntil"] = dinnerClose;
+        location["nextMeal"] = "Breakfast";
+        location["nextMealStarts"] = breakfastOpen;
+      } else {
+        if (currentHour < breakfastOpen) {
+          location["nextMeal"] = "Breakfast";
+          location["nextMealStarts"] = breakfastOpen;
+        } else if (currentHour < lunchOpen) {
+          location["nextMeal"] = "Lunch";
+          location["nextMealStarts"] = lunchOpen;
+        } else {
+          location["nextMeal"] = "Dinner";
+          location["nextMealStarts"] = dinnerOpen;
+        }
+        location["isOpen"] = false;
+      }
+    }
+    return locs;
+  };
+
+  const onRefresh = useCallback(() => {
+    setRefreshing(true);
+    getAllLocations().then(() => setRefreshing(false));
+  }, []);
+
   useEffect(() => {
-    // TODO: some sort of automatic refresh or pull to refresh would be nice
-    getAllLocations().then(() => postProcess());
+    const date = new Date();
+    setCurrentDay(date.getDay());
+    setCurrentHour(date.getHours() + date.getMinutes() / 60);
+    (async () => {
+      await getAllLocations();
+    })();
     return () => setLocations([]);
   }, []);
 
-  const postProcess = () => {
-    if (locations.length > 19 && !refreshing) {
-      const currentLocations = locations;
-      for (const location of currentLocations) {
-        if (
-          location.schedule["Monday"][0][0] <= currentHour &&
-          currentHour <= location.schedule["Monday"][0][1]
-        ) {
-          location["isOpen"] = true;
-          location["openUntil"] = location.schedule["Monday"][0][1];
-          location["nextMeal"] = "Lunch";
-          location["nextMealStarts"] = location.schedule["Monday"][1][0];
-        } else if (
-          location.schedule["Monday"][1][0] <= currentHour &&
-          currentHour <= location.schedule["Monday"][1][1]
-        ) {
-          location["isOpen"] = true;
-          location["openUntil"] = location.schedule["Monday"][1][1];
-          location["nextMeal"] = "Lunch";
-          location["nextMealStarts"] = location.schedule["Monday"][2][0];
-        } else if (
-          location.schedule["Monday"][2][0] <= currentHour &&
-          currentHour <= location.schedule["Monday"][2][1]
-        ) {
-          location["isOpen"] = true;
-          location["openUntil"] = location.schedule["Monday"][2][1];
-          location["nextMeal"] = "Breakfast";
-          location["nextMealStarts"] = location.schedule["Monday"][0][0];
-        } else {
-          if (currentHour < location.schedule["Monday"][0][0]) {
-            location["nextMeal"] = "Breakfast";
-            location["nextMealStarts"] = location.schedule["Monday"][0][0];
-          } else if (currentHour < location.schedule["Monday"][1][0]) {
-            location["nextMeal"] = "Lunch";
-            location["nextMealStarts"] = location.schedule["Monday"][1][0];
-          } else {
-            location["nextMeal"] = "Dinner";
-            location["nextMealStarts"] = location.schedule["Monday"][2][0];
-          }
-          location["isOpen"] = false;
-        }
-      }
-      setLocations(currentLocations);
+  useEffect(() => {
+    if (locations.length > 19) {
+      const locationsWithSchedule = addSchedule();
+      // Sort by open/closed
+      locationsWithSchedule.sort((a, b) => Number(b.isOpen) - Number(a.isOpen));
+      setSortedLocations(locationsWithSchedule);
     }
-  };
+  }, [locations]);
 
   return (
     <View style={styles.root}>
@@ -114,13 +122,12 @@ export default function ListView({ navigation }: NavigationProps) {
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
         }
       >
-        {locations ? (
-          locations.map((location) => (
+        {sortedLocations ? (
+          sortedLocations.map((location) => (
             <MiniCard
               key={location.name}
               type={location.type}
               name={location.name}
-              navigation={navigation}
               isOpen={location.isOpen}
               openUntil={location.openUntil}
               nextMeal={location.nextMeal}

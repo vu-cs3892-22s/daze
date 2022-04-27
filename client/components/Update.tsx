@@ -3,7 +3,7 @@ import { Button, StyleSheet, View } from "react-native";
 import ModalDropdown from "react-native-modal-dropdown";
 import Toast from "react-native-toast-message";
 
-import type { DefaultScreenNavigationProp } from "../types";
+import type { NavigationProp } from "../types";
 
 interface UpdateRouteParams {
   locationIndex: number;
@@ -14,7 +14,7 @@ interface UpdateRoute {
 }
 
 interface NavigationProps {
-  navigation: DefaultScreenNavigationProp;
+  navigation: NavigationProp;
   route: UpdateRoute;
 }
 

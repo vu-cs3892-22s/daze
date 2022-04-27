@@ -1,6 +1,6 @@
 import type { BottomTabNavigationProp } from "@react-navigation/bottom-tabs";
 
-export type DefaultScreenNavigationProp = BottomTabNavigationProp<
+export type NavigationProp = BottomTabNavigationProp<
   RootTabParamList,
   "List View"
 >;
@@ -20,5 +20,5 @@ export interface DiningHallInfo {
   waitTime?: number | null;
 }
 export interface NavigationProps {
-  navigation: DefaultScreenNavigationProp;
+  navigation: NavigationProp;
 }

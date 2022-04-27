@@ -15,11 +15,11 @@ import ParallaxScrollView from "react-native-parallax-scroll-view";
 import { BarChart } from "react-native-chart-kit";
 import ButtonToggleGroup from "react-native-button-toggle-group";
 
-import type { DefaultScreenNavigationProp } from "../types";
+import type { NavigationProp } from "../types";
 import { Alert } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-type NavigationProps = { route: any; navigation: DefaultScreenNavigationProp };
+type NavigationProps = { route: any; navigation: NavigationProp };
 
 const serverUrl = process.env.SERVER_URL;
 

@@ -1,14 +1,17 @@
 import React from "react";
+import { useNavigation } from "@react-navigation/native";
 import { Image, Text } from "react-native";
 import { Callout, Marker } from "react-native-maps";
+import { NavigationProp } from "types";
 
 export default function DiningHallMarker({
   diningHallNames,
   length,
   longitude,
   latitude,
-  navigation,
 }) {
+  const navigation: NavigationProp = useNavigation();
+
   const onCalloutPress = (name) => {
     navigation.navigate("Dining Hall", {
       name: name,
