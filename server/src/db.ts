@@ -1,4 +1,4 @@
-import { Pool } from 'node-postgres';
+import { Pool } from 'pg';
 import dotenv from 'dotenv';
 
 dotenv.config({
@@ -35,6 +35,16 @@ pool.on('error', (err) => {
 interface UserBody {
   vanderbiltEmail: string;
   secretKey: string;
+}
+
+interface WeeklyHours {
+  Monday: number[][];
+  Tuesday: number[][];
+  Wednesday: number[][];
+  Thursday: number[][];
+  Friday: number[][];
+  Saturday: number[][];
+  Sunday: number[][];
 }
 
 export async function queryCreateUser(body: UserBody) {
@@ -96,7 +106,60 @@ export async function queryGetUserSecretKey(email: string) {
     client.release();
     return result.rows[0];
   } catch (err: unknown) {
+    console.log(err);
     client.release();
     return false;
+  }
+}
+
+export async function queryGetDiningHallInformation(
+  diningHallName: string
+): Promise<DiningHallInformation | null> {
+  const text = `
+  SELECT * 
+  FROM "DiningHallInformation"
+  WHERE "name" = '${diningHallName}'
+`;
+
+  const client = await pool.connect();
+
+  try {
+    const result = await client.query(text);
+    client.release();
+    return result.rows[0];
+  } catch (err: unknown) {
+    console.log(err);
+    client.release();
+    return null;
+  }
+}
+
+interface DiningHallInformation {
+  name: string;
+  location: string[];
+  throughput: number;
+  type: string;
+  imageURL: string;
+  schedule: WeeklyHours;
+}
+
+export async function queryGetDiningHallsInformation(): Promise<
+  DiningHallInformation[] | null
+> {
+  const text = `
+  SELECT * 
+  FROM "DiningHallInformation"
+`;
+
+  const client = await pool.connect();
+
+  try {
+    const result = await client.query(text);
+    client.release();
+    return result.rows;
+  } catch (err: unknown) {
+    console.log(err);
+    client.release();
+    return null;
   }
 }
