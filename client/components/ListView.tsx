@@ -114,13 +114,13 @@ export default function ListView() {
         );
       } else {
         // What is the next food session when closed
-        if (currentHour < breakfastOpen) {
+        if (currentHour - 24 < breakfastOpen) {
           Object.assign(
             location,
             { nextMeal: "Breakfast" },
             { nextMealStarts: breakfastOpen }
           );
-        } else if (currentHour < lunchOpen) {
+        } else if (currentHour - 24 < lunchOpen) {
           Object.assign(
             location,
             { nextMeal: "Lunch" },
