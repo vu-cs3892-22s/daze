@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState, useRef } from "react";
 import {
+  Alert,
   Button,
   ScrollView,
   Dimensions,
@@ -14,12 +15,9 @@ import {
 import ParallaxScrollView from "react-native-parallax-scroll-view";
 import { BarChart } from "react-native-chart-kit";
 import ButtonToggleGroup from "react-native-button-toggle-group";
-
-import type { DefaultScreenNavigationProp } from "../types";
-import { Alert } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-type NavigationProps = { route: any; navigation: DefaultScreenNavigationProp };
+type NavigationProps = { route: any };
 
 const serverUrl = process.env.SERVER_URL;
 
@@ -126,7 +124,7 @@ const sendLineData = async (diningHallName: string, lineLength: string) => {
   }
 };
 
-export default function DiningHall({ route, navigation }: NavigationProps) {
+export default function DiningHall({ route }: NavigationProps) {
   const [loading, setLoading] = useState(true);
   const scrollRef = useRef<ScrollView | null>(null);
   const [value, setValue] = useState("Medium");
@@ -137,9 +135,8 @@ export default function DiningHall({ route, navigation }: NavigationProps) {
 
   const getDiningHall = async () => {
     try {
-      const response = await fetch(
-        `https://451f-129-59-122-76.ngrok.io/api/v1/dining_halls/${name}`
-      );
+      const serverUrl = process.env.SERVER_URL;
+      const response = await fetch(`${serverUrl}/api/v1/dining_halls/${name}`);
 
       const json = await response.json();
       const data = json.data;

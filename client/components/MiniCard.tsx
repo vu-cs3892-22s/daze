@@ -1,16 +1,39 @@
+import { useNavigation } from "@react-navigation/native";
 import React, { useState } from "react";
 import { useEffect } from "react";
 import { View, Text, Image, StyleSheet, TouchableOpacity } from "react-native";
-import type { DefaultScreenNavigationProp } from "../types";
+import type { NavigationProp } from "../types";
 
 type NavigationProps = {
-  navigation: DefaultScreenNavigationProp;
   name: string;
   type: string;
+  isOpen: boolean;
+  openUntil: number;
+  nextMeal: string;
+  nextMealStart: number;
+  waitTimeProp: number | null;
 };
 
-export default function MiniCard({ navigation, name, type }: NavigationProps) {
+const numberToTime = (num) => {
+  const hours = Math.floor(Math.abs(num));
+  const minutes = (num % 1) * 60;
+  const timeString = Math.floor(minutes / 10)
+    ? `${hours}:${minutes}`
+    : `${hours}:0${minutes}`;
+  return timeString;
+};
+
+export default function MiniCard({
+  name,
+  type,
+  isOpen,
+  openUntil,
+  nextMeal,
+  nextMealStart,
+  waitTimeProp,
+}: NavigationProps) {
   const [waitTime, setWaitTime] = useState("0");
+  const navigation: NavigationProp = useNavigation();
   const onPress = () => {
     navigation.navigate("Dining Hall", {
       name: name,
@@ -20,46 +43,61 @@ export default function MiniCard({ navigation, name, type }: NavigationProps) {
     });
   };
 
-  const rng = () => {
-    return (Math.round((Math.random() * 40) / 5) * 5).toFixed();
-  };
-
   useEffect(() => {
-    setWaitTime(rng());
-  }, []);
+    if (waitTimeProp) {
+      setWaitTime(waitTimeProp.toString());
+    }
+  }, [waitTimeProp]);
 
   const getBgColor = (min: number) =>
     min < 15 ? "#B0DF63" : min < 40 ? "#FFFA76" : "#FF9B70";
 
   return (
-    <TouchableOpacity onPress={onPress} style={styles.root}>
+    <TouchableOpacity
+      onPress={onPress}
+      style={isOpen ? [styles.root] : [styles.root, { opacity: 0.85 }]}
+    >
       <View style={styles.iconContainer}>
-        {type === "Residential Dining Hall" ? (
-          <Image
-            style={{ width: 40, height: 40 }}
-            source={require("../assets/spoonfork.png")}
-          />
-        ) : (
-          <Image
-            style={{ width: 40, height: 40 }}
-            source={require("../assets/coffee.png")}
-          />
-        )}
+        <Image
+          style={{ width: 40, height: 40 }}
+          source={
+            type === "Residential Dining Hall"
+              ? require("../assets/spoonfork.png")
+              : require("../assets/coffee.png")
+          }
+        />
       </View>
       <View style={styles.middleContainer}>
         <Text style={styles.diningHallName}>{name.replace(/_/g, " ")}</Text>
-        <Text style={styles.subtitle}>Open until 15:00</Text>
-        <Text style={styles.subtitle}>Dinner starts 16:30</Text>
+        <Text style={styles.subtitle}>
+          {isOpen ? `Open until ${numberToTime(openUntil)}` : "Closed"}
+        </Text>
+        {nextMealStart && (
+          <Text style={styles.subtitle}>
+            {`${nextMeal} starts ${numberToTime(nextMealStart)}`}
+          </Text>
+        )}
       </View>
       <View style={styles.waitTimeContainer}>
+        {waitTimeProp >= 60 && (
+          <Text style={{ color: "#616265", fontSize: 10, bottom: 4 }}>
+            more than
+          </Text>
+        )}
         <View
           style={[
             styles.waitTimeBlob,
-            { backgroundColor: getBgColor(parseInt(waitTime)) },
+            {
+              backgroundColor: waitTimeProp
+                ? getBgColor(parseInt(waitTime))
+                : "#D3D3D3",
+            },
           ]}
         >
-          <Text style={styles.waitTimeMinute}>{waitTime}</Text>
-          <Text>min</Text>
+          <Text style={styles.waitTimeMinute}>
+            {waitTimeProp >= 60 ? "1" : waitTime === "0" ? "?" : waitTime}
+          </Text>
+          <Text>{waitTimeProp >= 60 ? "hr" : "min"}</Text>
         </View>
       </View>
     </TouchableOpacity>
@@ -80,20 +118,21 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   iconContainer: {
-    flexGrow: 4,
-    maxWidth: 60,
+    flexGrow: 3,
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
   },
   middleContainer: {
     display: "flex",
+    maxWidth: 164,
     flexDirection: "column",
     alignItems: "flex-start",
-    flexGrow: 5,
+    flexShrink: 6,
+    flexGrow: 15,
   },
   waitTimeContainer: {
-    flexGrow: 3,
+    flexGrow: 4,
     alignItems: "center",
   },
   diningHallName: {
