@@ -37,7 +37,6 @@ export default function MiniCard({
   const onPress = () => {
     navigation.navigate("Dining Hall", {
       name: name,
-      idx: 1,
       line: "m",
       data: [90, 80, 70, 90, 50],
     });
