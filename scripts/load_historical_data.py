@@ -29,34 +29,17 @@ cursor.execute('''DROP TABLE IF EXISTS "HistoricalData"''')
 cursor.execute('''CREATE TABLE IF NOT EXISTS "HistoricalData" ( "name" text NOT NULL, "data" json, CONSTRAINT "Historical_pkey" PRIMARY KEY ("name") )
 ''')
 
-data = {}
-
 df = pd.read_csv('daze_historical_data.csv')
-# rand = df.Rand
-# _2301 = df['2301']
-# zeppos = df.Zeppos
-# grins = df.Grins 
-# ebi = df.EBI 
-# commons = df.Commons 
-# suzies_blair = df["Suzies_Blair"]
-# suzies_fgh = df["Suzies_FGH"]
-# suzies_mrb = df["Suzies_MRB"]
-# food_for_thought = df["Food_For_Thought"]
-# alumni = df["Alumni"]
-# holy_smokes = df["Holy_Smokes"]
 
 dining_hall_names = [
     'Rand', '2301', 'Zeppos', 'Grins', 'EBI', 'Commons', 'Suzies_Blair', 'Suzies_FGH',
     'Suzies_MRB', 'Food_For_Thought', 'Alumni', 'Holy_Smokes'
 ]
 
-# historical_data = {}
-
 n = 4
 
 for dining_hall_name in dining_hall_names:
     averages = [sum(df[dining_hall_name][i:i+n])//n for i in range(0,len(df[dining_hall_name]),n)]
-    # print(averages)
     current_historical_data = {}
     for i in range(len(averages)):
         current_historical_data[i + 7] = averages[i]
