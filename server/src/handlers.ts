@@ -10,7 +10,9 @@ import {
   // queryGetUser,
   queryGetUserSecretKey,
   queryGetDiningHallInformation,
-  queryGetDiningHallsInformation
+  queryGetDiningHallsInformation,
+  queryGetHistoricalData,
+  queryGetHistoricalDatas
 } from './db';
 
 interface WeeklyHours {
@@ -21,6 +23,23 @@ interface WeeklyHours {
   Friday: number[][];
   Saturday: number[][];
   Sunday: number[][];
+}
+
+interface HourlyData {
+  '7': number;
+  '8': number;
+  '9': number;
+  '10': number;
+  '11': number;
+  '12': number;
+  '13': number;
+  '14': number;
+  '15': number;
+  '16': number;
+  '17': number;
+  '18': number;
+  '19': number;
+  '20': number;
 }
 
 // Structure representing hourly schedules of dining halls
@@ -290,6 +309,75 @@ export const getDiningHalls = async (
       data: result,
       timeStamp: Date.now()
     });
+  } catch (err) {
+    res.status(500).send({
+      error: err
+    });
+    console.log(err);
+  }
+};
+
+export const getHistoricalData = async (
+  req: express.Request,
+  res: express.Response
+) => {
+  try {
+    const diningHallName = req.params.dininghall_name;
+    const historicalData:
+      | {
+          name: string;
+          data: HourlyData;
+        }[]
+      | null = await queryGetHistoricalData(diningHallName);
+
+    if (!historicalData) {
+      return res.status(500).send({
+        error: 'Failed to retrieve historical data from PostgreSQL'
+      });
+    } else if (historicalData.length === 0) {
+      return res.status(404).send({
+        error: `No historical data for ${diningHallName}`
+      });
+    }
+
+    res.status(200).send(historicalData[0]);
+  } catch (err) {
+    res.status(500).send({
+      error: err
+    });
+    console.log(err);
+  }
+};
+
+export const getHistoricalDatas = async (
+  req: express.Request,
+  res: express.Response
+) => {
+  try {
+    const historicalData:
+      | {
+          name: string;
+          data: HourlyData;
+        }[]
+      | null = await queryGetHistoricalDatas();
+
+    if (!historicalData) {
+      return res.status(500).send({
+        error: 'Failed to retrieve historical data from PostgreSQL'
+      });
+    } else if (historicalData.length === 0) {
+      return res.status(404).send({
+        error: `No historical data found`
+      });
+    }
+
+    const result: { [key: string]: HourlyData } = {};
+
+    for (let i = 0; i < historicalData.length; ++i) {
+      result[historicalData[i]['name']] = historicalData[i]['data'];
+    }
+
+    res.status(200).send(result);
   } catch (err) {
     res.status(500).send({
       error: err
