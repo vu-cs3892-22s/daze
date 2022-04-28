@@ -47,7 +47,6 @@
     "@types/react-native": "^0.67.4",
     "@types/react-native-modal-dropdown": "^0.7.2",
     "async": "^2.6.4",
-    "axios": "^0.21.2",
     "expo-cli": "^5.0.3",
     "minimist": "^1.2.6",
     "prettier": "2.5.1",
