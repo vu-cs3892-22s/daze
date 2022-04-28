@@ -8,7 +8,9 @@ import {
   submitData,
   submitComments,
   getDiningHall,
-  getDiningHalls
+  getDiningHalls,
+  getHistoricalData,
+  getHistoricalDatas
 } from './handlers';
 import bodyParser from 'body-parser';
 import cors from 'cors';
@@ -37,6 +39,8 @@ app.post(prefixRoute('data/lines'), submitData);
 app.post(prefixRoute('data/comments'), submitComments);
 app.get(prefixRoute('dining_halls/:dininghall_name'), getDiningHall);
 app.get(prefixRoute('dining_halls'), getDiningHalls);
+app.get(prefixRoute('historical_data/:dininghall_name'), getHistoricalData);
+app.get(prefixRoute('historical_data/'), getHistoricalDatas);
 
 app.listen(port, () => {
   // eslint-disable-next-line no-console

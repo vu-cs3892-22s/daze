@@ -4,13 +4,13 @@ import MapComponent from "react-native-maps";
 
 import DiningHallMarker from "./DiningHallMarker";
 
-import { DiningHallInfo, NavigationProps } from "../types";
+import { DiningHallInfo } from "../types";
 
 const { width, height } = Dimensions.get("window");
 
 const serverUrl = process.env.SERVER_URL;
 
-export default function MapView({ navigation }: NavigationProps) {
+export default function MapView() {
   const [nodes, setNodes] = useState<any[]>([]);
 
   const getAllLocations = async () => {
@@ -64,7 +64,6 @@ export default function MapView({ navigation }: NavigationProps) {
             length={v[0].lineLength}
             longitude={numCoords[1]}
             latitude={numCoords[0]}
-            navigation={navigation}
           />
         );
       });

@@ -1,29 +1,29 @@
 import React from "react";
+import { useNavigation } from "@react-navigation/native";
 import { Image, Text } from "react-native";
 import { Callout, Marker } from "react-native-maps";
+import { NavigationProp } from "types";
 
 export default function DiningHallMarker({
   diningHallNames,
   length,
   longitude,
   latitude,
-  navigation,
 }) {
+  const navigation: NavigationProp = useNavigation();
+
   const onCalloutPress = (name) => {
     navigation.navigate("Dining Hall", {
       name: name,
-      idx: 1,
-      line: "m",
-      data: [90, 80, 70, 90, 50],
     });
   };
 
   let pin;
-  if (length === "short") {
+  if (length === "S") {
     pin = require("../assets/green-pin.png");
-  } else if (length === "medium") {
+  } else if (length === "M") {
     pin = require("../assets/yellow-pin.png");
-  } else if (length === "long") {
+  } else if (length === "L") {
     pin = require("../assets/red-pin.png");
   } else {
     pin = require("../assets/gray-pin.png");

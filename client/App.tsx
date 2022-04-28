@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Image, View, Alert } from "react-native";
-import { TouchableWithoutFeedback } from "react-native-gesture-handler";
+import { Image, View, Alert, TouchableWithoutFeedback } from "react-native";
 import { Box, NativeBaseProvider } from "native-base";
 import { NavigationContainer } from "@react-navigation/native";
 import { Ionicons, AntDesign } from "@expo/vector-icons";
