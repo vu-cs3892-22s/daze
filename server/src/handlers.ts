@@ -524,19 +524,35 @@ function calculateWaitTime(
     const numSwipes = swipeData[key];
 
     const diff = minutes - roundedMinutes;
+    console.log('diff:', diff);
     const rand_throughput = 9.16;
     const _2301_throughput = 1.91;
+    const average_throughput = (rand_throughput / 5 + _2301_throughput / 2) / 2;
 
     if (diningHallName.includes('Rand')) {
       const b2 = prevKey === 645 ? 0 : swipeData[prevKey.toString()];
       const b1 = numSwipes;
-      const totalRemainingPeople = b1 + b2 - rand_throughput * diff;
+      const totalRemainingPeople = Math.max(
+        b1 + b2 - rand_throughput * diff,
+        0
+      );
       return (totalRemainingPeople / 5) * throughput;
     } else if (diningHallName.includes('2301')) {
       const b2 = prevKey === 645 ? 0 : swipeData[prevKey.toString()];
       const b1 = numSwipes;
-      const totalRemainingPeople = b1 + b2 - _2301_throughput * diff;
+      const totalRemainingPeople = Math.max(
+        b1 + b2 - _2301_throughput * diff,
+        0
+      );
       return (totalRemainingPeople / 2) * throughput;
+    } else {
+      const b2 = prevKey === 645 ? 0 : swipeData[prevKey.toString()];
+      const b1 = numSwipes;
+      const totalRemainingPeople = Math.max(
+        b1 + b2 - average_throughput * diff,
+        0
+      );
+      return totalRemainingPeople * throughput;
     }
   }
 
