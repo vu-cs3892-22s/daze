@@ -15,7 +15,6 @@ import {
 import ParallaxScrollView from "react-native-parallax-scroll-view";
 import { BarChart } from "react-native-chart-kit";
 import ButtonToggleGroup from "react-native-button-toggle-group";
-import { Alert } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Box } from "native-base";
 
@@ -117,6 +116,7 @@ const sendLineData = async (diningHallName: string, lineLength: string) => {
       lineLength: lineLength,
       timestamp: new Date().getTime(),
     };
+    const serverUrl = process.env.SERVER_URL;
     const response = await fetch(`${serverUrl}/api/v1/data/lines`, {
       method: "POST",
       headers: {
