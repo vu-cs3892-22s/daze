@@ -25,21 +25,17 @@ interface WeeklyHours {
   Sunday: number[][];
 }
 
+interface FifteenMinuteData {
+  [key: string]: number;
+}
+
 interface HourlyData {
-  '7': number;
-  '8': number;
-  '9': number;
-  '10': number;
-  '11': number;
-  '12': number;
-  '13': number;
-  '14': number;
-  '15': number;
-  '16': number;
-  '17': number;
-  '18': number;
-  '19': number;
-  '20': number;
+  [key: string]: number;
+}
+
+interface HistoricalData {
+  name: string;
+  data: FifteenMinuteData;
 }
 
 // Structure representing hourly schedules of dining halls
@@ -215,10 +211,18 @@ export const getDiningHall = async (
     const image = diningHallInfo['imageURL'];
     const schedule = diningHallInfo['schedule'];
 
+    const historicalData: HistoricalData[] | null =
+      await queryGetHistoricalData(diningHallName);
+
     // const comments = await getDataForDiningHall(diningHallName, 1);
 
     const lineMode = calculateMode(lineLengths);
-    const waitTime = calculateWaitTime(lineMode, throughput);
+    const waitTime = calculateWaitTime(
+      lineMode,
+      throughput,
+      historicalData,
+      diningHallName
+    );
 
     res.status(200).send({
       data: {
@@ -266,6 +270,17 @@ export const getDiningHalls = async (
       });
     }
 
+    const historicalData: HistoricalData[] | null =
+      await queryGetHistoricalDatas();
+
+    const historicalDataObject: { [key: string]: HistoricalData[] } = {};
+
+    if (historicalData) {
+      for (let i = 0; i < historicalData.length; ++i) {
+        historicalDataObject[historicalData[i].name] = [historicalData[i]];
+      }
+    }
+
     for (let i = 0; i < diningHallInformation.length; ++i) {
       const name = diningHallInformation[i]['name'];
       const latitude = diningHallInformation[i]['location'][0];
@@ -276,7 +291,22 @@ export const getDiningHalls = async (
       const schedule = diningHallInformation[i]['schedule'];
 
       const lineMode = calculateMode(data[name].lineLength);
-      const waitTime = calculateWaitTime(lineMode, throughput);
+
+      let nameKey = '';
+      if (name.includes('Rand')) {
+        nameKey = 'Rand';
+      } else if (name.includes('2301')) {
+        nameKey = '2301';
+      }
+
+      const waitTime = calculateWaitTime(
+        lineMode,
+        throughput,
+        nameKey !== ''
+          ? historicalDataObject[nameKey]
+          : historicalDataObject[name],
+        name
+      );
 
       if (!name.includes('Rand')) {
         result[name] = {
@@ -323,12 +353,8 @@ export const getHistoricalData = async (
 ) => {
   try {
     const diningHallName = req.params.dininghall_name;
-    const historicalData:
-      | {
-          name: string;
-          data: HourlyData;
-        }[]
-      | null = await queryGetHistoricalData(diningHallName);
+    const historicalData: HistoricalData[] | null =
+      await queryGetHistoricalData(diningHallName);
 
     if (!historicalData) {
       return res.status(500).send({
@@ -340,7 +366,13 @@ export const getHistoricalData = async (
       });
     }
 
-    res.status(200).send(historicalData[0]);
+    const fifteenMinuteData = historicalData[0].data;
+    const hourlyData = createHourlyData(fifteenMinuteData);
+
+    res.status(200).send({
+      name: diningHallName,
+      data: hourlyData
+    });
   } catch (err) {
     res.status(500).send({
       error: err
@@ -354,12 +386,8 @@ export const getHistoricalDatas = async (
   res: express.Response
 ) => {
   try {
-    const historicalData:
-      | {
-          name: string;
-          data: HourlyData;
-        }[]
-      | null = await queryGetHistoricalDatas();
+    const historicalData: HistoricalData[] | null =
+      await queryGetHistoricalDatas();
 
     if (!historicalData) {
       return res.status(500).send({
@@ -374,7 +402,8 @@ export const getHistoricalDatas = async (
     const result: { [key: string]: HourlyData } = {};
 
     for (let i = 0; i < historicalData.length; ++i) {
-      result[historicalData[i]['name']] = historicalData[i]['data'];
+      const fifteenMinuteData = historicalData[i].data;
+      result[historicalData[i]['name']] = createHourlyData(fifteenMinuteData);
     }
 
     res.status(200).send(result);
@@ -389,14 +418,23 @@ export const getHistoricalDatas = async (
 function calculateMode(data: any) {
   const last10 = data.slice(-10);
 
-  // if we have no data, we'll just say length is unknown
-  if (last10.length === 0) {
-    return 'unknown';
-  }
-
   const last10Lengths: string[] = [];
   for (let i = 0; i < last10.length; ++i) {
-    last10Lengths.push(JSON.parse(last10[i])['lineLength']);
+    const curTime = Date.now();
+    const lastTime = JSON.parse(last10[i])['timestamp'];
+
+    let diff = (curTime - lastTime) / 1000;
+    diff /= 60;
+
+    // live submissions more than 15 minutes ago are stale
+    if (Math.abs(Math.round(diff)) <= 15) {
+      last10Lengths.push(JSON.parse(last10[i])['lineLength']);
+    }
+  }
+
+  // if we have no data (or if all data is stale), we'll just say length is unknown
+  if (last10Lengths.length === 0) {
+    return 'unknown';
   }
 
   // create object with counts
@@ -414,7 +452,12 @@ function calculateMode(data: any) {
   return lineMode;
 }
 
-function calculateWaitTime(lineLength: string, throughput: number) {
+function calculateWaitTime(
+  lineLength: string,
+  throughput: number,
+  historicalData: HistoricalData[] | null,
+  diningHallName: string
+) {
   let waitTime = 0;
 
   /**
@@ -436,9 +479,103 @@ function calculateWaitTime(lineLength: string, throughput: number) {
     // Note: This is a lower bound, unlike the other two wait times
     waitTime = throughput * largeLowerBound;
   } else {
-    // null for unknown
-    return null;
+    // if we have no historical data either
+    if (!historicalData || historicalData.length === 0) {
+      return null;
+    }
+
+    // fall back entirely on historical data
+    const centralData = new Date(
+      new Date().getTime() +
+        new Date().getTimezoneOffset() * 60000 +
+        3600000 * -6
+    );
+    const hour = (centralData.getHours() + 1).toString();
+    const minutes = centralData.getMinutes();
+
+    let roundedMinutes = 0;
+
+    if (minutes < 15) {
+      roundedMinutes = 0;
+    } else if (minutes < 30) {
+      roundedMinutes = 15;
+    } else if (minutes < 45) {
+      roundedMinutes = 30;
+    } else if (minutes < 60) {
+      roundedMinutes = 45;
+    }
+
+    const key = hour + roundedMinutes.toString();
+
+    // we only have historical data until 830
+    if (parseInt(key) > 2030) {
+      return null;
+    }
+
+    let prevKey;
+
+    if (parseInt(key) % 100 !== 0) {
+      prevKey = parseInt(key) - 15;
+    } else {
+      prevKey = parseInt(key) - 100 + 45;
+    }
+
+    const swipeData: HourlyData = historicalData[0].data;
+    const numSwipes = swipeData[key];
+
+    const diff = minutes - roundedMinutes;
+    console.log('diff:', diff);
+    const rand_throughput = 9.16;
+    const _2301_throughput = 1.91;
+    const average_throughput = (rand_throughput / 5 + _2301_throughput / 2) / 2;
+
+    if (diningHallName.includes('Rand')) {
+      const b2 = prevKey === 645 ? 0 : swipeData[prevKey.toString()];
+      const b1 = numSwipes;
+      const totalRemainingPeople = Math.max(
+        b1 + b2 - rand_throughput * diff,
+        0
+      );
+      return (totalRemainingPeople / 5) * throughput;
+    } else if (diningHallName.includes('2301')) {
+      const b2 = prevKey === 645 ? 0 : swipeData[prevKey.toString()];
+      const b1 = numSwipes;
+      const totalRemainingPeople = Math.max(
+        b1 + b2 - _2301_throughput * diff,
+        0
+      );
+      return (totalRemainingPeople / 2) * throughput;
+    } else {
+      const b2 = prevKey === 645 ? 0 : swipeData[prevKey.toString()];
+      const b1 = numSwipes;
+      const totalRemainingPeople = Math.max(
+        b1 + b2 - average_throughput * diff,
+        0
+      );
+      return totalRemainingPeople * throughput;
+    }
   }
 
   return waitTime;
+}
+
+function createHourlyData(fifteenMinuteData: FifteenMinuteData): HourlyData {
+  const hourlyData: HourlyData = {};
+
+  let count = 0;
+  let sum = 0;
+  let hour = 7;
+  for (const [key, value] of Object.entries(fifteenMinuteData)) {
+    ++count;
+    sum += value;
+    if (count % 4 == 0) {
+      hourlyData[hour.toString()] = sum / 4;
+      hour++;
+      sum = 0;
+    }
+  }
+
+  // since data stops at 830
+  hourlyData[hour] = sum / 2;
+  return hourlyData;
 }

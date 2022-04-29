@@ -39,13 +39,19 @@ dining_hall_names = [
 n = 4
 
 for dining_hall_name in dining_hall_names:
-    averages = [sum(df[dining_hall_name][i:i+n])//n for i in range(0,len(df[dining_hall_name]),n)]
     current_historical_data = {}
-    for i in range(len(averages)):
-        current_historical_data[i + 7] = averages[i]
-
-
-    # historical_data[dining_hall_name] = current_historical_data
+    hour = 7
+    increment = 0
+    for num in df[dining_hall_name]:
+        if (increment == 0):
+            current_historical_data[(str(hour)) + '00'] = num
+        else:
+            current_historical_data[str(hour) + str(increment)] = num
+        increment += 15
+        if (increment == 60):
+            increment = 0
+            hour += 1
+            
     cursor.execute('INSERT INTO "HistoricalData" ("name", "data" ) VALUES(%s, %s)',
                    (dining_hall_name, json.dumps(current_historical_data)))
 

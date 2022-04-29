@@ -116,6 +116,7 @@ const sendLineData = async (diningHallName: string, lineLength: string) => {
       lineLength: lineLength,
       timestamp: new Date().getTime(),
     };
+    const serverUrl = process.env.SERVER_URL;
     const response = await fetch(`${serverUrl}/api/v1/data/lines`, {
       method: "POST",
       headers: {
