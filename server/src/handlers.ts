@@ -255,13 +255,13 @@ export const getDiningHalls = async (
 
     const diningHallInformation:
       | {
-        name: string;
-        location: string[];
-        throughput: number;
-        type: string;
-        imageURL: string;
-        schedule: WeeklyHours;
-      }[]
+          name: string;
+          location: string[];
+          throughput: number;
+          type: string;
+          imageURL: string;
+          schedule: WeeklyHours;
+        }[]
       | null = await queryGetDiningHallsInformation();
 
     if (!diningHallInformation) {
@@ -487,8 +487,8 @@ function calculateWaitTime(
     // fall back entirely on historical data
     const centralData = new Date(
       new Date().getTime() +
-      new Date().getTimezoneOffset() * 60000 +
-      3600000 * -6
+        new Date().getTimezoneOffset() * 60000 +
+        3600000 * -6
     );
     const hour = (centralData.getHours() + 1).toString();
     const minutes = centralData.getMinutes();
