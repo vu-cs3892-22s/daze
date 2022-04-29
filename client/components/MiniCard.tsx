@@ -12,6 +12,7 @@ type NavigationProps = {
   nextMeal: string;
   nextMealStart: number;
   waitTimeProp: number | null;
+  historical: number;
 };
 
 const numberToTime = (num) => {
@@ -31,6 +32,7 @@ export default function MiniCard({
   nextMeal,
   nextMealStart,
   waitTimeProp,
+  historical,
 }: NavigationProps) {
   const [waitTime, setWaitTime] = useState("0");
   const navigation: NavigationProp = useNavigation();
@@ -44,7 +46,12 @@ export default function MiniCard({
 
   useEffect(() => {
     if (waitTimeProp) {
-      setWaitTime(waitTimeProp.toString());
+      const mins = waitTimeProp / 60;
+      if (mins < 1) {
+        setWaitTime(mins.toFixed(1).toString());
+      } else {
+        setWaitTime(mins.toFixed(1).toString());
+      }
     }
   }, [waitTimeProp]);
 
@@ -78,7 +85,7 @@ export default function MiniCard({
         )}
       </View>
       <View style={styles.waitTimeContainer}>
-        {waitTimeProp >= 60 && (
+        {waitTimeProp >= 3600 && (
           <Text style={{ color: "#616265", fontSize: 10, bottom: 4 }}>
             more than
           </Text>
@@ -94,9 +101,9 @@ export default function MiniCard({
           ]}
         >
           <Text style={styles.waitTimeMinute}>
-            {waitTimeProp >= 60 ? "1" : waitTime === "0" ? "?" : waitTime}
+            {waitTimeProp >= 3600 ? "1" : waitTime === "0" ? "?" : waitTime}
           </Text>
-          <Text>{waitTimeProp >= 60 ? "hr" : "min"}</Text>
+          <Text>{waitTimeProp >= 3600 ? "hr" : "min"}</Text>
         </View>
       </View>
     </TouchableOpacity>

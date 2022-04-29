@@ -28,8 +28,6 @@ interface DiningHallProps {
   };
 }
 
-type NavigationProps = { route: any };
-
 const days = [
   "Sunday",
   "Monday",
@@ -39,6 +37,42 @@ const days = [
   "Friday",
   "Saturday",
 ];
+
+const customBreakfastData = (data: number[]) => {
+  return {
+    labels: ["7am", "8am", "9am", "10am", "11am"],
+    datasets: [
+      {
+        data: data,
+      },
+    ],
+    legend: ["Breakfast"],
+  };
+};
+
+const customLunchData = (data: number[]) => {
+  return {
+    labels: ["11am", "12pm", "1pm", "2pm", "3pm"],
+    datasets: [
+      {
+        data: data,
+      },
+    ],
+    legend: ["Lunch"],
+  };
+};
+
+const customDinnerData = (data: number[]) => {
+  return {
+    labels: ["4pm", "5", "6pm", "7pm", "8pm"],
+    datasets: [
+      {
+        data: data,
+      },
+    ],
+    legend: ["Dinner"],
+  };
+};
 
 const breakfastData = {
   labels: ["7am", "8am", "9am", "10am", "11am"],
@@ -58,18 +92,6 @@ const lunchData = {
     },
   ],
   legend: ["Lunch"],
-};
-
-const customLunchData = (data: number[]) => {
-  return {
-    labels: ["11am", "12pm", "1pm", "2pm", "3pm"],
-    datasets: [
-      {
-        data: data,
-      },
-    ],
-    legend: ["Lunch"],
-  };
 };
 
 const dinnerData = {
@@ -143,6 +165,11 @@ export default function DiningHall({ route }: DiningHallProps) {
   const scrollRef = useRef<ScrollView | null>(null);
   const [value, setValue] = useState("Medium");
   const [bgImage, setBgImage] = useState("");
+  const [waitTime, setWaitTime] = useState("");
+
+  const [breakfast, setBreakfast] = useState([]);
+  const [lunch, setLunch] = useState([]);
+  const [dinner, setDinner] = useState([]);
 
   const [currentDay, setCurrentDay] = useState(1);
   const [currentHour, setCurrentHour] = useState(7);
@@ -155,8 +182,41 @@ export default function DiningHall({ route }: DiningHallProps) {
 
       const json = await response.json();
       const data = json.data;
+      setWaitTime(data.waitTime);
       setBgImage(data.image);
       setLoading(false);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const getHist = async () => {
+    try {
+      const serverUrl = process.env.SERVER_URL;
+      const response = await fetch(
+        `${serverUrl}/api/v1/historical_data/${name}`
+      );
+
+      const json = await response.json();
+      const data = json.data;
+      const bf = [data["7"], data["8"], data["9"], data["10"], data["11"]];
+      setBreakfast(bf);
+      const lunch = [
+        data["11"],
+        data["12"],
+        data["13"],
+        data["14"],
+        data["15"],
+      ];
+      setLunch(lunch);
+      const dinner = [
+        data["16"],
+        data["17"],
+        data["18"],
+        data["19"],
+        data["20"],
+      ];
+      setDinner(dinner);
     } catch (error) {
       console.error(error);
     }
@@ -170,6 +230,7 @@ export default function DiningHall({ route }: DiningHallProps) {
 
   useEffect(() => {
     getDiningHall();
+    getHist();
     return () => setLoading(true);
   }, [route.params]);
 
@@ -208,14 +269,7 @@ export default function DiningHall({ route }: DiningHallProps) {
           <Text style={styles.title}>{name.replace(/_/g, " ")}</Text>
 
           <View style={styles.center}>
-            <Text>
-              Current Wait:{" "}
-              {line === "l"
-                ? "Approx 40 minutes"
-                : line === "m"
-                ? "Approx 20 minutes"
-                : "Under 5 minutes"}{" "}
-            </Text>
+            <Text>{`Current Wait: ${waitTime} seconds`}</Text>
             <Text>Average Wait Times: {days[currentDay]}</Text>
           </View>
           <ScrollView
@@ -240,7 +294,9 @@ export default function DiningHall({ route }: DiningHallProps) {
                   padding: 0,
                   marginRight: 10,
                 }}
-                data={breakfastData}
+                data={
+                  breakfast ? customBreakfastData(breakfast) : breakfastData
+                }
                 width={width - 100}
                 height={180}
                 yAxisLabel=""
@@ -259,7 +315,7 @@ export default function DiningHall({ route }: DiningHallProps) {
                   marginVertical: 0,
                   borderRadius: 16,
                 }}
-                data={data ? customLunchData(data) : lunchData}
+                data={data ? customLunchData(lunch) : lunchData}
                 width={width - 100}
                 height={180}
                 yAxisLabel=""
@@ -278,7 +334,7 @@ export default function DiningHall({ route }: DiningHallProps) {
                   marginVertical: 0,
                   borderRadius: 16,
                 }}
-                data={dinnerData}
+                data={dinner ? customDinnerData(dinner) : dinnerData}
                 width={width - 100}
                 height={180}
                 yAxisLabel=""

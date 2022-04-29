@@ -33,6 +33,8 @@ export default function ListView() {
   const [currentDay, setCurrentDay] = useState(1);
   const [currentHour, setCurrentHour] = useState(7);
 
+  const [hist, setHist] = useState({});
+
   const serverUrl = process.env.SERVER_URL;
 
   const getAllLocations = async () => {
@@ -51,6 +53,42 @@ export default function ListView() {
           setLocations((prev) => [...prev, value]);
         }
       }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const getAllHistData = async () => {
+    try {
+      const response = await fetch(`${serverUrl}/api/v1/historical_data`);
+      const json = await response.json();
+      const date = new Date();
+      const currentHr = Math.floor(
+        date.getHours() + date.getMinutes() / 60
+      ).toString();
+      const locToHist = {};
+      for (const [key, value] of Object.entries(json)) {
+        if (key === "Rand") {
+          Object.assign(
+            locToHist,
+            { Rand_Bowls: value[currentHr] },
+            { Rand_Randwich: value[currentHr] },
+            { Rand_Fresh_Mex: value[currentHr] },
+            { Rand_Mongolian: value[currentHr] },
+            { Rand_Chicken_Shack: value[currentHr] }
+          );
+        } else if (key === "2301") {
+          Object.assign(
+            locToHist,
+            { "2301_Bowls": value[currentHr] },
+            { "2301_Smoothies": value[currentHr] }
+          );
+        } else {
+          const myKey = key;
+          locToHist[myKey] = value[currentHr];
+        }
+      }
+      setHist(locToHist);
     } catch (error) {
       console.error(error);
     }
@@ -149,8 +187,10 @@ export default function ListView() {
   useEffect(() => {
     const date = new Date();
     setCurrentDay(date.getDay());
-    setCurrentHour(date.getHours() + date.getMinutes() / 60);
+    const hour = date.getHours() + date.getMinutes() / 60;
+    setCurrentHour(hour);
     (async () => {
+      await getAllHistData();
       await getAllLocations();
     })();
     return () => setLocations([]);
@@ -191,6 +231,7 @@ export default function ListView() {
               nextMeal={location.nextMeal}
               nextMealStart={location.nextMealStarts}
               waitTimeProp={location.waitTime}
+              historical={hist[location.name]}
             />
           ))
         ) : (
