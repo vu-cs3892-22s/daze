@@ -12,7 +12,6 @@ import MapView from "./components/MapView";
 import ListView from "./components/ListView";
 import DiningHall from "./components/DiningHall";
 import ModalPopup from "./components/ModalPopup";
-
 type DazeUser = {
   secretKey: string;
   picture: string;
