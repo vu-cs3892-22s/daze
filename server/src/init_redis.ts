@@ -6,9 +6,9 @@ dotenv.config({
 });
 
 export const client = redis.createClient({
-  url: process.env.REDIS_TLS_URL,
+  url: process.env.REDIS_URL,
   socket: {
-    tls: true,
+    tls: false,
     rejectUnauthorized: false
   }
 });
