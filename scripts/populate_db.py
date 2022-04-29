@@ -52,18 +52,19 @@ dining_hall_names = [
   'Food_For_Thought'
 ]
 
+# in seconds
 dining_hall_throughputs = {
-    '2301_Bowls': 1,
-    '2301_Smoothies': 2,
+    '2301_Bowls': 67,
+    '2301_Smoothies': 59,
     'Commons': 2,
     'EBI': 3,
     'Kissam': 4,
     'McTyeire': 5,
-    'Rand_Bowls': 6,
-    'Rand_Randwich': 7,
-    'Rand_Fresh_Mex': 8,
-    'Rand_Mongolian': 9,
-    'Rand_Chicken_Shack': 10,
+    'Rand_Bowls': 33,
+    'Rand_Randwich': 37,
+    'Rand_Fresh_Mex': 26,
+    'Rand_Mongolian': 75,
+    'Rand_Chicken_Shack': 23,
     'Zeppos': 11,
     'Alumni': 12,
     'Grins': 13,

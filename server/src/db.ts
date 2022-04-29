@@ -47,36 +47,13 @@ interface WeeklyHours {
   Sunday: number[][];
 }
 
-interface WeeklyHours {
-  Monday: number[][];
-  Tuesday: number[][];
-  Wednesday: number[][];
-  Thursday: number[][];
-  Friday: number[][];
-  Saturday: number[][];
-  Sunday: number[][];
-}
-
-interface HourlyData {
-  '7': number;
-  '8': number;
-  '9': number;
-  '10': number;
-  '11': number;
-  '12': number;
-  '13': number;
-  '14': number;
-  '15': number;
-  '16': number;
-  '17': number;
-  '18': number;
-  '19': number;
-  '20': number;
+interface FifteenMinuteData {
+  [key: string]: number;
 }
 
 interface HistoricalData {
   name: string;
-  data: HourlyData;
+  data: FifteenMinuteData;
 }
 
 export async function queryCreateUser(body: UserBody) {
@@ -199,6 +176,13 @@ export async function queryGetDiningHallsInformation(): Promise<
 export async function queryGetHistoricalData(
   diningHallName: string
 ): Promise<HistoricalData[] | null> {
+  // since we only have data for all of rand or all of 2301
+  if (diningHallName.includes('Rand')) {
+    diningHallName = 'Rand';
+  } else if (diningHallName.includes('2301')) {
+    diningHallName = '2301';
+  }
+
   const text = `
   SELECT * 
   FROM "HistoricalData"
