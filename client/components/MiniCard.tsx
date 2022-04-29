@@ -80,37 +80,41 @@ export default function MiniCard({
           </Text>
         )}
       </View>
-      <View style={styles.waitTimeContainer}>
-        {waitTimeProp >= 3600 && (
-          <Text style={{ color: "#616265", fontSize: 10, bottom: 4 }}>
-            more than
-          </Text>
-        )}
-        <View
-          style={[
-            styles.waitTimeBlob,
-            {
-              backgroundColor:
-                waitTimeProp || historical
-                  ? getBgColor(parseInt(waitTime))
-                  : "#D3D3D3",
-            },
-          ]}
-        >
-          <Text style={styles.waitTimeMinute}>
-            {waitTimeProp >= 3600
-              ? "1"
-              : waitTime !== "0"
-              ? waitTime
-              : historical
-              ? historical >= 10
-                ? historical.toFixed(0).toString()
-                : historical.toFixed(1).toString()
-              : "?"}
-          </Text>
-          <Text>{waitTimeProp >= 3600 ? "hr" : "min"}</Text>
+      {isOpen ? (
+        <View style={styles.waitTimeContainer}>
+          {waitTimeProp >= 3600 && (
+            <Text style={{ color: "#616265", fontSize: 10, bottom: 4 }}>
+              more than
+            </Text>
+          )}
+          <View
+            style={[
+              styles.waitTimeBlob,
+              {
+                backgroundColor:
+                  waitTimeProp || historical
+                    ? getBgColor(parseInt(waitTime))
+                    : "#D3D3D3",
+              },
+            ]}
+          >
+            <Text style={styles.waitTimeMinute}>
+              {waitTimeProp >= 3600
+                ? "1"
+                : waitTime !== "0"
+                ? waitTime
+                : historical
+                ? historical >= 10
+                  ? historical.toFixed(0).toString()
+                  : historical.toFixed(1).toString()
+                : "?"}
+            </Text>
+            <Text>{waitTimeProp >= 3600 ? "hr" : "min"}</Text>
+          </View>
         </View>
-      </View>
+      ) : (
+        <View style={styles.waitTimeContainer}></View>
+      )}
     </TouchableOpacity>
   );
 }
