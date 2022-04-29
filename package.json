@@ -1,6 +1,9 @@
 {
   "name": "daze",
   "version": "1.0.0",
+  "engines": {
+    "node": "14.x"
+  },
   "description": "App for Vandy students to see campus dining line lengths.",
   "main": "index.js",
   "repository": "https://github.com/vu-cs3892-22s/daze.git",
