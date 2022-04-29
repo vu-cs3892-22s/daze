@@ -361,8 +361,9 @@ export default function DiningHall({ route }: DiningHallProps) {
                 width: 300,
               }}
             />
+
             <Text style={styles.subtitle}>
-              Line not medium right now? Be sure to...
+              {"Short: <5 people, Medium: 5-15 people, Long: >15 people"}
             </Text>
           </View>
           <Button
@@ -410,8 +411,9 @@ const styles = StyleSheet.create({
     color: "#616265",
     fontSize: 10,
     alignSelf: "center",
-    paddingTop: 3,
-    paddingBottom: 3,
+    paddingTop: 6,
+    paddingBottom: 12,
+    marginBottom: 50,
   },
   handle: {
     width: 80,
