@@ -418,11 +418,6 @@ export const getHistoricalDatas = async (
 function calculateMode(data: any) {
   const last10 = data.slice(-10);
 
-  // if we have no data, we'll just say length is unknown
-  if (last10.length === 0) {
-    return 'unknown';
-  }
-
   const last10Lengths: string[] = [];
   for (let i = 0; i < last10.length; ++i) {
     const curTime = Date.now();
@@ -435,6 +430,11 @@ function calculateMode(data: any) {
     if (Math.abs(Math.round(diff)) <= 15) {
       last10Lengths.push(JSON.parse(last10[i])['lineLength']);
     }
+  }
+
+  // if we have no data (or if all data is stale), we'll just say length is unknown
+  if (last10Lengths.length === 0) {
+    return 'unknown';
   }
 
   // create object with counts
