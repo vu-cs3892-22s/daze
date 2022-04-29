@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState, useRef } from "react";
 import {
+  Alert,
   Button,
   ScrollView,
   Dimensions,
@@ -14,14 +15,21 @@ import {
 import ParallaxScrollView from "react-native-parallax-scroll-view";
 import { BarChart } from "react-native-chart-kit";
 import ButtonToggleGroup from "react-native-button-toggle-group";
-
-import type { DefaultScreenNavigationProp } from "../types";
 import { Alert } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { Box } from "native-base";
 
-type NavigationProps = { route: any; navigation: DefaultScreenNavigationProp };
+interface DiningHallProps {
+  route: {
+    params: {
+      name: string;
+      line: string;
+      data: number[];
+    };
+  };
+}
 
-const serverUrl = process.env.SERVER_URL;
+type NavigationProps = { route: any };
 
 const days = [
   "Sunday",
@@ -88,7 +96,11 @@ const chartConfig = {
   innerHeight: 80,
   decimalPlaces: 0,
 };
+
 const { width, height } = Dimensions.get("window");
+
+const fallbackImage =
+  "https://cdn.dribbble.com/users/3320958/screenshots/15732917/media/53f561f774a12b5fa15a8884636d0c30.jpeg?compress=1&resize=1200x900&vertical=top";
 
 const showToast = (message: string) => {
   Alert.alert(message);
@@ -126,23 +138,24 @@ const sendLineData = async (diningHallName: string, lineLength: string) => {
   }
 };
 
-export default function DiningHall({ route, navigation }: NavigationProps) {
+export default function DiningHall({ route }: DiningHallProps) {
   const [loading, setLoading] = useState(true);
   const scrollRef = useRef<ScrollView | null>(null);
   const [value, setValue] = useState("Medium");
+  const [bgImage, setBgImage] = useState("");
 
   const [currentDay, setCurrentDay] = useState(1);
   const [currentHour, setCurrentHour] = useState(7);
-  const { name, line, idx, data } = route.params;
+  const { name, line, data } = route.params;
 
   const getDiningHall = async () => {
     try {
-      const response = await fetch(
-        `https://451f-129-59-122-76.ngrok.io/api/v1/dining_halls/${name}`
-      );
+      const serverUrl = process.env.SERVER_URL;
+      const response = await fetch(`${serverUrl}/api/v1/dining_halls/${name}`);
 
       const json = await response.json();
       const data = json.data;
+      setBgImage(data.image);
       setLoading(false);
     } catch (error) {
       console.error(error);
@@ -165,12 +178,18 @@ export default function DiningHall({ route, navigation }: NavigationProps) {
       contentBackgroundColor="#FFF"
       parallaxHeaderHeight={200}
       fadeOutForeground={false}
-      renderForeground={() => (
-        <Image
-          style={{ width: width, height: 200 }}
-          source={{ uri: "https://i.ibb.co/6bS28bP/grins.jpg" }}
-        />
-      )}
+      renderForeground={() =>
+        loading ? (
+          <ActivityIndicator size="large" />
+        ) : (
+          <Image
+            style={{ width: width, height: 200, resizeMode: "cover" }}
+            source={{
+              uri: bgImage.length ? bgImage : fallbackImage,
+            }}
+          />
+        )
+      }
     >
       {loading ? (
         <View
@@ -185,6 +204,7 @@ export default function DiningHall({ route, navigation }: NavigationProps) {
         </View>
       ) : (
         <View style={styles.content}>
+          <Box style={styles.handle} />
           <Text style={styles.title}>{name.replace(/_/g, " ")}</Text>
 
           <View style={styles.center}>
@@ -318,6 +338,7 @@ const styles = StyleSheet.create({
     fontWeight: "700",
     fontSize: 36,
     marginBottom: 12,
+    paddingLeft: 10,
   },
   center: {
     display: "flex",
@@ -335,5 +356,13 @@ const styles = StyleSheet.create({
     alignSelf: "center",
     paddingTop: 3,
     paddingBottom: 3,
+  },
+  handle: {
+    width: 80,
+    height: 6,
+    backgroundColor: "#D3D3D3",
+    alignSelf: "center",
+    borderRadius: 12,
+    top: -8,
   },
 });

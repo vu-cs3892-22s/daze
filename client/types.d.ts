@@ -1,6 +1,16 @@
 import type { BottomTabNavigationProp } from "@react-navigation/bottom-tabs";
 
-export type DefaultScreenNavigationProp = BottomTabNavigationProp<
+interface WeeklyHours {
+  Monday: number[][];
+  Tuesday: number[][];
+  Wednesday: number[][];
+  Thursday: number[][];
+  Friday: number[][];
+  Saturday: number[][];
+  Sunday: number[][];
+}
+
+export type NavigationProp = BottomTabNavigationProp<
   RootTabParamList,
   "List View"
 >;
@@ -18,7 +28,16 @@ export interface DiningHallInfo {
   name?: string;
   type?: string;
   waitTime?: number | null;
+  schedule?: WeeklyHours;
 }
+
+export interface ScheduledDiningHallInfo extends DiningHallInfo {
+  isOpen?: boolean;
+  openUntil?: number;
+  nextMeal?: string;
+  nextMealStarts?: number;
+}
+
 export interface NavigationProps {
-  navigation: DefaultScreenNavigationProp;
+  navigation: NavigationProp;
 }
