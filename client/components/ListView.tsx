@@ -43,6 +43,7 @@ export default function ListView() {
       const response = await fetch(`${serverUrl}/api/v1/dining_halls`);
       const json = await response.json();
       const diningHalls = json.data;
+      console.log(Object.values(diningHalls))
       for (const [key, value] of Object.entries(diningHalls)) {
         if (key === "Rand") {
           //handle superstation
@@ -200,10 +201,10 @@ export default function ListView() {
     const locationsWithSchedule = addSchedule();
     // Sort by ascending wait time
     locationsWithSchedule.sort((a, b) => a.waitTime - b.waitTime);
-    // Move all unknown wait time locations to end
-    locationsWithSchedule.sort((a, b) => (b.waitTime !== null ? 1 : -10));
     // Sort by open/closed
     locationsWithSchedule.sort((a, b) => Number(b.isOpen) - Number(a.isOpen));
+    // Move all unknown wait time locations to end
+    locationsWithSchedule.sort((a, b) => (b.waitTime !== null ? 1 : -10));
     setSortedLocations(locationsWithSchedule);
   };
 

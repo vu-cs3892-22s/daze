@@ -47,11 +47,7 @@ export default function MiniCard({
   useEffect(() => {
     if (waitTimeProp) {
       const mins = waitTimeProp / 60;
-      if (mins < 1) {
-        setWaitTime(mins.toFixed(1).toString());
-      } else {
-        setWaitTime(mins.toFixed(1).toString());
-      }
+      setWaitTime(mins.toFixed(1).toString());
     }
   }, [waitTimeProp]);
 
@@ -94,14 +90,23 @@ export default function MiniCard({
           style={[
             styles.waitTimeBlob,
             {
-              backgroundColor: waitTimeProp
-                ? getBgColor(parseInt(waitTime))
-                : "#D3D3D3",
+              backgroundColor:
+                waitTimeProp || historical
+                  ? getBgColor(parseInt(waitTime))
+                  : "#D3D3D3",
             },
           ]}
         >
           <Text style={styles.waitTimeMinute}>
-            {waitTimeProp >= 3600 ? "1" : waitTime === "0" ? "?" : waitTime}
+            {waitTimeProp >= 3600
+              ? "1"
+              : waitTime !== "0"
+              ? waitTime
+              : historical
+              ? historical >= 10
+                ? historical.toFixed(0).toString()
+                : historical.toFixed(1).toString()
+              : "?"}
           </Text>
           <Text>{waitTimeProp >= 3600 ? "hr" : "min"}</Text>
         </View>

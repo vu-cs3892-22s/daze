@@ -182,7 +182,7 @@ export default function DiningHall({ route }: DiningHallProps) {
 
       const json = await response.json();
       const data = json.data;
-      setWaitTime(data.waitTime);
+      setWaitTime((data.waitTime / 60).toFixed(1));
       setBgImage(data.image);
       setLoading(false);
     } catch (error) {
@@ -269,7 +269,7 @@ export default function DiningHall({ route }: DiningHallProps) {
           <Text style={styles.title}>{name.replace(/_/g, " ")}</Text>
 
           <View style={styles.center}>
-            <Text>{`Current Wait: ${waitTime} seconds`}</Text>
+            <Text>{`Current Wait: ${waitTime} minutes`}</Text>
             <Text>Average Wait Times: {days[currentDay]}</Text>
           </View>
           <ScrollView
