@@ -15,7 +15,6 @@ import {
 import ParallaxScrollView from "react-native-parallax-scroll-view";
 import { BarChart } from "react-native-chart-kit";
 import ButtonToggleGroup from "react-native-button-toggle-group";
-import { Alert } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Box } from "native-base";
 
