@@ -12,6 +12,7 @@ type NavigationProps = {
   nextMeal: string;
   nextMealStart: number;
   waitTimeProp: number | null;
+  historical: number;
 };
 
 const numberToTime = (num) => {
@@ -31,6 +32,7 @@ export default function MiniCard({
   nextMeal,
   nextMealStart,
   waitTimeProp,
+  historical,
 }: NavigationProps) {
   const [waitTime, setWaitTime] = useState("0");
   const navigation: NavigationProp = useNavigation();
@@ -44,7 +46,8 @@ export default function MiniCard({
 
   useEffect(() => {
     if (waitTimeProp) {
-      setWaitTime(waitTimeProp.toString());
+      const mins = waitTimeProp / 60;
+      setWaitTime(mins.toFixed(1).toString());
     }
   }, [waitTimeProp]);
 
@@ -78,7 +81,7 @@ export default function MiniCard({
         )}
       </View>
       <View style={styles.waitTimeContainer}>
-        {waitTimeProp >= 60 && (
+        {waitTimeProp >= 3600 && (
           <Text style={{ color: "#616265", fontSize: 10, bottom: 4 }}>
             more than
           </Text>
@@ -87,16 +90,25 @@ export default function MiniCard({
           style={[
             styles.waitTimeBlob,
             {
-              backgroundColor: waitTimeProp
-                ? getBgColor(parseInt(waitTime))
-                : "#D3D3D3",
+              backgroundColor:
+                waitTimeProp || historical
+                  ? getBgColor(parseInt(waitTime))
+                  : "#D3D3D3",
             },
           ]}
         >
           <Text style={styles.waitTimeMinute}>
-            {waitTimeProp >= 60 ? "1" : waitTime === "0" ? "?" : waitTime}
+            {waitTimeProp >= 3600
+              ? "1"
+              : waitTime !== "0"
+              ? waitTime
+              : historical
+              ? historical >= 10
+                ? historical.toFixed(0).toString()
+                : historical.toFixed(1).toString()
+              : "?"}
           </Text>
-          <Text>{waitTimeProp >= 60 ? "hr" : "min"}</Text>
+          <Text>{waitTimeProp >= 3600 ? "hr" : "min"}</Text>
         </View>
       </View>
     </TouchableOpacity>
